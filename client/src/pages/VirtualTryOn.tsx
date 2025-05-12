@@ -187,7 +187,7 @@ const VirtualTryOn = () => {
                         <SelectValue placeholder={t('virtualTryOnPage.framesSection.allStyles')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">{t('virtualTryOnPage.framesSection.allStyles')}</SelectItem>
+                        <SelectItem value="all">{t('virtualTryOnPage.framesSection.allStyles')}</SelectItem>
                         <SelectItem value="Rectangle">Rectangle</SelectItem>
                         <SelectItem value="Round">Round</SelectItem>
                         <SelectItem value="Oval">Oval</SelectItem>
@@ -203,7 +203,7 @@ const VirtualTryOn = () => {
                         <SelectValue placeholder={t('virtualTryOnPage.framesSection.allMaterials')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">{t('virtualTryOnPage.framesSection.allMaterials')}</SelectItem>
+                        <SelectItem value="all">{t('virtualTryOnPage.framesSection.allMaterials')}</SelectItem>
                         <SelectItem value="Acetate">Acetate</SelectItem>
                         <SelectItem value="Metal">Metal</SelectItem>
                         <SelectItem value="Titanium">Titanium</SelectItem>
@@ -218,7 +218,7 @@ const VirtualTryOn = () => {
                         <SelectValue placeholder={t('virtualTryOnPage.framesSection.allColors')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">{t('virtualTryOnPage.framesSection.allColors')}</SelectItem>
+                        <SelectItem value="all">{t('virtualTryOnPage.framesSection.allColors')}</SelectItem>
                         <SelectItem value="Black">Black</SelectItem>
                         <SelectItem value="Brown">Brown</SelectItem>
                         <SelectItem value="Blue">Blue</SelectItem>

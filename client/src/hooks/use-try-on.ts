@@ -15,9 +15,9 @@ export const useTryOn = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [selectedFrameId, setSelectedFrameId] = useState<number | null>(null);
   const [filters, setFilters] = useState({
-    style: '',
-    material: '',
-    color: ''
+    style: 'all',
+    material: 'all',
+    color: 'all'
   });
 
   // Fetch frames
@@ -101,9 +101,9 @@ export const useTryOn = () => {
   // Clear all filters
   const clearFilters = useCallback(() => {
     setFilters({
-      style: '',
-      material: '',
-      color: ''
+      style: 'all',
+      material: 'all',
+      color: 'all'
     });
   }, []);
 
