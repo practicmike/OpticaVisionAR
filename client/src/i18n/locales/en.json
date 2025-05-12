@@ -1,0 +1,403 @@
+{
+  "common": {
+    "currentLanguage": "en",
+    "loading": "Loading...",
+    "error": "An error occurred. Please try again."
+  },
+  "seo": {
+    "defaultTitle": "Ópticas Cardani - Eye Care Experts",
+    "defaultDescription": "Visual health experts in Irapuato and Abasolo with cutting-edge technology and personalized service for the whole family."
+  },
+  "aria": {
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu"
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "products": "Products",
+    "appointments": "Appointments",
+    "blog": "Blog",
+    "contact": "Contact",
+    "bookAppointment": "Book Appointment"
+  },
+  "hero": {
+    "title": "Your vision is our priority",
+    "subtitle": "Visual health experts in Irapuato and Abasolo with cutting-edge technology",
+    "bookAppointment": "Book Appointment",
+    "virtualTryOn": "Virtual Frame Try-On",
+    "imageAlt": "Ópticas Cardani Interior"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "We offer comprehensive visual care with modern technology and qualified professionals for the whole family.",
+    "viewMore": "View more services"
+  },
+  "products": {
+    "featuredTitle": "Featured Products",
+    "featuredSubtitle": "Discover our wide range of frames, lenses, and accessories from the best brands.",
+    "viewDetails": "View Details",
+    "viewFullCatalog": "View Full Catalog",
+    "materialColor": "{{material}} in {{color}}"
+  },
+  "virtualTryOn": {
+    "title": "Virtual Frame Try-On",
+    "subtitle": "Find the perfect frame from the comfort of your home. Try different styles and see how they look on you.",
+    "tryBeforeBuy": "Try Before You Buy",
+    "description": "Our advanced virtual try-on system allows you to see how our frames look on your face before visiting us.",
+    "benefits": {
+      "1": "Easy to use - just upload a photo or use your webcam",
+      "2": "Try dozens of frames in minutes",
+      "3": "Save your favorites and share with friends and family"
+    },
+    "tryNow": "Try Frames Now",
+    "imageAlt": "Virtual try-on demonstration"
+  },
+  "testimonials": {
+    "title": "What Our Customers Say",
+    "subtitle": "Thousands of satisfied customers trust us for their vision care."
+  },
+  "blog": {
+    "title": "Visual Health Blog",
+    "subtitle": "Informative articles about eye care and the latest trends in optics.",
+    "readMore": "Read More",
+    "viewAllArticles": "View All Articles"
+  },
+  "newsletter": {
+    "title": "Subscribe to Our Newsletter",
+    "subtitle": "Receive eye care tips, news about new products, and special offers.",
+    "emailPlaceholder": "Your email",
+    "emailAriaLabel": "Email address for newsletter",
+    "subscribe": "Subscribe",
+    "privacy": "We respect your privacy. You can unsubscribe at any time."
+  },
+  "footer": {
+    "tagline": "Vision care experts serving your family since 1995.",
+    "quickLinks": "Quick Links",
+    "links": {
+      "home": "Home",
+      "services": "Services",
+      "products": "Products",
+      "appointments": "Appointments",
+      "virtualTryOn": "Virtual Try-On",
+      "blog": "Blog"
+    },
+    "contact": "Contact",
+    "locations": "Irapuato and Abasolo, Guanajuato, Mexico",
+    "hours": "Hours",
+    "weekdayHours": "Monday - Friday: 9:00 - 19:00",
+    "saturdayHours": "Saturday: 9:00 - 14:00",
+    "sundayHours": "Sunday: Closed",
+    "bookAppointment": "Book Appointment",
+    "rightsReserved": "All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms and Conditions"
+  },
+  "servicesPage": {
+    "hero": {
+      "title": "Our Services",
+      "subtitle": "Comprehensive eye care solutions for you and your family",
+      "bookAppointment": "Book Appointment"
+    },
+    "main": {
+      "title": "Professional Eye Care Services",
+      "subtitle": "At Ópticas Cardani, we offer a complete range of vision services with advanced technology and expert professionals."
+    },
+    "free": "Free",
+    "duration": "{{minutes}} minutes",
+    "recommended": "Recommended",
+    "availableAt": "Available at all locations",
+    "bookNow": "Book Now",
+    "whyChoose": {
+      "title": "Why Choose Ópticas Cardani",
+      "subtitle": "We are committed to providing the highest quality of care for your vision health.",
+      "reasons": {
+        "1": {
+          "title": "Advanced Technology",
+          "description": "State-of-the-art equipment for precise diagnosis and treatment."
+        },
+        "2": {
+          "title": "Experienced Professionals",
+          "description": "Our team of optometrists and technicians have years of specialized experience."
+        },
+        "3": {
+          "title": "Personalized Care",
+          "description": "Customized solutions for each patient's unique visual needs."
+        },
+        "4": {
+          "title": "Quality Products",
+          "description": "Wide selection of frames and lenses from leading international brands."
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Find answers to common questions about our services and eye care.",
+      "questions": {
+        "1": {
+          "question": "How often should I have an eye exam?",
+          "answer": "Most eye care professionals recommend a comprehensive eye exam every 1-2 years, depending on your age, risk factors, and whether you currently wear eyeglasses or contact lenses."
+        },
+        "2": {
+          "question": "What's the difference between an optometrist and an ophthalmologist?",
+          "answer": "Optometrists provide primary eye care services including vision tests and prescribing corrective lenses. Ophthalmologists are medical doctors who specialize in eye and vision care, capable of performing eye surgery."
+        },
+        "3": {
+          "question": "Do you accept insurance?",
+          "answer": "Yes, we work with various insurance providers. Please contact us to verify if your insurance is accepted."
+        },
+        "4": {
+          "question": "How long does an eye exam take?",
+          "answer": "A comprehensive eye exam typically takes 30-45 minutes, depending on the tests required."
+        },
+        "5": {
+          "question": "How do I know if I need glasses?",
+          "answer": "Common signs include blurry vision, frequent headaches, eye strain, or difficulty seeing at night. A comprehensive eye exam can determine if you need corrective lenses."
+        }
+      }
+    },
+    "moreQuestions": "Do you have more questions?",
+    "contactUs": "Contact Us",
+    "cta": {
+      "title": "Ready to take care of your vision?",
+      "subtitle": "Book an appointment today and take the first step towards better eye health.",
+      "bookAppointment": "Book Appointment",
+      "contactUs": "Contact Us"
+    }
+  },
+  "productsPage": {
+    "hero": {
+      "title": "Our Products",
+      "subtitle": "High-quality frames, lenses, and accessories for all needs and styles"
+    },
+    "categories": {
+      "all": "All Products",
+      "eyeglasses": "Eyeglasses",
+      "sunglasses": "Sunglasses"
+    },
+    "filters": {
+      "title": "Filter By",
+      "style": "Style",
+      "allStyles": "All Styles",
+      "material": "Material",
+      "allMaterials": "All Materials",
+      "color": "Color",
+      "allColors": "All Colors",
+      "clearFilters": "Clear Filters"
+    },
+    "search": "Search products...",
+    "sortBy": "Sort by:",
+    "sortOptions": {
+      "name": "Name (A-Z)",
+      "priceLow": "Price (Low to High)",
+      "priceHigh": "Price (High to Low)"
+    },
+    "tryOn": "Try On",
+    "noResults": {
+      "title": "No products found",
+      "message": "Try adjusting your filters or search term to find what you're looking for."
+    },
+    "tryOn": {
+      "title": "Try Before You Buy",
+      "description": "Use our virtual try-on feature to see how our frames look on you before making a purchase.",
+      "benefits": {
+        "1": "Upload a photo or use your webcam",
+        "2": "Try multiple styles instantly",
+        "3": "Share your favorites with friends"
+      },
+      "button": "Go to Virtual Try-On",
+      "imageAlt": "Virtual try-on demo"
+    }
+  },
+  "appointmentsPage": {
+    "hero": {
+      "title": "Book Your Appointment",
+      "subtitle": "Schedule a visit at any of our locations in just a few steps"
+    },
+    "steps": {
+      "title": "Booking Process",
+      "subtitle": "Complete these simple steps to secure your appointment",
+      "step1": "Select Location",
+      "step2": "Choose Service",
+      "step3": "Pick Date & Time",
+      "step4": "Enter Your Details"
+    },
+    "locationSection": {
+      "title": "Select Location",
+      "subtitle": "Choose the branch most convenient for you"
+    },
+    "serviceSection": {
+      "title": "Select Service",
+      "subtitle": "Choose the type of service you need"
+    },
+    "calendarSection": {
+      "title": "Select Date and Time",
+      "subtitle": "Choose a convenient date and time for your appointment",
+      "availableTimes": "Available Times",
+      "noTimesAvailable": "No available times for this date. Please select another date.",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month"
+    },
+    "detailsSection": {
+      "title": "Your Details",
+      "nameLabel": "Full name",
+      "namePlaceholder": "Enter your full name",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "Enter your phone number",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "Enter your email address",
+      "visitTypeLabel": "Visit type",
+      "firstVisit": "First visit",
+      "returningPatient": "Returning patient",
+      "commentsLabel": "Comments or special needs",
+      "commentsPlaceholder": "Add any special requirements or questions",
+      "remindersLabel": "I would like to receive appointment reminders via email and SMS",
+      "privacyLabel": "I have read and agree to the privacy policy and terms of service",
+      "requiredField": "This field is required",
+      "invalidEmail": "Please enter a valid email address",
+      "invalidPhone": "Please enter a valid phone number"
+    },
+    "confirmation": {
+      "confirmAppointment": "Confirm Appointment",
+      "processing": "Processing your appointment...",
+      "success": {
+        "title": "Appointment Confirmed!",
+        "message": "Your appointment has been successfully scheduled. We've sent a confirmation to your email.",
+        "details": "Appointment Details",
+        "location": "Location",
+        "service": "Service",
+        "date": "Date",
+        "time": "Time",
+        "reference": "Reference Number",
+        "addToCalendar": "Add to Calendar",
+        "backToHome": "Back to Home"
+      },
+      "error": {
+        "title": "Something went wrong",
+        "message": "We couldn't book your appointment. Please try again or contact us directly.",
+        "retry": "Try Again",
+        "contact": "Contact Us"
+      }
+    }
+  },
+  "virtualTryOnPage": {
+    "hero": {
+      "title": "Virtual Frame Try-On",
+      "subtitle": "Try our frames from the comfort of your home before visiting our store"
+    },
+    "tryOnSection": {
+      "title": "How to Try On",
+      "useWebcam": "Use Webcam",
+      "uploadPhoto": "Upload Photo",
+      "placeholder": "Activate your camera or upload a photo to start",
+      "tips": "Tips for a better experience:",
+      "tip1": "Ensure you have good front lighting",
+      "tip2": "Look directly at the camera",
+      "tip3": "Remove glasses if you already wear them"
+    },
+    "framesSection": {
+      "title": "Select Frames",
+      "filter": "Filter by:",
+      "allStyles": "All styles",
+      "allMaterials": "All materials",
+      "allColors": "All colors",
+      "viewInStore": "View in Store"
+    },
+    "noCamera": {
+      "title": "Camera not available",
+      "message": "We couldn't access your camera. Please check your browser permissions or try uploading a photo instead."
+    },
+    "instructions": {
+      "title": "How It Works",
+      "step1": {
+        "title": "Choose Your Method",
+        "description": "Select between using your webcam in real-time or uploading a photo."
+      },
+      "step2": {
+        "title": "Try Different Frames",
+        "description": "Browse through our collection and see how each frame looks on you."
+      },
+      "step3": {
+        "title": "Save Your Favorites",
+        "description": "Save frames you like and compare them side by side."
+      },
+      "step4": {
+        "title": "Visit Us or Buy Online",
+        "description": "Come to our store to try the physical frames or purchase directly online."
+      }
+    }
+  },
+  "blogPage": {
+    "hero": {
+      "title": "Eye Health Blog",
+      "subtitle": "Educational articles and news on vision care and eye health"
+    },
+    "categories": {
+      "all": "All Topics",
+      "health": "Eye Health",
+      "tips": "Care Tips",
+      "trends": "Trends",
+      "children": "Children's Vision",
+      "technology": "Technology"
+    },
+    "readingTime": "{{minutes}} min read",
+    "readMore": "Read More",
+    "shareArticle": "Share this article",
+    "relatedArticles": "Related Articles",
+    "noArticles": {
+      "title": "No articles found",
+      "message": "We couldn't find any articles matching your criteria. Please try another category."
+    },
+    "search": {
+      "placeholder": "Search articles...",
+      "button": "Search",
+      "noResults": "No results found for '{{term}}'"
+    }
+  },
+  "contactPage": {
+    "hero": {
+      "title": "Contact Us",
+      "subtitle": "We're here to answer your questions and help with your vision needs"
+    },
+    "locations": {
+      "title": "Our Locations",
+      "subtitle": "Visit us at any of our branches in Irapuato and Abasolo",
+      "directions": "Get Directions"
+    },
+    "contactForm": {
+      "title": "Get in Touch",
+      "nameLabel": "Name",
+      "namePlaceholder": "Enter your full name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email address",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "Enter your phone number",
+      "locationLabel": "Preferred Location",
+      "selectLocation": "Select a location",
+      "messageLabel": "Message",
+      "messagePlaceholder": "How can we help you?",
+      "newsletterLabel": "I would like to subscribe to the newsletter and promotions",
+      "sendMessage": "Send Message",
+      "sending": "Sending...",
+      "success": "Your message has been sent successfully. We'll get back to you shortly.",
+      "error": "There was an error sending your message. Please try again."
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "questions": {
+        "1": {
+          "question": "What are your opening hours?",
+          "answer": "Our Irapuato location is open Monday to Friday from 9:00 to 19:00, and Saturdays from 9:00 to 14:00. The Abasolo branch is open Monday to Friday from 9:00 to 18:00, and Saturdays from 9:00 to 14:00. Both locations are closed on Sundays."
+        },
+        "2": {
+          "question": "Do I need an appointment for an eye exam?",
+          "answer": "While we do accept walk-ins when possible, we recommend scheduling an appointment to ensure prompt service and minimize waiting time."
+        },
+        "3": {
+          "question": "How long does it take to get new glasses?",
+          "answer": "Standard prescription glasses typically take 3-5 business days. High-index or progressive lenses may take 7-10 business days."
+        }
+      }
+    }
+  }
+}

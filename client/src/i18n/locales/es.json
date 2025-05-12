@@ -1,0 +1,403 @@
+{
+  "common": {
+    "currentLanguage": "es",
+    "loading": "Cargando...",
+    "error": "Ha ocurrido un error. Por favor, inténtelo de nuevo."
+  },
+  "seo": {
+    "defaultTitle": "Ópticas Cardani - Expertos en Salud Visual",
+    "defaultDescription": "Expertos en salud visual en Irapuato y Abasolo con tecnología de vanguardia y servicio personalizado para toda la familia."
+  },
+  "aria": {
+    "closeMenu": "Cerrar menú",
+    "openMenu": "Abrir menú"
+  },
+  "nav": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "products": "Productos",
+    "appointments": "Citas",
+    "blog": "Blog",
+    "contact": "Contacto",
+    "bookAppointment": "Agendar Cita"
+  },
+  "hero": {
+    "title": "Su visión es nuestra prioridad",
+    "subtitle": "Expertos en salud visual en Irapuato y Abasolo con tecnología de vanguardia",
+    "bookAppointment": "Agendar Cita",
+    "virtualTryOn": "Prueba Virtual de Armazones",
+    "imageAlt": "Interior de Ópticas Cardani"
+  },
+  "services": {
+    "title": "Nuestros Servicios",
+    "subtitle": "Ofrecemos atención visual completa con tecnología moderna y profesionales calificados para toda la familia.",
+    "viewMore": "Ver más servicios"
+  },
+  "products": {
+    "featuredTitle": "Productos Destacados",
+    "featuredSubtitle": "Descubra nuestra amplia gama de armazones, lentes y accesorios de las mejores marcas.",
+    "viewDetails": "Ver Detalles",
+    "viewFullCatalog": "Ver Catálogo Completo",
+    "materialColor": "{{material}} en {{color}}"
+  },
+  "virtualTryOn": {
+    "title": "Prueba Virtual de Armazones",
+    "subtitle": "Encuentre el armazón perfecto desde la comodidad de su hogar. Pruebe diferentes estilos y vea cómo le quedan.",
+    "tryBeforeBuy": "Pruebe Antes de Comprar",
+    "description": "Nuestro avanzado sistema de prueba virtual le permite ver cómo se ven nuestros armazones en su rostro antes de visitarnos.",
+    "benefits": {
+      "1": "Fácil de usar - sólo suba una foto o use su webcam",
+      "2": "Pruebe docenas de armazones en minutos",
+      "3": "Guarde sus favoritos y compártalos con amigos y familia"
+    },
+    "tryNow": "Probar Armazones Ahora",
+    "imageAlt": "Demostración de prueba virtual"
+  },
+  "testimonials": {
+    "title": "Lo Que Dicen Nuestros Clientes",
+    "subtitle": "Miles de clientes satisfechos confían en nosotros para el cuidado de su visión."
+  },
+  "blog": {
+    "title": "Blog de Salud Visual",
+    "subtitle": "Artículos informativos sobre el cuidado de sus ojos y últimas tendencias en óptica.",
+    "readMore": "Leer Más",
+    "viewAllArticles": "Ver Todos los Artículos"
+  },
+  "newsletter": {
+    "title": "Suscríbase a Nuestro Boletín",
+    "subtitle": "Reciba consejos de cuidado visual, noticias sobre nuevos productos y ofertas especiales.",
+    "emailPlaceholder": "Su correo electrónico",
+    "emailAriaLabel": "Dirección de correo electrónico para el boletín",
+    "subscribe": "Suscribirse",
+    "privacy": "Respetamos su privacidad. Puede darse de baja en cualquier momento."
+  },
+  "footer": {
+    "tagline": "Expertos en salud visual al servicio de su familia desde 1995.",
+    "quickLinks": "Enlaces Rápidos",
+    "links": {
+      "home": "Inicio",
+      "services": "Servicios",
+      "products": "Productos",
+      "appointments": "Citas",
+      "virtualTryOn": "Prueba Virtual",
+      "blog": "Blog"
+    },
+    "contact": "Contacto",
+    "locations": "Irapuato y Abasolo, Guanajuato, México",
+    "hours": "Horario",
+    "weekdayHours": "Lunes - Viernes: 9:00 - 19:00",
+    "saturdayHours": "Sábado: 9:00 - 14:00",
+    "sundayHours": "Domingo: Cerrado",
+    "bookAppointment": "Agendar Cita",
+    "rightsReserved": "Todos los derechos reservados.",
+    "privacyPolicy": "Política de Privacidad",
+    "terms": "Términos y Condiciones"
+  },
+  "servicesPage": {
+    "hero": {
+      "title": "Nuestros Servicios",
+      "subtitle": "Soluciones integrales de cuidado ocular para usted y su familia",
+      "bookAppointment": "Agendar Cita"
+    },
+    "main": {
+      "title": "Servicios Profesionales de Cuidado Visual",
+      "subtitle": "En Ópticas Cardani, ofrecemos una gama completa de servicios de visión con tecnología avanzada y profesionales expertos."
+    },
+    "free": "Gratis",
+    "duration": "{{minutes}} minutos",
+    "recommended": "Recomendado",
+    "availableAt": "Disponible en todas las sucursales",
+    "bookNow": "Agendar Ahora",
+    "whyChoose": {
+      "title": "Por Qué Elegir Ópticas Cardani",
+      "subtitle": "Estamos comprometidos a brindar la más alta calidad de atención para su salud visual.",
+      "reasons": {
+        "1": {
+          "title": "Tecnología Avanzada",
+          "description": "Equipos de última generación para un diagnóstico y tratamiento precisos."
+        },
+        "2": {
+          "title": "Profesionales Experimentados",
+          "description": "Nuestro equipo de optometristas y técnicos tienen años de experiencia especializada."
+        },
+        "3": {
+          "title": "Atención Personalizada",
+          "description": "Soluciones personalizadas para las necesidades visuales únicas de cada paciente."
+        },
+        "4": {
+          "title": "Productos de Calidad",
+          "description": "Amplia selección de armazones y lentes de marcas internacionales líderes."
+        }
+      }
+    },
+    "faq": {
+      "title": "Preguntas Frecuentes",
+      "subtitle": "Encuentre respuestas a preguntas comunes sobre nuestros servicios y el cuidado de los ojos.",
+      "questions": {
+        "1": {
+          "question": "¿Con qué frecuencia debo hacerme un examen de la vista?",
+          "answer": "La mayoría de los profesionales del cuidado de los ojos recomiendan un examen integral cada 1-2 años, dependiendo de su edad, factores de riesgo y si actualmente usa anteojos o lentes de contacto."
+        },
+        "2": {
+          "question": "¿Cuál es la diferencia entre un optometrista y un oftalmólogo?",
+          "answer": "Los optometristas brindan servicios de atención ocular primaria, incluidas pruebas de visión y prescripción de lentes correctivos. Los oftalmólogos son médicos que se especializan en el cuidado de los ojos y la visión, capaces de realizar cirugías oculares."
+        },
+        "3": {
+          "question": "¿Aceptan seguros?",
+          "answer": "Sí, trabajamos con varios proveedores de seguros. Por favor contáctenos para verificar si su seguro es aceptado."
+        },
+        "4": {
+          "question": "¿Cuánto tiempo dura un examen de la vista?",
+          "answer": "Un examen ocular completo generalmente toma entre 30 y 45 minutos, dependiendo de las pruebas requeridas."
+        },
+        "5": {
+          "question": "¿Cómo sé si necesito lentes?",
+          "answer": "Los signos comunes incluyen visión borrosa, dolores de cabeza frecuentes, fatiga visual o dificultad para ver de noche. Un examen ocular completo puede determinar si necesita lentes correctivos."
+        }
+      }
+    },
+    "moreQuestions": "¿Tiene más preguntas?",
+    "contactUs": "Contáctenos",
+    "cta": {
+      "title": "¿Listo para cuidar de su visión?",
+      "subtitle": "Reserve una cita hoy y dé el primer paso hacia una mejor salud ocular.",
+      "bookAppointment": "Agendar Cita",
+      "contactUs": "Contáctenos"
+    }
+  },
+  "productsPage": {
+    "hero": {
+      "title": "Nuestros Productos",
+      "subtitle": "Armazones, lentes y accesorios de alta calidad para todas las necesidades y estilos"
+    },
+    "categories": {
+      "all": "Todos los Productos",
+      "eyeglasses": "Lentes Graduados",
+      "sunglasses": "Lentes de Sol"
+    },
+    "filters": {
+      "title": "Filtrar Por",
+      "style": "Estilo",
+      "allStyles": "Todos los Estilos",
+      "material": "Material",
+      "allMaterials": "Todos los Materiales",
+      "color": "Color",
+      "allColors": "Todos los Colores",
+      "clearFilters": "Limpiar Filtros"
+    },
+    "search": "Buscar productos...",
+    "sortBy": "Ordenar por:",
+    "sortOptions": {
+      "name": "Nombre (A-Z)",
+      "priceLow": "Precio (Bajo a Alto)",
+      "priceHigh": "Precio (Alto a Bajo)"
+    },
+    "tryOn": "Probar",
+    "noResults": {
+      "title": "No se encontraron productos",
+      "message": "Intente ajustar sus filtros o término de búsqueda para encontrar lo que está buscando."
+    },
+    "tryOn": {
+      "title": "Pruebe Antes de Comprar",
+      "description": "Use nuestra función de prueba virtual para ver cómo se ven nuestros armazones en usted antes de realizar una compra.",
+      "benefits": {
+        "1": "Suba una foto o use su webcam",
+        "2": "Pruebe múltiples estilos al instante",
+        "3": "Comparta sus favoritos con amigos"
+      },
+      "button": "Ir a Prueba Virtual",
+      "imageAlt": "Demostración de prueba virtual"
+    }
+  },
+  "appointmentsPage": {
+    "hero": {
+      "title": "Reserve su Cita",
+      "subtitle": "Programe una visita en cualquiera de nuestras ubicaciones en solo unos pasos"
+    },
+    "steps": {
+      "title": "Proceso de Reserva",
+      "subtitle": "Complete estos sencillos pasos para asegurar su cita",
+      "step1": "Seleccionar Ubicación",
+      "step2": "Elegir Servicio",
+      "step3": "Elegir Fecha y Hora",
+      "step4": "Ingresar sus Datos"
+    },
+    "locationSection": {
+      "title": "Seleccione Sucursal",
+      "subtitle": "Elija la sucursal más conveniente para usted"
+    },
+    "serviceSection": {
+      "title": "Seleccione Servicio",
+      "subtitle": "Elija el tipo de servicio que necesita"
+    },
+    "calendarSection": {
+      "title": "Seleccione Fecha y Hora",
+      "subtitle": "Elija una fecha y hora conveniente para su cita",
+      "availableTimes": "Horarios Disponibles",
+      "noTimesAvailable": "No hay horarios disponibles para esta fecha. Por favor seleccione otra fecha.",
+      "previousMonth": "Mes anterior",
+      "nextMonth": "Mes siguiente"
+    },
+    "detailsSection": {
+      "title": "Sus Datos",
+      "nameLabel": "Nombre completo",
+      "namePlaceholder": "Ingrese su nombre completo",
+      "phoneLabel": "Teléfono",
+      "phonePlaceholder": "Ingrese su número de teléfono",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "Ingrese su dirección de correo electrónico",
+      "visitTypeLabel": "Tipo de visita",
+      "firstVisit": "Primera visita",
+      "returningPatient": "Paciente recurrente",
+      "commentsLabel": "Comentarios o necesidades especiales",
+      "commentsPlaceholder": "Agregue cualquier requisito especial o pregunta",
+      "remindersLabel": "Deseo recibir recordatorios de cita por correo electrónico y SMS",
+      "privacyLabel": "He leído y acepto la política de privacidad y los términos de servicio",
+      "requiredField": "Este campo es obligatorio",
+      "invalidEmail": "Por favor, ingrese una dirección de correo electrónico válida",
+      "invalidPhone": "Por favor, ingrese un número de teléfono válido"
+    },
+    "confirmation": {
+      "confirmAppointment": "Confirmar Cita",
+      "processing": "Procesando su cita...",
+      "success": {
+        "title": "¡Cita Confirmada!",
+        "message": "Su cita ha sido programada con éxito. Hemos enviado una confirmación a su correo electrónico.",
+        "details": "Detalles de la Cita",
+        "location": "Sucursal",
+        "service": "Servicio",
+        "date": "Fecha",
+        "time": "Hora",
+        "reference": "Número de Referencia",
+        "addToCalendar": "Añadir al Calendario",
+        "backToHome": "Volver al Inicio"
+      },
+      "error": {
+        "title": "Algo salió mal",
+        "message": "No pudimos reservar su cita. Por favor, inténtelo de nuevo o contáctenos directamente.",
+        "retry": "Intentar de Nuevo",
+        "contact": "Contáctenos"
+      }
+    }
+  },
+  "virtualTryOnPage": {
+    "hero": {
+      "title": "Prueba Virtual de Armazones",
+      "subtitle": "Pruebe nuestros armazones desde la comodidad de su hogar antes de visitar nuestra tienda"
+    },
+    "tryOnSection": {
+      "title": "Seleccione Cómo Probar",
+      "useWebcam": "Usar Webcam",
+      "uploadPhoto": "Subir Foto",
+      "placeholder": "Active su cámara o suba una foto para comenzar",
+      "tips": "Consejos para una mejor experiencia:",
+      "tip1": "Asegúrese de tener buena iluminación frontal",
+      "tip2": "Mire directamente a la cámara",
+      "tip3": "Retire los lentes si ya usa"
+    },
+    "framesSection": {
+      "title": "Seleccione Armazones",
+      "filter": "Filtrar por:",
+      "allStyles": "Todos los estilos",
+      "allMaterials": "Todos los materiales",
+      "allColors": "Todos los colores",
+      "viewInStore": "Ver en Tienda"
+    },
+    "noCamera": {
+      "title": "Cámara no disponible",
+      "message": "No pudimos acceder a su cámara. Verifique los permisos de su navegador o intente subir una foto."
+    },
+    "instructions": {
+      "title": "Cómo Funciona",
+      "step1": {
+        "title": "Elija su Método",
+        "description": "Seleccione entre usar su webcam en tiempo real o subir una foto."
+      },
+      "step2": {
+        "title": "Pruebe Diferentes Armazones",
+        "description": "Navegue por nuestra colección y vea cómo se ve cada armazón en usted."
+      },
+      "step3": {
+        "title": "Guarde sus Favoritos",
+        "description": "Guarde los armazones que le gusten y compárelos lado a lado."
+      },
+      "step4": {
+        "title": "Visítenos o Compre en Línea",
+        "description": "Venga a nuestra tienda para probar los armazones físicos o compre directamente en línea."
+      }
+    }
+  },
+  "blogPage": {
+    "hero": {
+      "title": "Blog de Salud Visual",
+      "subtitle": "Artículos educativos y noticias sobre cuidado visual y salud ocular"
+    },
+    "categories": {
+      "all": "Todos los Temas",
+      "health": "Salud Visual",
+      "tips": "Consejos de Cuidado",
+      "trends": "Tendencias",
+      "children": "Visión Infantil",
+      "technology": "Tecnología"
+    },
+    "readingTime": "{{minutes}} min de lectura",
+    "readMore": "Leer Más",
+    "shareArticle": "Compartir este artículo",
+    "relatedArticles": "Artículos Relacionados",
+    "noArticles": {
+      "title": "No se encontraron artículos",
+      "message": "No pudimos encontrar artículos que coincidan con sus criterios. Por favor, intente con otra categoría."
+    },
+    "search": {
+      "placeholder": "Buscar artículos...",
+      "button": "Buscar",
+      "noResults": "No se encontraron resultados para '{{term}}'"
+    }
+  },
+  "contactPage": {
+    "hero": {
+      "title": "Contáctenos",
+      "subtitle": "Estamos aquí para responder sus preguntas y ayudar con sus necesidades visuales"
+    },
+    "locations": {
+      "title": "Nuestras Sucursales",
+      "subtitle": "Visítenos en cualquiera de nuestras sucursales en Irapuato y Abasolo",
+      "directions": "Ver Indicaciones"
+    },
+    "contactForm": {
+      "title": "Contáctenos",
+      "nameLabel": "Nombre",
+      "namePlaceholder": "Ingrese su nombre completo",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "Ingrese su dirección de correo electrónico",
+      "phoneLabel": "Teléfono",
+      "phonePlaceholder": "Ingrese su número de teléfono",
+      "locationLabel": "Sucursal Preferida",
+      "selectLocation": "Seleccione una sucursal",
+      "messageLabel": "Mensaje",
+      "messagePlaceholder": "¿Cómo podemos ayudarle?",
+      "newsletterLabel": "Deseo suscribirme al boletín de noticias y promociones",
+      "sendMessage": "Enviar Mensaje",
+      "sending": "Enviando...",
+      "success": "Su mensaje ha sido enviado con éxito. Nos pondremos en contacto con usted pronto.",
+      "error": "Hubo un error al enviar su mensaje. Por favor, inténtelo de nuevo."
+    },
+    "faq": {
+      "title": "Preguntas Frecuentes",
+      "questions": {
+        "1": {
+          "question": "¿Cuál es su horario de atención?",
+          "answer": "Nuestra sucursal de Irapuato está abierta de lunes a viernes de 9:00 a 19:00, y los sábados de 9:00 a 14:00. La sucursal de Abasolo está abierta de lunes a viernes de 9:00 a 18:00, y los sábados de 9:00 a 14:00. Ambas sucursales están cerradas los domingos."
+        },
+        "2": {
+          "question": "¿Necesito una cita para un examen de la vista?",
+          "answer": "Aunque aceptamos visitas sin cita previa cuando es posible, recomendamos programar una cita para garantizar un servicio rápido y minimizar el tiempo de espera."
+        },
+        "3": {
+          "question": "¿Cuánto tiempo tarda en estar listos los lentes nuevos?",
+          "answer": "Los lentes de prescripción estándar generalmente tardan de 3 a 5 días hábiles. Los lentes de alto índice o progresivos pueden tardar de 7 a 10 días hábiles."
+        }
+      }
+    }
+  }
+}
