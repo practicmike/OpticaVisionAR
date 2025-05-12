@@ -5,7 +5,7 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LangSwitcher from './LangSwitcher';
 import { useIsMobile } from '@/hooks/use-mobile';
-import logoImg from '../assets/logo.jpg';
+import logoImg from '../assets/cardani1.jpg';
 
 const Navbar = () => {
   const { t } = useTranslation();

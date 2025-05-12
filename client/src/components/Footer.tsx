@@ -2,7 +2,7 @@ import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { Instagram, Facebook, Twitter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import logoImg from '../assets/logo.jpg';
+import logoImg from '../assets/cardani1.jpg';
 
 const Footer = () => {
   const { t } = useTranslation();
