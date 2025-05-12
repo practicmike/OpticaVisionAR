@@ -153,7 +153,7 @@ const VirtualTryOn = () => {
                       </Card>
                     ))
                   ) : (
-                    frames?.map((frame: any) => (
+                    frames.map((frame: any) => (
                       <Card 
                         key={frame.id} 
                         className={`cursor-pointer hover:shadow-md transition-shadow overflow-hidden ${
@@ -312,7 +312,7 @@ const VirtualTryOn = () => {
                   </Card>
                 ))
               ) : (
-                frames?.slice(0, 4).map((frame: any) => (
+                frames.slice(0, 4).map((frame: any) => (
                   <Card key={frame.id} className="overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                     <img 
                       src={frame.imageUrl} 

@@ -182,13 +182,13 @@ export class MemStorage implements IStorage {
     let frames = Array.from(this.frames.values());
     
     if (filters) {
-      if (filters.style) {
+      if (filters.style && filters.style !== 'all') {
         frames = frames.filter(frame => frame.style === filters.style);
       }
-      if (filters.material) {
+      if (filters.material && filters.material !== 'all') {
         frames = frames.filter(frame => frame.material === filters.material);
       }
-      if (filters.color) {
+      if (filters.color && filters.color !== 'all') {
         frames = frames.filter(frame => frame.color === filters.color);
       }
     }

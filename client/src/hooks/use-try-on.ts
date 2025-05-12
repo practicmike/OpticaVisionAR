@@ -108,7 +108,8 @@ export const useTryOn = () => {
   }, []);
 
   // Get the selected frame data
-  const selectedFrame = frames?.find((frame: any) => frame.id === selectedFrameId) || null;
+  const framesArray = Array.isArray(frames) ? frames : [];
+  const selectedFrame = framesArray.find((frame: any) => frame.id === selectedFrameId) || null;
 
   // Clean up on component unmount
   const cleanup = useCallback(() => {
@@ -126,7 +127,7 @@ export const useTryOn = () => {
     method,
     isWebcamActive,
     uploadedImage,
-    frames,
+    frames: framesArray,
     selectedFrame,
     filters,
     isLoadingFrames,
