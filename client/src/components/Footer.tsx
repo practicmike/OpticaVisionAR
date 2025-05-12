@@ -2,6 +2,7 @@ import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { Instagram, Facebook, Twitter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import logoImage from '../assets/logo.jpg';
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -22,10 +23,11 @@ const Footer = () => {
           {/* Brand and social links */}
           <div>
             <div className="flex items-center mb-4">
-              <div className="bg-white rounded-lg w-10 h-10 flex items-center justify-center text-primary text-xl font-bold mr-2">
-                OC
-              </div>
-              <span className="text-white font-bold text-xl">Ópticas Cardani</span>
+              <img 
+                src={logoImage} 
+                alt="Ópticas Cardani Logo" 
+                className="h-10 mr-2"
+              />
             </div>
             <p className="text-gray-400 mb-4">{t('footer.tagline')}</p>
             <div className="flex space-x-3">
