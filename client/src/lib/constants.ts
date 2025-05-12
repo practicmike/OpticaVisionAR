@@ -32,7 +32,7 @@ export const BLOG_CATEGORIES = [
 ];
 
 // Map API key (example, should be replaced with actual key from environment variables)
-export const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY || '';
+export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
 // Social media URLs
 export const SOCIAL_MEDIA = {
