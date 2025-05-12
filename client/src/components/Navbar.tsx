@@ -5,7 +5,6 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LangSwitcher from './LangSwitcher';
 import { useIsMobile } from '@/hooks/use-mobile';
-import logoImage from '../assets/logo.jpg';
 
 const Navbar = () => {
   const { t } = useTranslation();
@@ -36,11 +35,10 @@ const Navbar = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center justify-between w-full md:w-auto mb-4 md:mb-0">
             <Link href="/" className="flex items-center">
-              <img 
-                src={logoImage} 
-                alt="Ópticas Cardani Logo" 
-                className="h-12 mr-2"
-              />
+              <div className="bg-primary rounded-lg w-10 h-10 flex items-center justify-center text-white text-xl font-bold mr-2">
+                OC
+              </div>
+              <span className="text-primary font-bold text-xl">Ópticas Cardani</span>
             </Link>
             
             {isMobile && (
