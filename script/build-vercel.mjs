@@ -73,6 +73,12 @@ const config = {
       headers: { "cache-control": "public, max-age=86400, stale-while-revalidate=604800" },
       continue: true,
     },
+    // MediaPipe model files live under a versioned path -> cache forever.
+    {
+      src: "^/mediapipe/(.*)$",
+      headers: { "cache-control": "public, max-age=31536000, immutable" },
+      continue: true,
+    },
     // Camera is required by the virtual try-on; deny everything else sensitive.
     {
       src: "^/(.*)$",

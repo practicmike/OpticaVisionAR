@@ -348,7 +348,7 @@ const VirtualTryOn = () => {
                       <div className="mt-4 flex justify-between items-center">
                         <span className="font-bold text-[#333333]">{formatCurrency(frame.price)}</span>
                         <Button variant="outline" onClick={() => selectFrame(frame.id)}>
-                          {t('productsPage.tryOn')}
+                          {t('productsPage.tryOnButton')}
                         </Button>
                       </div>
                     </CardContent>

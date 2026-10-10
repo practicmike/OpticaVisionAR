@@ -225,7 +225,7 @@ const Products = () => {
                           <div className="mt-4 flex justify-between items-center">
                             <span className="font-bold text-[#333333]">{formatCurrency(frame.price)}</span>
                             <Button className="text-primary bg-primary/10 hover:bg-primary/20">
-                              {t('productsPage.tryOn')}
+                              {t('productsPage.tryOnButton')}
                             </Button>
                           </div>
                         </CardContent>
