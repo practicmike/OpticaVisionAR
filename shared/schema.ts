@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, date, time } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, date, time, real, uniqueIndex } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -42,7 +42,9 @@ export const appointmentSlots = pgTable("appointment_slots", {
   startTime: time("start_time").notNull(),
   endTime: time("end_time").notNull(),
   isAvailable: boolean("is_available").notNull().default(true),
-});
+}, (table) => [
+  uniqueIndex("appointment_slots_location_date_start_idx").on(table.locationId, table.date, table.startTime),
+]);
 
 export const insertAppointmentSlotSchema = createInsertSchema(appointmentSlots).omit({
   id: true,
@@ -79,6 +81,9 @@ export const frames = pgTable("frames", {
   material: text("material").notNull(),
   color: text("color").notNull(),
   imageUrl: text("image_url").notNull(),
+  // Optional GLB model used by the virtual try-on; falls back to a procedural frame when null.
+  modelUrl: text("model_url"),
+  modelRotationY: real("model_rotation_y"),
   price: integer("price"),
   isAvailable: boolean("is_available").notNull().default(true),
 });
@@ -116,8 +121,10 @@ export const testimonials = pgTable("testimonials", {
   isApproved: boolean("is_approved").notNull().default(false),
 });
 
+// Public submissions can never self-approve: approval is server-controlled.
 export const insertTestimonialSchema = createInsertSchema(testimonials).omit({
   id: true,
+  isApproved: true,
 });
 
 // Subscriptions for newsletter
@@ -163,10 +170,7 @@ export type Appointment = typeof appointments.$inferSelect;
 export type InsertAppointment = z.infer<typeof insertAppointmentSchema>;
 
 export type Frame = typeof frames.$inferSelect;
-export type CatalogFrame = Frame & {
-  modelUrl?: string;
-  modelRotationY?: number;
-};
+export type CatalogFrame = Frame;
 export type InsertFrame = z.infer<typeof insertFrameSchema>;
 
 export type BlogPost = typeof blogPosts.$inferSelect;
