@@ -7,12 +7,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTryOn } from '@/hooks/use-try-on';
 import { formatCurrency } from '@/lib/helpers';
+import GlassesRenderer from '@/components/GlassesRenderer';
 
 const VirtualTryOn = () => {
   const { t } = useTranslation();
   const { 
     webcamRef, 
-    canvasRef, 
+    renderCanvasRef,
     fileInputRef,
     method,
     isWebcamActive,
@@ -21,6 +22,7 @@ const VirtualTryOn = () => {
     selectedFrame,
     filters,
     isLoadingFrames,
+    canvasSize,
     startWebcam,
     stopWebcam,
     handleFileUpload,
@@ -103,12 +105,20 @@ const VirtualTryOn = () => {
                     />
                   )}
                   
-                  {/* Canvas for frame overlay */}
-                  <canvas
-                    ref={canvasRef}
-                    className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                    style={{ display: (isWebcamActive || uploadedImage) && selectedFrame ? 'block' : 'none' }}
-                  />
+                  {(isWebcamActive || uploadedImage) && selectedFrame && (
+                    <>
+                      <canvas
+                        ref={renderCanvasRef}
+                        className="absolute inset-0 w-full h-full object-cover rounded-lg pointer-events-none"
+                      />
+                      <GlassesRenderer
+                        frame={selectedFrame}
+                        canvasRef={renderCanvasRef}
+                        width={canvasSize.width}
+                        height={canvasSize.height}
+                      />
+                    </>
+                  )}
                   
                   {!isWebcamActive && !uploadedImage && (
                     <div className="text-center p-6">

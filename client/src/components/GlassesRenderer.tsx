@@ -75,6 +75,7 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
     
     // Create a placeholder glasses model (simple frames)
     const framesGroup = new THREE.Group();
+    framesGroup.visible = false;
     
     // Frame color based on the selected frame
     const frameColor = new THREE.Color(frame.color.toLowerCase() || '#000000');
@@ -158,6 +159,7 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
   useEffect(() => {
     if (!glassesModelRef.current || !sceneRef.current || !rendererRef.current || !cameraRef.current) return;
     
+    glassesModelRef.current.visible = isFaceDetected;
     if (isFaceDetected) {
       // Map normalized coordinates to 3D space
       const posX = (glassesPosition.x - 0.5) * 4;
@@ -179,7 +181,7 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
       );
       
       // Apply scale based on face width and user adjustments
-      const baseScale = glassesScale * 2; // Adjust this multiplier as needed
+      const baseScale = glassesScale.x * 2;
       const finalScale = baseScale * adjustments.scale;
       glassesModelRef.current.scale.set(finalScale, finalScale, finalScale);
     }

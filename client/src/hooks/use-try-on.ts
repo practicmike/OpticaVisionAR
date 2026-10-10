@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
@@ -8,7 +8,6 @@ import { useTryOnStore } from '@/store/tryOnStore';
 import {
   initFaceMesh,
   initCamera,
-  drawFaceMesh,
   extractFacialMeasurements,
   getGlassesPosition
 } from '@/utils/faceDetection';
@@ -19,11 +18,11 @@ export const useTryOn = () => {
   
   // Refs
   const webcamRef = useRef<HTMLVideoElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const renderCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const cameraRef = useRef<Camera | null>(null);
   const faceMeshRef = useRef<FaceMesh | null>(null);
+  const faceMeshPromiseRef = useRef<Promise<FaceMesh> | null>(null);
   
   // Local state
   const [method, setMethod] = useState<'webcam' | 'upload' | null>(null);
@@ -57,14 +56,6 @@ export const useTryOn = () => {
 
   // Handle FaceMesh results
   const onFaceMeshResults = useCallback((results: Results) => {
-    if (!canvasRef.current) return;
-    
-    // Set canvas dimensions to match video or image
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    
-    if (!ctx) return;
-    
     // Handle face detection results
     if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
       const landmarks = results.multiFaceLandmarks[0];
@@ -89,83 +80,57 @@ export const useTryOn = () => {
         setGlassesRotation(glassesPlacement.rotation);
         setGlassesScale({ x: glassesPlacement.scale, y: glassesPlacement.scale, z: glassesPlacement.scale });
       }
-      
-      // Draw the face mesh for debugging/visualization
-      drawFaceMesh(results, canvas);
     } else {
       // No face detected
       setFaceDetected(false);
-      
-      // Clear canvas 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
   }, [setFaceDetected, setFaceMeshPoints, setFacialMeasurements, setGlassesPosition, setGlassesRotation, setGlassesScale]);
 
-  // Initialize FaceMesh when the component mounts
-  useEffect(() => {
-    const setupFaceMesh = async () => {
-      if (!faceMeshRef.current) {
-        const faceMeshInstance = await initFaceMesh(onFaceMeshResults);
-        faceMeshRef.current = faceMeshInstance;
-      }
-    };
-    
-    setupFaceMesh();
-    
-    // Cleanup
-    return () => {
-      if (faceMeshRef.current) {
-        faceMeshRef.current.close();
-      }
-    };
+  const ensureFaceMesh = useCallback(async () => {
+    if (faceMeshRef.current) return faceMeshRef.current;
+
+    if (!faceMeshPromiseRef.current) {
+      faceMeshPromiseRef.current = initFaceMesh(onFaceMeshResults);
+    }
+
+    const faceMesh = await faceMeshPromiseRef.current;
+    faceMeshRef.current = faceMesh;
+    return faceMesh;
   }, [onFaceMeshResults]);
 
   // Start webcam with FaceMesh
   const startWebcam = useCallback(async () => {
     setMethod('webcam');
     setUploadedImage(null);
+    setFaceDetected(false);
     
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'user' }
-      });
-      
-      if (webcamRef.current) {
-        webcamRef.current.srcObject = stream;
-        
-        // Update canvas size based on video dimensions
-        const updateDimensions = () => {
-          if (webcamRef.current) {
-            const { videoWidth, videoHeight } = webcamRef.current;
-            
-            if (videoWidth && videoHeight) {
-              setCanvasSize({ width: videoWidth, height: videoHeight });
-              
-              if (canvasRef.current) {
-                canvasRef.current.width = videoWidth;
-                canvasRef.current.height = videoHeight;
-              }
-              
-              if (renderCanvasRef.current) {
-                renderCanvasRef.current.width = videoWidth;
-                renderCanvasRef.current.height = videoHeight;
-              }
-            }
-          }
-        };
-        
-        webcamRef.current.onloadedmetadata = updateDimensions;
-        setIsWebcamActive(true);
-        
-        // Initialize camera controller for FaceMesh
-        if (faceMeshRef.current && !cameraRef.current) {
-          const cameraInstance = initCamera(webcamRef.current, faceMeshRef.current);
-          cameraRef.current = cameraInstance;
-          await cameraInstance.start();
+      const video = webcamRef.current;
+      if (!video) throw new Error('The camera preview is not ready.');
+
+      // Wait for FaceMesh before starting the camera. Starting too early used
+      // to leave the video running without ever starting face tracking.
+      const faceMesh = await ensureFaceMesh();
+      const camera = initCamera(video, faceMesh);
+      cameraRef.current = camera;
+      setIsWebcamActive(true);
+      await camera.start();
+
+      const updateDimensions = () => {
+        if (video.videoWidth && video.videoHeight) {
+          setCanvasSize({ width: video.videoWidth, height: video.videoHeight });
         }
-      }
+      };
+      video.addEventListener('loadedmetadata', updateDimensions, { once: true });
+      updateDimensions();
     } catch (error) {
       console.error('Error accessing webcam:', error);
+      cameraRef.current?.stop();
+      cameraRef.current = null;
+      if (webcamRef.current?.srcObject) {
+        (webcamRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
+        webcamRef.current.srcObject = null;
+      }
       toast({
         title: t('virtualTryOnPage.noCamera.title'),
         description: t('virtualTryOnPage.noCamera.message'),
@@ -173,7 +138,7 @@ export const useTryOn = () => {
       });
       setIsWebcamActive(false);
     }
-  }, [t, toast]);
+  }, [ensureFaceMesh, setFaceDetected, t, toast]);
 
   // Stop webcam
   const stopWebcam = useCallback(() => {
@@ -188,10 +153,10 @@ export const useTryOn = () => {
       
       tracks.forEach(track => track.stop());
       webcamRef.current.srcObject = null;
-      setIsWebcamActive(false);
     }
     
     // Clear face detection state
+    setIsWebcamActive(false);
     setFaceDetected(false);
   }, [setFaceDetected]);
 
@@ -201,22 +166,36 @@ export const useTryOn = () => {
     if (!file) return;
     
     // Stop webcam if active
-    if (isWebcamActive) {
-      stopWebcam();
-    }
+    stopWebcam();
     
     const reader = new FileReader();
     reader.onload = (e) => {
-      setUploadedImage(e.target?.result as string);
+      const imageSource = e.target?.result;
+      if (typeof imageSource !== 'string') return;
+
+      setFaceDetected(false);
+      setUploadedImage(imageSource);
       setMethod('upload');
-      
-      // Process the uploaded image with FaceMesh
-      // Note: In a real implementation, you would need to process the static image
-      // with FaceMesh. This is more complex and may require custom implementation
-      // or using a separate library for static image processing.
+
+      const image = new Image();
+      image.onload = async () => {
+        setCanvasSize({ width: image.naturalWidth, height: image.naturalHeight });
+        try {
+          const faceMesh = await ensureFaceMesh();
+          await faceMesh.send({ image });
+        } catch (error) {
+          console.error('Error detecting a face in the uploaded photo:', error);
+          toast({
+            title: t('virtualTryOnPage.noCamera.title'),
+            description: t('virtualTryOnPage.noCamera.message'),
+            variant: 'destructive',
+          });
+        }
+      };
+      image.src = imageSource;
     };
     reader.readAsDataURL(file);
-  }, [isWebcamActive, stopWebcam]);
+  }, [ensureFaceMesh, setFaceDetected, stopWebcam, t, toast]);
 
   // Trigger file input click
   const triggerFileUpload = useCallback(() => {
@@ -262,23 +241,21 @@ export const useTryOn = () => {
 
   // Clean up on component unmount
   const cleanup = useCallback(() => {
-    if (isWebcamActive) {
-      stopWebcam();
-    }
+    stopWebcam();
     
     if (faceMeshRef.current) {
       faceMeshRef.current.close();
       faceMeshRef.current = null;
     }
+    faceMeshPromiseRef.current = null;
     
     setUploadedImage(null);
     setSelectedFrameId(null);
     setFaceDetected(false);
-  }, [isWebcamActive, stopWebcam, setFaceDetected]);
+  }, [stopWebcam, setFaceDetected]);
 
   return {
     webcamRef,
-    canvasRef,
     fileInputRef,
     renderCanvasRef,
     method,
