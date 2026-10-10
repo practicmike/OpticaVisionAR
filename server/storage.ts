@@ -3,7 +3,7 @@ import {
   Service, InsertService, 
   AppointmentSlot, InsertAppointmentSlot, 
   Appointment, InsertAppointment, 
-  Frame, InsertFrame, 
+  CatalogFrame,
   BlogPost, InsertBlogPost, 
   Testimonial, InsertTestimonial, 
   Subscription, InsertSubscription, 
@@ -32,8 +32,8 @@ export interface IStorage {
   createAppointment(appointment: InsertAppointment): Promise<Appointment>;
 
   // Frames
-  getFrames(filters?: { style?: string; material?: string; color?: string }): Promise<Frame[]>;
-  getFrame(id: number): Promise<Frame | undefined>;
+  getFrames(filters?: { style?: string; material?: string; color?: string }): Promise<CatalogFrame[]>;
+  getFrame(id: number): Promise<CatalogFrame | undefined>;
 
   // Blog posts
   getBlogPosts(published?: boolean): Promise<BlogPost[]>;
@@ -56,7 +56,7 @@ export class MemStorage implements IStorage {
   private services: Map<number, Service>;
   private appointmentSlots: Map<number, AppointmentSlot>;
   private appointments: Map<number, Appointment>;
-  private frames: Map<number, Frame>;
+  private frames: Map<number, CatalogFrame>;
   private blogPosts: Map<number, BlogPost>;
   private testimonials: Map<number, Testimonial>;
   private subscriptions: Map<number, Subscription>;
@@ -178,7 +178,7 @@ export class MemStorage implements IStorage {
   }
 
   // Frames
-  async getFrames(filters?: { style?: string; material?: string; color?: string }): Promise<Frame[]> {
+  async getFrames(filters?: { style?: string; material?: string; color?: string }): Promise<CatalogFrame[]> {
     let frames = Array.from(this.frames.values());
     
     if (filters) {
@@ -196,7 +196,7 @@ export class MemStorage implements IStorage {
     return frames;
   }
 
-  async getFrame(id: number): Promise<Frame | undefined> {
+  async getFrame(id: number): Promise<CatalogFrame | undefined> {
     return this.frames.get(id);
   }
 
@@ -345,7 +345,7 @@ export class MemStorage implements IStorage {
     this.generateAppointmentSlots();
     
     // Frames
-    const frames: Frame[] = [
+    const frames: CatalogFrame[] = [
       {
         id: this.currentIds.frame++,
         nameEn: "Urban Model",
@@ -476,6 +476,43 @@ export class MemStorage implements IStorage {
         color: "Transparent",
         imageUrl: "/frames/cat-eye-crystal.svg",
         price: 229900,
+        isAvailable: true,
+      },
+      {
+        id: this.currentIds.frame++,
+        nameEn: "Frame 00741558210359",
+        nameEs: "Armazón 00741558210359",
+        style: "Rectangle",
+        material: "Titanium",
+        color: "Black",
+        imageUrl: "/frames/black-titanium-front.jpg",
+        modelUrl: "/frames/models/0_00741558210359.glb",
+        price: 239900,
+        isAvailable: true,
+      },
+      {
+        id: this.currentIds.frame++,
+        nameEn: "Sun Glasses 3D",
+        nameEs: "Armazón Solar 3D",
+        style: "Sunglasses",
+        material: "Acetate",
+        color: "Black",
+        imageUrl: "/frames/photo-1473496169904-658ba7c44d8a.jpg",
+        modelUrl: "/frames/models/1_sun_glasses.glb",
+        price: 229900,
+        isAvailable: true,
+      },
+      {
+        id: this.currentIds.frame++,
+        nameEn: "Bicolor Glasses 3D",
+        nameEs: "Armazón Bicolor 3D",
+        style: "Rectangle",
+        material: "Acetate",
+        color: "Black",
+        imageUrl: "/frames/photo-1574258495973-f010dfbb5371.jpg",
+        modelUrl: "/frames/models/2_glasses.glb",
+        modelRotationY: -Math.PI / 2,
+        price: 249900,
         isAvailable: true,
       },
     ];

@@ -169,11 +169,18 @@ const VirtualTryOn = () => {
                         }`}
                         onClick={() => selectFrame(frame.id)}
                       >
-                        <img 
-                          src={frame.imageUrl} 
-                          alt={t('common.currentLanguage') === 'es' ? frame.nameEs : frame.nameEn} 
-                          className="w-full h-32 object-cover" 
-                        />
+                        <div className="relative">
+                          <img
+                            src={frame.imageUrl}
+                            alt={t('common.currentLanguage') === 'es' ? frame.nameEs : frame.nameEn}
+                            className="w-full h-32 object-cover"
+                          />
+                          {frame.modelUrl && (
+                            <span className="absolute right-2 top-2 rounded bg-black/75 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-white shadow">
+                              GLB 3D
+                            </span>
+                          )}
+                        </div>
                         <CardContent className="p-2 bg-white">
                           <span className="text-sm font-medium">
                             {t('common.currentLanguage') === 'es' ? frame.nameEs : frame.nameEn}

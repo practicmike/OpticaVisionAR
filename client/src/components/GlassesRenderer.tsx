@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { Frame } from '@shared/schema';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { CatalogFrame } from '@shared/schema';
 import { useTryOnStore } from '@/store/tryOnStore';
 
 interface GlassesRendererProps {
-  frame: Frame;
+  frame: CatalogFrame;
   canvasRef: React.RefObject<HTMLCanvasElement>;
   width: number;
   height: number;
@@ -99,15 +100,17 @@ const createLensContour = (
   return contour;
 };
 
-const disposeFrameGroup = (group: THREE.Group) => {
+const disposeFrameGroup = (group: THREE.Object3D) => {
   group.traverse((object: any) => {
     if (!(object instanceof THREE.Mesh)) return;
     object.geometry.dispose();
-    if (Array.isArray(object.material)) {
-      object.material.forEach((material: any) => material.dispose());
-    } else {
-      object.material.dispose();
-    }
+    const materials = Array.isArray(object.material) ? object.material : [object.material];
+    materials.forEach((material: any) => {
+      Object.values(material).forEach((value: any) => {
+        if (value instanceof THREE.Texture) value.dispose();
+      });
+      material.dispose();
+    });
   });
 };
 
@@ -116,6 +119,7 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
   const cameraRef = useRef<THREE.OrthographicCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const glassesModelRef = useRef<THREE.Group | null>(null);
+  const modelLoadSequenceRef = useRef(0);
   
   // Get state from Zustand store
   const {
@@ -160,6 +164,7 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
     
     // Clean up on unmount
     return () => {
+      modelLoadSequenceRef.current += 1;
       renderer.dispose();
       if (glassesModelRef.current) {
         scene.remove(glassesModelRef.current);
@@ -185,17 +190,61 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
   
   // Build a distinct lightweight 3D frame shape for each catalog style.
   useEffect(() => {
-    if (!sceneRef.current) return;
+    const scene = sceneRef.current;
+    if (!scene) return;
+    const loadSequence = ++modelLoadSequenceRef.current;
     
     // Remove existing model if present
     if (glassesModelRef.current) {
-      sceneRef.current.remove(glassesModelRef.current);
+      scene.remove(glassesModelRef.current);
       disposeFrameGroup(glassesModelRef.current);
       glassesModelRef.current = null;
     }
     
     const framesGroup = new THREE.Group();
     framesGroup.visible = false;
+
+    if (frame.modelUrl) {
+      scene.add(framesGroup);
+      glassesModelRef.current = framesGroup;
+
+      new GLTFLoader().load(
+        frame.modelUrl,
+        ({ scene: model }) => {
+          if (
+            loadSequence !== modelLoadSequenceRef.current
+            || glassesModelRef.current !== framesGroup
+          ) {
+            disposeFrameGroup(model);
+            return;
+          }
+
+          model.rotation.y = frame.modelRotationY ?? 0;
+          model.updateMatrixWorld(true);
+          const bounds = new THREE.Box3().setFromObject(model);
+          const size = bounds.getSize(new THREE.Vector3());
+          if (!Number.isFinite(size.x) || size.x < 0.0001) {
+            console.error(`El modelo GLB del armazón ${frame.id} no tiene un ancho válido.`);
+            disposeFrameGroup(model);
+            return;
+          }
+
+          const center = bounds.getCenter(new THREE.Vector3());
+          const normalizationScale = 1.85 / size.x;
+          model.scale.setScalar(normalizationScale);
+          model.position.copy(center).multiplyScalar(-normalizationScale);
+          model.updateMatrixWorld(true);
+          framesGroup.add(model);
+          framesGroup.visible = useTryOnStore.getState().isFaceDetected;
+        },
+        undefined,
+        (error) => {
+          console.error(`No se pudo cargar el modelo GLB del armazón ${frame.id}:`, error);
+        },
+      );
+      return;
+    }
+
     const shapeStyle = frame.style.toLowerCase() === 'sunglasses'
       ? 'rectangle'
       : frame.style.toLowerCase();
@@ -282,7 +331,7 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
     });
     
     // Add the glasses model to the scene
-    sceneRef.current.add(framesGroup);
+    scene.add(framesGroup);
     glassesModelRef.current = framesGroup;
   }, [frame]);
   

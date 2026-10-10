@@ -163,6 +163,10 @@ export type Appointment = typeof appointments.$inferSelect;
 export type InsertAppointment = z.infer<typeof insertAppointmentSchema>;
 
 export type Frame = typeof frames.$inferSelect;
+export type CatalogFrame = Frame & {
+  modelUrl?: string;
+  modelRotationY?: number;
+};
 export type InsertFrame = z.infer<typeof insertFrameSchema>;
 
 export type BlogPost = typeof blogPosts.$inferSelect;
