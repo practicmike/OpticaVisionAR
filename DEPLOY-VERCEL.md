@@ -22,15 +22,15 @@ existe en la siguiente y todo se pierde en cada despliegue.
    `vercel.json` ya fija el build; no cambies *Framework Preset* (queda en "Other").
 2. **Base de datos:** en el proyecto → *Storage → Create → Neon (Postgres)* →
    conectar a Production y Preview. Esto crea `DATABASE_URL` automáticamente.
-3. **Crear tablas y cargar catálogo** desde tu máquina (o Replit):
-   ```bash
-   vercel env pull .env.local            # o copia DATABASE_URL a mano
-   export $(grep DATABASE_URL .env.local | xargs)
-   npm run db:push                       # crea/actualiza tablas
-   npm run db:seed                       # sucursales, servicios, armazones, blog, testimonios
-   ```
-   El seed es re-ejecutable: no duplica datos.
-4. **Redeploy** (o push a la rama). Listo.
+3. **Redeploy** (o push a la rama). Listo.
+
+**No hay que ejecutar migraciones a mano.** Cada build en Vercel corre
+`script/seed.ts`, que crea tablas/columnas faltantes y carga el catálogo
+**solo en tablas vacías** (no duplica ni sobrescribe lo que edites después en
+la base). Si la base no responde, el deploy falla a propósito con
+`NeonDbError` en el log de build, en vez de publicar una API sin tablas.
+
+Manual (opcional): `DATABASE_URL=... npm run db:setup`.
 
 Los horarios de citas de los próximos 14 días se generan solos al consultarse
 (hora de `America/Mexico_City`); no hace falta cron.
@@ -50,5 +50,7 @@ almacenamiento en memoria; con `DATABASE_URL` usa Postgres.
 ## Cambios de esquema
 
 `frames` ganó `model_url` y `model_rotation_y` (antes solo existían en memoria) y
-`appointment_slots` un índice único `(location_id, date, start_time)`. Tras
-cualquier cambio en `shared/schema.ts`: `npm run db:push`.
+`appointment_slots` un índice único `(location_id, date, start_time)`.
+Al cambiar `shared/schema.ts`, agrega la sentencia equivalente
+(`CREATE TABLE IF NOT EXISTS` / `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`) en
+`server/db-setup.ts`; el siguiente deploy la aplica.
