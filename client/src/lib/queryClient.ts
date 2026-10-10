@@ -23,13 +23,29 @@ export async function apiRequest(
   return res;
 }
 
+// queryKey convention: [url, params?]. Params become the query string so
+// filters (frames, appointment slots, published posts) actually reach the API.
+function buildUrl(queryKey: readonly unknown[]): string {
+  const [path, params] = queryKey;
+  const url = String(path);
+  if (!params || typeof params !== "object") return url;
+
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(params as Record<string, unknown>)) {
+    if (value === undefined || value === null || value === "") continue;
+    search.set(key, String(value));
+  }
+  const qs = search.toString();
+  return qs ? `${url}?${qs}` : url;
+}
+
 type UnauthorizedBehavior = "returnNull" | "throw";
 export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
+    const res = await fetch(buildUrl(queryKey), {
       credentials: "include",
     });
 

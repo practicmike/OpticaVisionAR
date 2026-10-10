@@ -1,6 +1,6 @@
 import type { Express, Request, Response } from "express";
-import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { isSlotInPast } from "./seed-data";
 import { 
   insertAppointmentSchema, 
   insertTestimonialSchema, 
@@ -9,7 +9,13 @@ import {
 } from "@shared/schema";
 import { ZodError } from "zod";
 
-export async function registerRoutes(app: Express): Promise<Server> {
+const parseId = (value: string) => {
+  const id = Number.parseInt(value, 10);
+  return Number.isSafeInteger(id) && id > 0 ? id : undefined;
+};
+
+/** Registers the JSON API. Shared by the local server and the Vercel function. */
+export function registerApiRoutes(app: Express): void {
   // API routes with prefix /api
   app.get('/api/locations', async (_req: Request, res: Response) => {
     try {
@@ -22,7 +28,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/locations/:id', async (req: Request, res: Response) => {
     try {
-      const location = await storage.getLocation(parseInt(req.params.id));
+      const location = await storage.getLocation(parseId(req.params.id) ?? 0);
       if (!location) {
         return res.status(404).json({ message: 'Location not found' });
       }
@@ -43,7 +49,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/services/:id', async (req: Request, res: Response) => {
     try {
-      const service = await storage.getService(parseInt(req.params.id));
+      const service = await storage.getService(parseId(req.params.id) ?? 0);
       if (!service) {
         return res.status(404).json({ message: 'Service not found' });
       }
@@ -59,7 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const date = req.query.date as string | undefined;
       
       const slots = await storage.getAppointmentSlots(locationId, date);
-      res.json(slots);
+      res.json(slots.filter((slot) => !isSlotInPast(slot)));
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch appointment slots' });
     }
@@ -69,14 +75,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const appointmentData = insertAppointmentSchema.parse(req.body);
       
-      // Check if the slot exists and is available
+      // Check if the slot exists, is available and belongs to the chosen location
       const slot = await storage.getAppointmentSlot(appointmentData.slotId);
       if (!slot) {
         return res.status(404).json({ message: 'Appointment slot not found' });
       }
       
-      if (!slot.isAvailable) {
-        return res.status(400).json({ message: 'This appointment slot is no longer available' });
+      if (!slot.isAvailable || isSlotInPast(slot)) {
+        return res.status(409).json({ message: 'This appointment slot is no longer available' });
+      }
+
+      if (slot.locationId !== appointmentData.locationId) {
+        return res.status(400).json({ message: 'The slot does not belong to the selected location' });
       }
       
       // Check if the location exists
@@ -91,8 +101,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: 'Service not found' });
       }
       
-      // Create the appointment
-      const appointment = await storage.createAppointment(appointmentData);
+      // Date/time always come from the slot, never from the client payload.
+      const appointment = await storage.createAppointment({
+        ...appointmentData,
+        date: slot.date,
+        time: slot.startTime,
+      });
+      if (!appointment) {
+        return res.status(409).json({ message: 'This appointment slot is no longer available' });
+      }
       res.status(201).json(appointment);
     } catch (error) {
       if (error instanceof ZodError) {
@@ -119,7 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/frames/:id', async (req: Request, res: Response) => {
     try {
-      const frame = await storage.getFrame(parseInt(req.params.id));
+      const frame = await storage.getFrame(parseId(req.params.id) ?? 0);
       if (!frame) {
         return res.status(404).json({ message: 'Frame not found' });
       }
@@ -131,11 +148,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/blog-posts', async (req: Request, res: Response) => {
     try {
-      const published = req.query.published === 'true' ? true : 
-                        req.query.published === 'false' ? false : 
-                        undefined;
-      
-      const posts = await storage.getBlogPosts(published);
+      // Public API: drafts are never exposed, whatever the query string says.
+      const posts = await storage.getBlogPosts(true);
       res.json(posts);
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch blog posts' });
@@ -144,8 +158,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/blog-posts/:id', async (req: Request, res: Response) => {
     try {
-      const post = await storage.getBlogPost(parseInt(req.params.id));
-      if (!post) {
+      const post = await storage.getBlogPost(parseId(req.params.id) ?? 0);
+      if (!post || !post.isPublished) {
         return res.status(404).json({ message: 'Blog post not found' });
       }
       res.json(post);
@@ -156,11 +170,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/testimonials', async (req: Request, res: Response) => {
     try {
-      const approved = req.query.approved === 'true' ? true : 
-                       req.query.approved === 'false' ? false : 
-                       undefined;
-      
-      const testimonials = await storage.getTestimonials(approved);
+      // Public API: only moderated testimonials.
+      const testimonials = await storage.getTestimonials(true);
       res.json(testimonials);
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch testimonials' });
@@ -206,6 +217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  const httpServer = createServer(app);
-  return httpServer;
+  app.use('/api', (_req: Request, res: Response) => {
+    res.status(404).json({ message: 'Not found' });
+  });
 }

@@ -9,6 +9,15 @@ import {
   Subscription, InsertSubscription, 
   ContactMessage, InsertContactMessage 
 } from "@shared/schema";
+import {
+  locationsSeed,
+  servicesSeed,
+  framesSeed,
+  blogPostsSeed,
+  testimonialsSeed,
+  generateSlots,
+} from "./seed-data";
+import { DbStorage } from "./db-storage";
 
 // Storage interface for the application
 export interface IStorage {
@@ -29,7 +38,11 @@ export interface IStorage {
   // Appointments
   getAppointments(): Promise<Appointment[]>;
   getAppointment(id: number): Promise<Appointment | undefined>;
-  createAppointment(appointment: InsertAppointment): Promise<Appointment>;
+  /**
+   * Books the slot and stores the appointment atomically.
+   * Returns null when the slot was taken in the meantime.
+   */
+  createAppointment(appointment: InsertAppointment): Promise<Appointment | null>;
 
   // Frames
   getFrames(filters?: { style?: string; material?: string; color?: string }): Promise<CatalogFrame[]>;
@@ -142,7 +155,7 @@ export class MemStorage implements IStorage {
 
   async createAppointmentSlot(slot: InsertAppointmentSlot): Promise<AppointmentSlot> {
     const id = this.currentIds.appointmentSlot++;
-    const newSlot: AppointmentSlot = { ...slot, id };
+    const newSlot: AppointmentSlot = { ...slot, isAvailable: slot.isAvailable ?? true, id };
     this.appointmentSlots.set(id, newSlot);
     return newSlot;
   }
@@ -165,10 +178,20 @@ export class MemStorage implements IStorage {
     return this.appointments.get(id);
   }
 
-  async createAppointment(appointment: InsertAppointment): Promise<Appointment> {
+  async createAppointment(appointment: InsertAppointment): Promise<Appointment | null> {
+    const slot = this.appointmentSlots.get(appointment.slotId);
+    if (!slot || !slot.isAvailable) return null;
+
     const id = this.currentIds.appointment++;
     const createdAt = new Date();
-    const newAppointment: Appointment = { ...appointment, id, createdAt };
+    const newAppointment: Appointment = {
+      ...appointment,
+      comments: appointment.comments ?? null,
+      wantsReminders: appointment.wantsReminders ?? false,
+      isFirstVisit: appointment.isFirstVisit ?? true,
+      id,
+      createdAt,
+    };
     this.appointments.set(id, newAppointment);
     
     // Mark the appointment slot as unavailable
@@ -228,7 +251,12 @@ export class MemStorage implements IStorage {
 
   async createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial> {
     const id = this.currentIds.testimonial++;
-    const newTestimonial: Testimonial = { ...testimonial, id };
+    const newTestimonial: Testimonial = {
+      ...testimonial,
+      imageUrl: testimonial.imageUrl ?? null,
+      id,
+      isApproved: false,
+    };
     this.testimonials.set(id, newTestimonial);
     return newTestimonial;
   }
@@ -254,7 +282,13 @@ export class MemStorage implements IStorage {
   async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
     const id = this.currentIds.contactMessage++;
     const createdAt = new Date();
-    const newMessage: ContactMessage = { ...message, id, createdAt };
+    const newMessage: ContactMessage = {
+      ...message,
+      locationId: message.locationId ?? null,
+      wantsNewsletter: message.wantsNewsletter ?? false,
+      id,
+      createdAt,
+    };
     this.contactMessages.set(id, newMessage);
     
     // If the user wants to subscribe to the newsletter, create a subscription
@@ -265,392 +299,36 @@ export class MemStorage implements IStorage {
     return newMessage;
   }
 
-  // Sample data initialization
+  // Sample data initialization (same catalog the Postgres seed script uses)
   private initSampleData() {
-    // Locations
-    const locations: Location[] = [
-      {
-        id: this.currentIds.location++,
-        name: "Irapuato Centro",
-        address: "Av. Revolución 123, Centro",
-        city: "Irapuato",
-        phone: "(462) 123-4567",
-        email: "irapuato@opticascardani.com",
-        openingHours: "Lun - Vie: 9:00 - 19:00, Sáb: 9:00 - 14:00",
-      },
-      {
-        id: this.currentIds.location++,
-        name: "Abasolo",
-        address: "Calle Hidalgo 456, Centro",
-        city: "Abasolo",
-        phone: "(429) 987-6543",
-        email: "abasolo@opticascardani.com",
-        openingHours: "Lun - Vie: 9:00 - 18:00, Sáb: 9:00 - 14:00",
-      },
-    ];
-    
-    locations.forEach(location => this.locations.set(location.id, location));
+    const withId = <T,>(items: T[], key: keyof MemStorage["currentIds"]) =>
+      items.map((item) => ({ ...item, id: this.currentIds[key]++ }));
 
-    // Services
-    const services: Service[] = [
-      {
-        id: this.currentIds.service++,
-        nameEn: "Comprehensive Eye Exam",
-        nameEs: "Examen Visual Completo",
-        descriptionEn: "Complete evaluation of your visual health with latest generation equipment.",
-        descriptionEs: "Evaluación completa de su salud visual con equipos de última generación.",
-        icon: "eye",
-        price: 45000,
-        durationMinutes: 45,
-        isActive: true,
-      },
-      {
-        id: this.currentIds.service++,
-        nameEn: "Frame Adjustment",
-        nameEs: "Ajuste de Armazones",
-        descriptionEn: "Adjustment service for your glasses for optimal comfort.",
-        descriptionEs: "Servicio de ajuste para sus lentes para una comodidad óptima.",
-        icon: "glasses",
-        price: 0,
-        durationMinutes: 15,
-        isActive: true,
-      },
-      {
-        id: this.currentIds.service++,
-        nameEn: "Contact Lens Fitting",
-        nameEs: "Adaptación de Lentes de Contacto",
-        descriptionEn: "Professional fitting of contact lenses with follow-up care.",
-        descriptionEs: "Adaptación profesional de lentes de contacto con seguimiento.",
-        icon: "eye",
-        price: 35000,
-        durationMinutes: 30,
-        isActive: true,
-      },
-      {
-        id: this.currentIds.service++,
-        nameEn: "Eye Pressure Test",
-        nameEs: "Prueba de Presión Ocular",
-        descriptionEn: "Test to measure intraocular pressure to detect glaucoma.",
-        descriptionEs: "Prueba para medir la presión intraocular para detectar glaucoma.",
-        icon: "user-md",
-        price: 25000,
-        durationMinutes: 20,
-        isActive: true,
-      },
-    ];
-    
-    services.forEach(service => this.services.set(service.id, service));
-
-    // Generate appointment slots for the next 14 days
-    this.generateAppointmentSlots();
-    
-    // Frames
-    const frames: CatalogFrame[] = [
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Urban Model",
-        nameEs: "Modelo Urbano",
-        style: "Rectangle",
-        material: "Acetate",
-        color: "Black",
-        imageUrl: "/frames/photo-1574258495973-f010dfbb5371.jpg",
-        price: 189900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Carey Model",
-        nameEs: "Modelo Carey",
-        style: "Oval",
-        material: "Acetate",
-        color: "Brown",
-        imageUrl: "/frames/photo-1591076482161-42ce6da69f67.jpg",
-        price: 199900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Sun Model",
-        nameEs: "Modelo Solar",
-        style: "Round",
-        material: "Acetate",
-        color: "Brown",
-        imageUrl: "/frames/photo-1577803645773-f96470509666.jpg",
-        price: 169900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Vintage Model",
-        nameEs: "Modelo Vintage",
-        style: "Round",
-        material: "Metal",
-        color: "Black",
-        imageUrl: "/frames/round-classic.jpg",
-        price: 219900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Titanium Model",
-        nameEs: "Modelo Titanio",
-        style: "Rectangle",
-        material: "Titanium",
-        color: "Black",
-        imageUrl: "/frames/black-titanium-front.jpg",
-        price: 179900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Feline Model",
-        nameEs: "Modelo Felino",
-        style: "Cat-eye",
-        material: "Acetate",
-        color: "Black",
-        imageUrl: "/frames/derek-cardigan-black.jpg",
-        price: 229900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Titanium Angle",
-        nameEs: "Titanio Angular",
-        style: "Rectangle",
-        material: "Titanium",
-        color: "Black",
-        imageUrl: "/frames/black-titanium-angle.jpg",
-        price: 239900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Pilot Classic",
-        nameEs: "Piloto Clásico",
-        style: "Aviator",
-        material: "Metal",
-        color: "Silver",
-        imageUrl: "/frames/aviator-classic.jpg",
-        price: 219900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Pilot Heritage",
-        nameEs: "Piloto Heritage",
-        style: "Aviator",
-        material: "Metal",
-        color: "Silver",
-        imageUrl: "/frames/aviator-military.jpg",
-        price: 229900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Vintage Gold",
-        nameEs: "Vintage Dorado",
-        style: "Round",
-        material: "Metal",
-        color: "Gold",
-        imageUrl: "/frames/gold-vintage-round.jpg",
-        price: 249900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Beach Sunglasses",
-        nameEs: "Solar Playa",
-        style: "Sunglasses",
-        material: "Acetate",
-        color: "Black",
-        imageUrl: "/frames/photo-1473496169904-658ba7c44d8a.jpg",
-        price: 189900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Aria Crystal",
-        nameEs: "Aria Cristal",
-        style: "Cat-eye",
-        material: "Acetate",
-        color: "Transparent",
-        imageUrl: "/frames/cat-eye-crystal.svg",
-        price: 229900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Frame 00741558210359",
-        nameEs: "Armazón 00741558210359",
-        style: "Rectangle",
-        material: "Titanium",
-        color: "Black",
-        imageUrl: "/frames/black-titanium-front.jpg",
-        modelUrl: "/frames/models/0_00741558210359.glb",
-        price: 239900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Sun Glasses 3D",
-        nameEs: "Armazón Solar 3D",
-        style: "Sunglasses",
-        material: "Acetate",
-        color: "Black",
-        imageUrl: "/frames/photo-1473496169904-658ba7c44d8a.jpg",
-        modelUrl: "/frames/models/1_sun_glasses.glb",
-        price: 229900,
-        isAvailable: true,
-      },
-      {
-        id: this.currentIds.frame++,
-        nameEn: "Bicolor Glasses 3D",
-        nameEs: "Armazón Bicolor 3D",
-        style: "Rectangle",
-        material: "Acetate",
-        color: "Black",
-        imageUrl: "/frames/photo-1574258495973-f010dfbb5371.jpg",
-        modelUrl: "/frames/models/2_glasses.glb",
-        modelRotationY: -Math.PI / 2,
-        price: 249900,
-        isAvailable: true,
-      },
-    ];
-    
-    frames.forEach(frame => this.frames.set(frame.id, frame));
-
-    // Blog posts
-    const currentDate = new Date();
-    const blogPosts: BlogPost[] = [
-      {
-        id: this.currentIds.blogPost++,
-        titleEn: "Warning signs that indicate vision problems",
-        titleEs: "Signos de alerta que indican problemas de visión",
-        contentEn: "Learn to identify early signs that may indicate you need ophthalmological attention and how to act on time.",
-        contentEs: "Aprenda a identificar las señales tempranas que pueden indicar que necesita atención oftalmológica y cómo actuar a tiempo.",
-        imageUrl: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144",
-        categoryEn: "Health",
-        categoryEs: "Salud",
-        publishDate: new Date(currentDate.getTime() - 3 * 24 * 60 * 60 * 1000),
-        isPublished: true,
-      },
-      {
-        id: this.currentIds.blogPost++,
-        titleEn: "Frame trends for this season",
-        titleEs: "Tendencias en armazones para esta temporada",
-        contentEn: "Discover the styles, colors, and designs that are trending this year in the world of optics.",
-        contentEs: "Descubra los estilos, colores y diseños que están marcando tendencia este año en el mundo de la óptica.",
-        imageUrl: "https://images.unsplash.com/photo-1574258495973-f010dfbb5371",
-        categoryEn: "Trends",
-        categoryEs: "Tendencias",
-        publishDate: new Date(currentDate.getTime() - 10 * 24 * 60 * 60 * 1000),
-        isPublished: true,
-      },
-      {
-        id: this.currentIds.blogPost++,
-        titleEn: "How to protect your eyes from blue light",
-        titleEs: "Cómo proteger sus ojos de la luz azul",
-        contentEn: "Practical tips to reduce visual fatigue caused by prolonged use of electronic devices in the digital era.",
-        contentEs: "Tips prácticos para reducir la fatiga visual causada por el uso prolongado de dispositivos electrónicos en la era digital.",
-        imageUrl: "https://images.unsplash.com/photo-1585909695284-32d2985ac9c0",
-        categoryEn: "Tips",
-        categoryEs: "Consejos",
-        publishDate: new Date(currentDate.getTime() - 17 * 24 * 60 * 60 * 1000),
-        isPublished: true,
-      },
-    ];
-    
-    blogPosts.forEach(post => this.blogPosts.set(post.id, post));
-
-    // Testimonials
-    const testimonials: Testimonial[] = [
-      {
-        id: this.currentIds.testimonial++,
-        name: "Laura Méndez",
-        commentEn: "The service was excellent, they attended me very quickly and the doctor was very professional. The frames are of very good quality.",
-        commentEs: "El servicio fue excelente, me atendieron muy rápido y el doctor fue muy profesional. Los armazones son de muy buena calidad.",
-        rating: 5,
-        imageUrl: undefined,
-        isApproved: true,
-      },
-      {
-        id: this.currentIds.testimonial++,
-        name: "Carlos Rodríguez",
-        commentEn: "The virtual try-on helped me choose the perfect frame before going to the store. The process was very easy and fun.",
-        commentEs: "La prueba virtual me ayudó a elegir el armazón perfecto antes de ir a la tienda. El proceso fue muy fácil y divertido.",
-        rating: 4,
-        imageUrl: undefined,
-        isApproved: true,
-      },
-      {
-        id: this.currentIds.testimonial++,
-        name: "Elena Gutiérrez",
-        commentEn: "I've been a customer of Ópticas Cardani for years and I always find what I'm looking for. Their attention and professionalism make me come back.",
-        commentEs: "Llevo años siendo cliente de Ópticas Cardani y siempre encuentro lo que busco. Su atención y profesionalismo me hacen regresar.",
-        rating: 5,
-        imageUrl: undefined,
-        isApproved: true,
-      },
-    ];
-    
-    testimonials.forEach(testimonial => this.testimonials.set(testimonial.id, testimonial));
-  }
-
-  // Helper to generate appointment slots
-  private generateAppointmentSlots() {
-    const locationIds = [1, 2]; // Irapuato and Abasolo
-    const startDate = new Date();
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() + 14); // Generate slots for next 14 days
-    
-    const timeSlots = [
-      { start: "09:00", end: "09:45" },
-      { start: "10:00", end: "10:45" },
-      { start: "11:00", end: "11:45" },
-      { start: "12:00", end: "12:45" },
-      { start: "13:00", end: "13:45" },
-      { start: "16:00", end: "16:45" },
-      { start: "17:00", end: "17:45" },
-    ];
-    
-    // Loop through each location
-    for (const locationId of locationIds) {
-      // Loop through each day
-      for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-        // Skip Sundays
-        if (d.getDay() === 0) continue;
-        
-        // Skip Saturday afternoons
-        const isSaturday = d.getDay() === 6;
-        
-        // Create slots for this day
-        for (const timeSlot of timeSlots) {
-          // Skip afternoon slots on Saturdays
-          if (isSaturday && parseInt(timeSlot.start.split(':')[0]) >= 14) continue;
-          
-          const dateStr = this.formatDate(d);
-          const slot: AppointmentSlot = {
-            id: this.currentIds.appointmentSlot++,
-            locationId,
-            date: dateStr,
-            startTime: timeSlot.start,
-            endTime: timeSlot.end,
-            isAvailable: true,
-          };
-          
-          this.appointmentSlots.set(slot.id, slot);
-        }
-      }
-    }
-  }
-
-  // Helper to format date as YYYY-MM-DD
-  private formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    withId(locationsSeed, "location").forEach((l) => this.locations.set(l.id, l as Location));
+    withId(servicesSeed, "service").forEach((s) =>
+      this.services.set(s.id, { price: null, isActive: true, ...s } as Service),
+    );
+    withId(
+      generateSlots(Array.from(this.locations.keys())),
+      "appointmentSlot",
+    ).forEach((slot) => this.appointmentSlots.set(slot.id, slot as AppointmentSlot));
+    withId(framesSeed, "frame").forEach((f) =>
+      this.frames.set(f.id, { price: null, isAvailable: true, ...f } as CatalogFrame),
+    );
+    withId(blogPostsSeed(), "blogPost").forEach((p) =>
+      this.blogPosts.set(p.id, { isPublished: true, ...p } as BlogPost),
+    );
+    withId(testimonialsSeed, "testimonial").forEach((t) =>
+      this.testimonials.set(t.id, { imageUrl: null, ...t } as Testimonial),
+    );
   }
 }
 
-export const storage = new MemStorage();
+/**
+ * Production (Vercel) uses Postgres; serverless functions don't share memory,
+ * so the in-memory store would lose bookings between requests.
+ * Without DATABASE_URL (local dev) the in-memory store keeps working as before.
+ */
+export const storage: IStorage = process.env.DATABASE_URL
+  ? new DbStorage(process.env.DATABASE_URL)
+  : new MemStorage();

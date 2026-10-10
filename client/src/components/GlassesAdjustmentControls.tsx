@@ -6,9 +6,8 @@ import {
   MoveVertical, 
   ArrowLeft, 
   ArrowRight, 
-  RotateCcw,
   ZoomIn, 
-  Reset 
+  RotateCcw 
 } from 'lucide-react';
 import { useTryOnStore } from '@/store/tryOnStore';
 
@@ -26,7 +25,7 @@ const GlassesAdjustmentControls = () => {
           onClick={resetAdjustments} 
           className="flex items-center gap-1"
         >
-          <Reset className="h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
           <span>{t('virtualTryOnPage.adjustments.reset')}</span>
         </Button>
       </div>
