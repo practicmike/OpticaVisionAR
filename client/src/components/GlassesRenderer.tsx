@@ -10,6 +10,107 @@ interface GlassesRendererProps {
   height: number;
 }
 
+const frameColorHex: Record<string, string> = {
+  black: '#161719',
+  brown: '#68452f',
+  tortoise: '#67452b',
+  blue: '#527b9d',
+  red: '#a64855',
+  gold: '#c69b55',
+  silver: '#aeb6c0',
+  transparent: '#c8b8a8',
+};
+
+const getFrameColor = (color: string) =>
+  frameColorHex[color.toLowerCase()] ?? '#252525';
+
+const createLensContour = (
+  style: string,
+  radiusX: number,
+  radiusY: number,
+  mirror = false,
+) => {
+  const contour = new THREE.Shape();
+  const x = (value: number) => (mirror ? -value : value);
+
+  if (style === 'round' || style === 'oval') {
+    contour.absellipse(
+      0,
+      0,
+      radiusX,
+      radiusY,
+      0,
+      Math.PI * 2,
+      false,
+      0,
+    );
+    contour.closePath();
+    return contour;
+  }
+
+  if (style === 'cat-eye') {
+    contour.moveTo(x(-radiusX), -radiusY * 0.62);
+    contour.quadraticCurveTo(x(-radiusX * 0.98), radiusY * 0.48, x(-radiusX * 0.72), radiusY * 0.68);
+    contour.quadraticCurveTo(x(-radiusX * 0.18), radiusY * 0.9, x(radiusX * 0.35), radiusY * 0.67);
+    contour.quadraticCurveTo(x(radiusX * 0.78), radiusY * 0.47, x(radiusX), radiusY * 0.94);
+    contour.quadraticCurveTo(x(radiusX * 0.99), radiusY * 0.38, x(radiusX * 0.91), -radiusY * 0.54);
+    contour.quadraticCurveTo(x(0), -radiusY * 1.04, x(-radiusX * 0.72), -radiusY * 0.86);
+    contour.quadraticCurveTo(x(-radiusX * 0.96), -radiusY * 0.81, x(-radiusX), -radiusY * 0.62);
+    contour.closePath();
+    return contour;
+  }
+
+  if (style === 'aviator') {
+    contour.moveTo(x(-radiusX * 0.9), radiusY * 0.74);
+    contour.quadraticCurveTo(x(-radiusX), radiusY * 0.64, x(-radiusX), radiusY * 0.14);
+    contour.bezierCurveTo(
+      x(-radiusX),
+      -radiusY * 0.58,
+      x(-radiusX * 0.48),
+      -radiusY,
+      x(0),
+      -radiusY,
+    );
+    contour.bezierCurveTo(
+      x(radiusX * 0.48),
+      -radiusY,
+      x(radiusX),
+      -radiusY * 0.58,
+      x(radiusX),
+      radiusY * 0.14,
+    );
+    contour.quadraticCurveTo(x(radiusX), radiusY * 0.64, x(radiusX * 0.9), radiusY * 0.74);
+    contour.quadraticCurveTo(x(0), -radiusY * 1.16, x(-radiusX * 0.9), radiusY * 0.74);
+    contour.closePath();
+    return contour;
+  }
+
+  const corner = Math.min(radiusX * 0.24, radiusY * 0.28);
+  contour.moveTo(x(-radiusX + corner), -radiusY);
+  contour.lineTo(x(radiusX - corner), -radiusY);
+  contour.quadraticCurveTo(x(radiusX), -radiusY, x(radiusX), -radiusY + corner);
+  contour.lineTo(x(radiusX), radiusY - corner);
+  contour.quadraticCurveTo(x(radiusX), radiusY, x(radiusX - corner), radiusY);
+  contour.lineTo(x(-radiusX + corner), radiusY);
+  contour.quadraticCurveTo(x(-radiusX), radiusY, x(-radiusX), radiusY - corner);
+  contour.lineTo(x(-radiusX), -radiusY + corner);
+  contour.quadraticCurveTo(x(-radiusX), -radiusY, x(-radiusX + corner), -radiusY);
+  contour.closePath();
+  return contour;
+};
+
+const disposeFrameGroup = (group: THREE.Group) => {
+  group.traverse((object: any) => {
+    if (!(object instanceof THREE.Mesh)) return;
+    object.geometry.dispose();
+    if (Array.isArray(object.material)) {
+      object.material.forEach((material: any) => material.dispose());
+    } else {
+      object.material.dispose();
+    }
+  });
+};
+
 const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererProps) => {
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.OrthographicCamera | null>(null);
@@ -62,6 +163,8 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
       renderer.dispose();
       if (glassesModelRef.current) {
         scene.remove(glassesModelRef.current);
+        disposeFrameGroup(glassesModelRef.current);
+        glassesModelRef.current = null;
       }
     };
   }, [canvasRef]);
@@ -80,92 +183,103 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
     renderer.setSize(width, height, false);
   }, [width, height]);
   
-  // Load glasses model (using a simple placeholder model for now)
+  // Build a distinct lightweight 3D frame shape for each catalog style.
   useEffect(() => {
     if (!sceneRef.current) return;
     
     // Remove existing model if present
     if (glassesModelRef.current) {
       sceneRef.current.remove(glassesModelRef.current);
+      disposeFrameGroup(glassesModelRef.current);
       glassesModelRef.current = null;
     }
     
-    // Create a placeholder glasses model (simple frames)
     const framesGroup = new THREE.Group();
     framesGroup.visible = false;
-    
-    // Frame color based on the selected frame
-    const frameColor = new THREE.Color(frame.color.toLowerCase() || '#000000');
-    const frameMaterial = new THREE.MeshStandardMaterial({ color: frameColor, metalness: 0.5, roughness: 0.2 });
-    
-    // Rim for left eye
-    const leftRim = new THREE.Mesh(
-      new THREE.TorusGeometry(0.3, 0.05, 16, 50),
-      frameMaterial
-    );
-    leftRim.position.set(-0.4, 0, 0);
-    framesGroup.add(leftRim);
-    
-    // Rim for right eye
-    const rightRim = new THREE.Mesh(
-      new THREE.TorusGeometry(0.3, 0.05, 16, 50),
-      frameMaterial
-    );
-    rightRim.position.set(0.4, 0, 0);
-    framesGroup.add(rightRim);
-    
-    // Bridge connecting the rims
-    const bridge = new THREE.Mesh(
-      new THREE.BoxGeometry(0.7, 0.05, 0.05),
-      frameMaterial
-    );
-    bridge.position.set(0, 0, 0);
-    framesGroup.add(bridge);
-    
-    // Left temple (arm)
-    const leftTemple = new THREE.Mesh(
-      new THREE.BoxGeometry(0.7, 0.05, 0.05),
-      frameMaterial
-    );
-    leftTemple.position.set(-0.75, 0, 0);
-    leftTemple.rotation.y = Math.PI / 4;
-    framesGroup.add(leftTemple);
-    
-    // Right temple (arm)
-    const rightTemple = new THREE.Mesh(
-      new THREE.BoxGeometry(0.7, 0.05, 0.05),
-      frameMaterial
-    );
-    rightTemple.position.set(0.75, 0, 0);
-    rightTemple.rotation.y = -Math.PI / 4;
-    framesGroup.add(rightTemple);
-    
-    // Add a transparent lens material for different frame styles
-    if (frame.style === 'Sunglasses') {
-      const lensMaterial = new THREE.MeshPhysicalMaterial({
-        color: 0x000000,
-        transparent: true,
-        opacity: 0.6,
-        metalness: 0.1,
-        roughness: 0.1
-      });
-      
-      // Left lens
-      const leftLens = new THREE.Mesh(
-        new THREE.CircleGeometry(0.29, 32),
-        lensMaterial
+    const shapeStyle = frame.style.toLowerCase() === 'sunglasses'
+      ? 'rectangle'
+      : frame.style.toLowerCase();
+    const isSunglasses = frame.style.toLowerCase() === 'sunglasses'
+      || /sun|solar/.test(`${frame.nameEn} ${frame.nameEs}`.toLowerCase());
+    const isMetal = /metal|titanium/.test(frame.material.toLowerCase());
+    const isClearFrame = frame.color.toLowerCase() === 'transparent';
+    const frameColor = new THREE.Color(getFrameColor(frame.color));
+    const frameMaterial = new THREE.MeshStandardMaterial({
+      color: frameColor,
+      metalness: isMetal ? 0.78 : 0.18,
+      roughness: isMetal ? 0.27 : 0.34,
+      transparent: isClearFrame,
+      opacity: isClearFrame ? 0.72 : 1,
+      side: THREE.DoubleSide,
+    });
+    const lensMaterial = new THREE.MeshPhysicalMaterial({
+      color: isSunglasses ? 0x263846 : 0xb9d0d8,
+      transparent: true,
+      opacity: isSunglasses ? 0.58 : 0.12,
+      metalness: 0.05,
+      roughness: 0.14,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    });
+    const radiusX = shapeStyle === 'round' ? 0.3 : 0.34;
+    const radiusY = shapeStyle === 'round' ? 0.3 : shapeStyle === 'oval' ? 0.25 : 0.27;
+    const lensCenters = [-0.39, 0.39];
+
+    lensCenters.forEach((centerX) => {
+      const mirrorCatEye = shapeStyle === 'cat-eye' && centerX < 0;
+      const outerContour = createLensContour(shapeStyle, radiusX, radiusY, mirrorCatEye);
+      outerContour.holes.push(
+        createLensContour(shapeStyle, radiusX - 0.052, radiusY - 0.052, mirrorCatEye),
       );
-      leftLens.position.set(-0.4, 0, 0.01);
-      framesGroup.add(leftLens);
-      
-      // Right lens
-      const rightLens = new THREE.Mesh(
-        new THREE.CircleGeometry(0.29, 32),
-        lensMaterial
+      const rim = new THREE.Mesh(
+        new THREE.ExtrudeGeometry(outerContour, {
+          depth: 0.055,
+          bevelEnabled: true,
+          bevelThickness: 0.008,
+          bevelSize: 0.006,
+          bevelSegments: 2,
+          curveSegments: 32,
+        }),
+        frameMaterial,
       );
-      rightLens.position.set(0.4, 0, 0.01);
-      framesGroup.add(rightLens);
-    }
+      rim.position.set(centerX, 0, -0.028);
+      framesGroup.add(rim);
+
+      const lensContour = createLensContour(
+        shapeStyle,
+        radiusX - 0.053,
+        radiusY - 0.053,
+        mirrorCatEye,
+      );
+      const lens = new THREE.Mesh(
+        new THREE.ShapeGeometry(lensContour, 32),
+        lensMaterial,
+      );
+      lens.position.set(centerX, 0, 0.031);
+      framesGroup.add(lens);
+    });
+
+    const bridgeCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.11, 0.015, 0.015),
+      new THREE.Vector3(0, 0.065, 0.035),
+      new THREE.Vector3(0.11, 0.015, 0.015),
+    ]);
+    framesGroup.add(new THREE.Mesh(
+      new THREE.TubeGeometry(bridgeCurve, 16, 0.022, 8, false),
+      frameMaterial,
+    ));
+
+    [-1, 1].forEach((side) => {
+      const templeCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(side * 0.71, 0.025, -0.005),
+        new THREE.Vector3(side * 0.83, 0.01, -0.095),
+        new THREE.Vector3(side * 1.02, -0.035, -0.28),
+      ]);
+      framesGroup.add(new THREE.Mesh(
+        new THREE.TubeGeometry(templeCurve, 18, 0.024, 8, false),
+        frameMaterial,
+      ));
+    });
     
     // Add the glasses model to the scene
     sceneRef.current.add(framesGroup);
@@ -212,6 +326,7 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
     glassesRotation,
     glassesScale,
     adjustments,
+    frame.id,
     width,
     height
   ]);

@@ -1,0 +1,1 @@
+- [Frame image validation](frame-image-validation.md) — check that each product image matches its frame style and keep local source/license records.

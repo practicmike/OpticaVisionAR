@@ -200,6 +200,8 @@ const VirtualTryOn = () => {
                         <SelectItem value="Round">Round</SelectItem>
                         <SelectItem value="Oval">Oval</SelectItem>
                         <SelectItem value="Cat-eye">Cat-eye</SelectItem>
+                        <SelectItem value="Aviator">Aviator</SelectItem>
+                        <SelectItem value="Sunglasses">Sunglasses</SelectItem>
                       </SelectContent>
                     </Select>
                     
@@ -232,6 +234,7 @@ const VirtualTryOn = () => {
                         <SelectItem value="Blue">Blue</SelectItem>
                         <SelectItem value="Red">Red</SelectItem>
                         <SelectItem value="Gold">Gold</SelectItem>
+                        <SelectItem value="Silver">Silver</SelectItem>
                         <SelectItem value="Transparent">Transparent</SelectItem>
                       </SelectContent>
                     </Select>
