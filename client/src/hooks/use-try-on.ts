@@ -2,14 +2,15 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { Camera } from '@mediapipe/camera_utils';
-import { FaceMesh, Results } from '@mediapipe/face_mesh';
+import type { FaceMesh, Results } from '@mediapipe/face_mesh';
 import { useTryOnStore } from '@/store/tryOnStore';
 import {
   initFaceMesh,
-  initCamera,
+  startCamera,
+  classifyTryOnError,
   extractFacialMeasurements,
-  getGlassesPosition
+  getGlassesPosition,
+  type CameraHandle,
 } from '@/utils/faceDetection';
 
 export const useTryOn = () => {
@@ -20,7 +21,7 @@ export const useTryOn = () => {
   const webcamRef = useRef<HTMLVideoElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const renderCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const cameraRef = useRef<Camera | null>(null);
+  const cameraRef = useRef<CameraHandle | null>(null);
   const faceMeshRef = useRef<FaceMesh | null>(null);
   const faceMeshPromiseRef = useRef<Promise<FaceMesh> | null>(null);
   
@@ -100,10 +101,28 @@ export const useTryOn = () => {
       faceMeshPromiseRef.current = initFaceMesh(onFaceMeshResults);
     }
 
-    const faceMesh = await faceMeshPromiseRef.current;
+    let faceMesh: FaceMesh;
+    try {
+      faceMesh = await faceMeshPromiseRef.current;
+    } catch (error) {
+      // Allow a retry on the next click instead of caching the failure.
+      faceMeshPromiseRef.current = null;
+      throw error;
+    }
     faceMeshRef.current = faceMesh;
     return faceMesh;
   }, [onFaceMeshResults]);
+
+  // Tell the user what actually went wrong (permission, no camera, busy
+  // camera, or the tracking model failing to load).
+  const showTryOnError = useCallback((error: unknown) => {
+    const kind = classifyTryOnError(error);
+    toast({
+      title: t(`virtualTryOnPage.errors.${kind}.title`),
+      description: t(`virtualTryOnPage.errors.${kind}.message`),
+      variant: 'destructive',
+    });
+  }, [t, toast]);
 
   // Start webcam with FaceMesh
   const startWebcam = useCallback(async () => {
@@ -118,10 +137,8 @@ export const useTryOn = () => {
       // Wait for FaceMesh before starting the camera. Starting too early used
       // to leave the video running without ever starting face tracking.
       const faceMesh = await ensureFaceMesh();
-      const camera = initCamera(video, faceMesh);
-      cameraRef.current = camera;
       setIsWebcamActive(true);
-      await camera.start();
+      cameraRef.current = await startCamera(video, faceMesh);
 
       const updateDimensions = () => {
         if (video.videoWidth && video.videoHeight) {
@@ -138,14 +155,10 @@ export const useTryOn = () => {
         (webcamRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
         webcamRef.current.srcObject = null;
       }
-      toast({
-        title: t('virtualTryOnPage.noCamera.title'),
-        description: t('virtualTryOnPage.noCamera.message'),
-        variant: 'destructive',
-      });
+      showTryOnError(error);
       setIsWebcamActive(false);
     }
-  }, [ensureFaceMesh, setFaceDetected, t, toast]);
+  }, [ensureFaceMesh, setFaceDetected, showTryOnError]);
 
   // Stop webcam
   const stopWebcam = useCallback(() => {
@@ -192,17 +205,13 @@ export const useTryOn = () => {
           await faceMesh.send({ image });
         } catch (error) {
           console.error('Error detecting a face in the uploaded photo:', error);
-          toast({
-            title: t('virtualTryOnPage.noCamera.title'),
-            description: t('virtualTryOnPage.noCamera.message'),
-            variant: 'destructive',
-          });
+          showTryOnError(error);
         }
       };
       image.src = imageSource;
     };
     reader.readAsDataURL(file);
-  }, [ensureFaceMesh, setFaceDetected, stopWebcam, t, toast]);
+  }, [ensureFaceMesh, setFaceDetected, stopWebcam, showTryOnError]);
 
   // Trigger file input click
   const triggerFileUpload = useCallback(() => {

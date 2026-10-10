@@ -192,11 +192,7 @@
       "priceLow": "Price (Low to High)",
       "priceHigh": "Price (High to Low)"
     },
-    "tryOn": "Try On",
-    "noResults": {
-      "title": "No products found",
-      "message": "Try adjusting your filters or search term to find what you're looking for."
-    },
+    "tryOnButton": "Try On",
     "tryOn": {
       "title": "Try Before You Buy",
       "description": "Use our virtual try-on feature to see how our frames look on you before making a purchase.",
@@ -207,6 +203,10 @@
       },
       "button": "Go to Virtual Try-On",
       "imageAlt": "Virtual try-on demo"
+    },
+    "noResults": {
+      "title": "No products found",
+      "message": "Try adjusting your filters or search term to find what you're looking for."
     }
   },
   "appointmentsPage": {
@@ -324,6 +324,32 @@
       "step4": {
         "title": "Visit Us or Buy Online",
         "description": "Come to our store to try the physical frames or purchase directly online."
+      }
+    },
+    "errors": {
+      "insecure": {
+        "title": "Insecure connection",
+        "message": "The camera only works on HTTPS pages. Open the site with https:// or upload a photo."
+      },
+      "unsupported": {
+        "title": "Browser not supported",
+        "message": "Your browser doesn't allow camera access. Try an up-to-date Chrome, Safari or Edge, or upload a photo."
+      },
+      "denied": {
+        "title": "Camera permission blocked",
+        "message": "Allow camera access from the lock icon next to the site address and try again, or upload a photo."
+      },
+      "notFound": {
+        "title": "No camera found",
+        "message": "We couldn't find a camera on this device. You can upload a photo to try on frames."
+      },
+      "inUse": {
+        "title": "Camera is in use",
+        "message": "Another app or tab is using the camera. Close it and try again."
+      },
+      "model": {
+        "title": "Couldn't start the virtual try-on",
+        "message": "Face tracking failed to load. Check your connection and try again in a few seconds."
       }
     }
   },

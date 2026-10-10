@@ -192,11 +192,7 @@
       "priceLow": "Precio (Bajo a Alto)",
       "priceHigh": "Precio (Alto a Bajo)"
     },
-    "tryOn": "Probar",
-    "noResults": {
-      "title": "No se encontraron productos",
-      "message": "Intente ajustar sus filtros o término de búsqueda para encontrar lo que está buscando."
-    },
+    "tryOnButton": "Probar",
     "tryOn": {
       "title": "Pruebe Antes de Comprar",
       "description": "Use nuestra función de prueba virtual para ver cómo se ven nuestros armazones en usted antes de realizar una compra.",
@@ -207,6 +203,10 @@
       },
       "button": "Ir a Prueba Virtual",
       "imageAlt": "Demostración de prueba virtual"
+    },
+    "noResults": {
+      "title": "No se encontraron productos",
+      "message": "Intente ajustar sus filtros o término de búsqueda para encontrar lo que está buscando."
     }
   },
   "appointmentsPage": {
@@ -324,6 +324,32 @@
       "step4": {
         "title": "Visítenos o Compre en Línea",
         "description": "Venga a nuestra tienda para probar los armazones físicos o compre directamente en línea."
+      }
+    },
+    "errors": {
+      "insecure": {
+        "title": "Conexión no segura",
+        "message": "La cámara solo funciona en páginas con HTTPS. Abra el sitio con https:// o suba una foto."
+      },
+      "unsupported": {
+        "title": "Navegador no compatible",
+        "message": "Su navegador no permite usar la cámara. Pruebe con Chrome, Safari o Edge actualizados, o suba una foto."
+      },
+      "denied": {
+        "title": "Permiso de cámara bloqueado",
+        "message": "Permita el acceso a la cámara desde el ícono de candado junto a la dirección del sitio y vuelva a intentar, o suba una foto."
+      },
+      "notFound": {
+        "title": "No se encontró una cámara",
+        "message": "No detectamos una cámara en este dispositivo. Puede subir una foto para probarse los armazones."
+      },
+      "inUse": {
+        "title": "La cámara está en uso",
+        "message": "Otra aplicación o pestaña está usando la cámara. Ciérrela y vuelva a intentar."
+      },
+      "model": {
+        "title": "No se pudo iniciar el probador",
+        "message": "El sistema de detección facial no cargó. Revise su conexión y vuelva a intentar en unos segundos."
       }
     }
   },
