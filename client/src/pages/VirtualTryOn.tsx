@@ -86,16 +86,14 @@ const VirtualTryOn = () => {
                 </div>
                 
                 <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg h-72 flex items-center justify-center relative">
-                  {method === 'webcam' && (
-                    <video
-                      ref={webcamRef}
-                      autoPlay
-                      playsInline
-                      muted
-                      className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                      style={{ display: isWebcamActive ? 'block' : 'none' }}
-                    />
-                  )}
+                  <video
+                    ref={webcamRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                    style={{ display: method === 'webcam' && isWebcamActive ? 'block' : 'none' }}
+                  />
                   
                   {method === 'upload' && uploadedImage && (
                     <img

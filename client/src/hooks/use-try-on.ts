@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
@@ -53,6 +53,13 @@ export const useTryOn = () => {
   const { data: frames, isLoading: isLoadingFrames } = useQuery({
     queryKey: ['/api/frames', filters],
   });
+
+  useEffect(() => {
+    if (!Array.isArray(frames) || frames.length === 0) return;
+    if (!frames.some((frame: any) => frame.id === selectedFrameId)) {
+      setSelectedFrameId(frames[0].id);
+    }
+  }, [frames, selectedFrameId]);
 
   // Handle FaceMesh results
   const onFaceMeshResults = useCallback((results: Results) => {

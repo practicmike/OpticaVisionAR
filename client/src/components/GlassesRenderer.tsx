@@ -12,7 +12,7 @@ interface GlassesRendererProps {
 
 const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererProps) => {
   const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const cameraRef = useRef<THREE.OrthographicCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const glassesModelRef = useRef<THREE.Group | null>(null);
   
@@ -33,9 +33,12 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
     const scene = new THREE.Scene();
     sceneRef.current = scene;
     
-    // Camera setup
-    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.z = 5;
+    // Use video-relative coordinates so the overlay maps directly to the
+    // normalized face landmarks instead of shrinking into a perspective view.
+    const aspect = width / height;
+    const camera = new THREE.OrthographicCamera(-2, 2, 2 / aspect, -2 / aspect, 0.1, 1000);
+    camera.position.z = 100;
+    camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
     
     // Renderer setup
@@ -43,7 +46,7 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
       canvas: canvasRef.current,
       alpha: true,  // Transparent background
     });
-    renderer.setSize(width, height);
+    renderer.setSize(width, height, false);
     rendererRef.current = renderer;
     
     // Lighting
@@ -61,7 +64,21 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
         scene.remove(glassesModelRef.current);
       }
     };
-  }, [canvasRef, width, height]);
+  }, [canvasRef]);
+
+  useEffect(() => {
+    const camera = cameraRef.current;
+    const renderer = rendererRef.current;
+    if (!camera || !renderer) return;
+
+    const aspect = width / height;
+    camera.left = -2;
+    camera.right = 2;
+    camera.top = 2 / aspect;
+    camera.bottom = -2 / aspect;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height, false);
+  }, [width, height]);
   
   // Load glasses model (using a simple placeholder model for now)
   useEffect(() => {
@@ -163,8 +180,9 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
     if (isFaceDetected) {
       // Map normalized coordinates to 3D space
       const posX = (glassesPosition.x - 0.5) * 4;
-      const posY = -(glassesPosition.y - 0.5) * 4;
-      const posZ = -glassesPosition.z * 5;
+      const aspect = width / height;
+      const posY = (0.5 - glassesPosition.y) * (4 / aspect);
+      const posZ = -glassesPosition.z * 4;
       
       // Apply position based on face detection and user adjustments
       glassesModelRef.current.position.set(
@@ -181,7 +199,7 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
       );
       
       // Apply scale based on face width and user adjustments
-      const baseScale = glassesScale.x * 2;
+      const baseScale = glassesScale.x * 4;
       const finalScale = baseScale * adjustments.scale;
       glassesModelRef.current.scale.set(finalScale, finalScale, finalScale);
     }
@@ -193,7 +211,9 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
     glassesPosition,
     glassesRotation,
     glassesScale,
-    adjustments
+    adjustments,
+    width,
+    height
   ]);
   
   // Ensure render loop runs consistently
