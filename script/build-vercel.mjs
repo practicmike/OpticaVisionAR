@@ -91,6 +91,17 @@ const config = {
 };
 writeFileSync(path.join(out, "config.json"), JSON.stringify(config, null, 2));
 
+// 4) Database: create missing tables/columns and load the catalog into empty
+//    tables. Vercel exposes DATABASE_URL (Neon integration) during the build,
+//    so nobody has to run migrations by hand. A failure here fails the deploy
+//    on purpose: shipping an API without its tables would break bookings.
+if (process.env.DATABASE_URL) {
+  console.log("\nPreparing database...");
+  execSync("npx tsx script/seed.ts", { cwd: root, stdio: "inherit" });
+} else {
+  console.warn("\nDATABASE_URL not set: skipping database setup (API will use in-memory storage).");
+}
+
 if (!existsSync(path.join(staticDir, "index.html"))) {
   throw new Error("Frontend build missing index.html");
 }
