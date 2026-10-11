@@ -202,7 +202,7 @@ export class MemStorage implements IStorage {
 
   // Frames
   async getFrames(filters?: { style?: string; material?: string; color?: string }): Promise<CatalogFrame[]> {
-    let frames = Array.from(this.frames.values());
+    let frames = Array.from(this.frames.values()).filter((frame) => frame.isAvailable);
     
     if (filters) {
       if (filters.style && filters.style !== 'all') {

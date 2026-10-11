@@ -20,3 +20,9 @@ The following product photographs were downloaded from Unsplash. The Unsplash li
 - [photo-1591076482161-42ce6da69f67](https://images.unsplash.com/photo-1591076482161-42ce6da69f67) — `photo-1591076482161-42ce6da69f67.jpg`
 - [photo-1577803645773-f96470509666](https://images.unsplash.com/photo-1577803645773-f96470509666) — `photo-1577803645773-f96470509666.jpg`
 - [photo-1473496169904-658ba7c44d8a](https://images.unsplash.com/photo-1473496169904-658ba7c44d8a) — `photo-1473496169904-658ba7c44d8a.jpg`
+
+## Modelos 3D y miniaturas del catálogo
+
+- `models/wayfarer_*.glb`: generados por código propio (`tools/frame-generator/`, Python + numpy). Diseño genérico, sin marcas.
+- `thumbs/*.jpg`: renders propios de cada modelo 3D (three.js, mismo ángulo y fondo).
+- `models/0_00741558210359.glb`, `models/1_sun_glasses.glb`, `models/2_glasses.glb`: venían en el proyecto original sin registro de origen ni licencia. **Pendiente: confirmar su licencia de uso comercial.** En `1_sun_glasses.glb` se cambió el material del lente (era plástico gris opaco; ahora metálico pulido).

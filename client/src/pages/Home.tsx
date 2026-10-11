@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useCatalogLabel } from '@/lib/catalog';
 import { Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { Eye, Glasses, Camera, UserRound, Star, QuoteIcon, ArrowRight } from 'lucide-react';
@@ -9,6 +10,7 @@ import { formatCurrency } from '@/lib/helpers';
 
 const Home = () => {
   const { t } = useTranslation();
+  const label = useCatalogLabel();
 
   // Fetch services
   const { data: services, isLoading: isLoadingServices } = useQuery({
@@ -191,15 +193,15 @@ const Home = () => {
                   <img 
                     src={frame.imageUrl} 
                     alt={t('common.currentLanguage') === 'es' ? frame.nameEs : frame.nameEn} 
-                    className="w-full h-48 object-cover" 
+                    className="w-full h-48 object-contain bg-[#f4f4f2]" 
                   />
                   <CardContent className="p-4">
-                    <span className="text-sm text-primary font-medium">{frame.style}</span>
+                    <span className="text-sm text-primary font-medium">{label('style', frame.style)}</span>
                     <h3 className="font-semibold text-lg mt-1">
                       {t('common.currentLanguage') === 'es' ? frame.nameEs : frame.nameEn}
                     </h3>
                     <p className="text-gray-600 text-sm mt-2">
-                      {t('products.materialColor', { material: frame.material, color: frame.color })}
+                      {t('products.materialColor', { material: label('material', frame.material), color: label('color', frame.color).toLowerCase() })}
                     </p>
                     <div className="mt-4 flex justify-between items-center">
                       <span className="font-bold text-[#333333]">{formatCurrency(frame.price)}</span>

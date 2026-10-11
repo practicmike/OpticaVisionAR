@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { CatalogFrame } from '@shared/schema';
 import { useTryOnStore } from '@/store/tryOnStore';
 import { faceTracker } from '@/ar/tracking';
@@ -192,7 +193,16 @@ const GlassesRenderer = ({ frame, canvasRef, width, height, mirrored = false }: 
     renderer.setSize(width, height, false);
     rendererRef.current = renderer;
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    // Soft studio reflections: glossy acetate (clearcoat), metal hinges and
+    // lenses look flat with direct lights only.
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environment = environment;
+    // 0.5 keeps catalog colours true to the model (measured: at 1.0 navy
+    // and wine frames rendered ~30 sRGB levels too light).
+    scene.environmentIntensity = 0.5;
+    pmrem.dispose();
+    scene.add(new THREE.AmbientLight(0xffffff, 0.25));
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(0, 1, 1);
     scene.add(directionalLight);
@@ -218,6 +228,7 @@ const GlassesRenderer = ({ frame, canvasRef, width, height, mirrored = false }: 
       modelLoadSequenceRef.current += 1;
       disposeFrameGroup(anchor);
       scene.remove(anchor);
+      environment.dispose();
       glassesModelRef.current = null;
       anchorRef.current = null;
       glassesHolderRef.current = null;
@@ -278,7 +289,11 @@ const GlassesRenderer = ({ frame, canvasRef, width, height, mirrored = false }: 
             model.rotation.y += Math.PI;
             model.updateMatrixWorld(true);
           }
-          const bounds = new THREE.Box3().setFromObject(model);
+          // Models that name their front part (rims + lenses) are centred on
+          // it; otherwise temples bending behind the ears would pull the
+          // centre down and back. Falls back to the whole model.
+          const reference = model.getObjectByName('frente') ?? model;
+          const bounds = new THREE.Box3().setFromObject(reference);
           const size = bounds.getSize(new THREE.Vector3());
           if (!Number.isFinite(size.x) || size.x < 0.0001) {
             console.error(`El modelo GLB del armazón ${frame.id} no tiene un ancho válido.`);

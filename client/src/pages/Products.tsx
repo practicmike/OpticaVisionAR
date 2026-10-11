@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { isSunglasses, useFrameFacets, useCatalogLabel } from '@/lib/catalog';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Search, Filter, ArrowUpDown } from 'lucide-react';
@@ -14,9 +15,9 @@ const Products = () => {
   const [category, setCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
-    style: '',
-    material: '',
-    color: '',
+    style: 'all',
+    material: 'all',
+    color: 'all',
   });
   const [sortBy, setSortBy] = useState('name');
   
@@ -29,9 +30,9 @@ const Products = () => {
   const filteredFrames = frames?.filter((frame: any) => {
     const name = t('common.currentLanguage') === 'es' ? frame.nameEs.toLowerCase() : frame.nameEn.toLowerCase();
     const matchesSearch = searchTerm === '' || name.includes(searchTerm.toLowerCase());
-    const matchesCategory = category === 'all' || 
-                          (category === 'eyeglasses' && frame.style !== 'Sunglasses') || 
-                          (category === 'sunglasses' && frame.style === 'Sunglasses');
+    const matchesCategory = category === 'all' ||
+                          (category === 'eyeglasses' && !isSunglasses(frame)) ||
+                          (category === 'sunglasses' && isSunglasses(frame));
     return matchesSearch && matchesCategory;
   });
   
@@ -58,17 +59,19 @@ const Products = () => {
   
   const clearFilters = () => {
     setFilters({
-      style: '',
-      material: '',
-      color: '',
+      style: 'all',
+      material: 'all',
+      color: 'all',
     });
     setSearchTerm('');
   };
   
   // Extract unique values for filter options
-  const styleOptions = Array.from(new Set(frames?.map((frame: any) => frame.style)));
-  const materialOptions = Array.from(new Set(frames?.map((frame: any) => frame.material)));
-  const colorOptions = Array.from(new Set(frames?.map((frame: any) => frame.color)));
+  const facets = useFrameFacets();
+  const label = useCatalogLabel();
+  const styleOptions = facets.styles;
+  const materialOptions = facets.materials;
+  const colorOptions = facets.colors;
 
   return (
     <>
@@ -111,9 +114,9 @@ const Products = () => {
                             <SelectValue placeholder={t('productsPage.filters.allStyles')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">{t('productsPage.filters.allStyles')}</SelectItem>
+                            <SelectItem value="all">{t('productsPage.filters.allStyles')}</SelectItem>
                             {styleOptions?.map((style: any) => (
-                              <SelectItem key={style} value={style}>{style}</SelectItem>
+                              <SelectItem key={style} value={style}>{label('style', style)}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -126,9 +129,9 @@ const Products = () => {
                             <SelectValue placeholder={t('productsPage.filters.allMaterials')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">{t('productsPage.filters.allMaterials')}</SelectItem>
+                            <SelectItem value="all">{t('productsPage.filters.allMaterials')}</SelectItem>
                             {materialOptions?.map((material: any) => (
-                              <SelectItem key={material} value={material}>{material}</SelectItem>
+                              <SelectItem key={material} value={material}>{label('material', material)}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -141,9 +144,9 @@ const Products = () => {
                             <SelectValue placeholder={t('productsPage.filters.allColors')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">{t('productsPage.filters.allColors')}</SelectItem>
+                            <SelectItem value="all">{t('productsPage.filters.allColors')}</SelectItem>
                             {colorOptions?.map((color: any) => (
-                              <SelectItem key={color} value={color}>{color}</SelectItem>
+                              <SelectItem key={color} value={color}>{label('color', color)}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -212,15 +215,15 @@ const Products = () => {
                         <img 
                           src={frame.imageUrl} 
                           alt={t('common.currentLanguage') === 'es' ? frame.nameEs : frame.nameEn} 
-                          className="w-full h-48 object-cover" 
+                          className="w-full h-48 object-contain bg-[#f4f4f2]" 
                         />
                         <CardContent className="p-4">
-                          <span className="text-sm text-primary font-medium">{frame.style}</span>
+                          <span className="text-sm text-primary font-medium">{label('style', frame.style)}</span>
                           <h3 className="font-semibold text-lg mt-1">
                             {t('common.currentLanguage') === 'es' ? frame.nameEs : frame.nameEn}
                           </h3>
                           <p className="text-gray-600 text-sm mt-2">
-                            {t('products.materialColor', { material: frame.material, color: frame.color })}
+                            {t('products.materialColor', { material: label('material', frame.material), color: label('color', frame.color).toLowerCase() })}
                           </p>
                           <div className="mt-4 flex justify-between items-center">
                             <span className="font-bold text-[#333333]">{formatCurrency(frame.price)}</span>

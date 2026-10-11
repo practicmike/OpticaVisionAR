@@ -443,5 +443,31 @@
         }
       }
     }
+  },
+  "catalogValues": {
+    "style": {
+      "Rectangle": "Rectangular",
+      "Round": "Redondo",
+      "Oval": "Ovalado",
+      "Cat-eye": "Cat-eye",
+      "Aviator": "Aviador",
+      "Sunglasses": "Solar",
+      "Wayfarer": "Wayfarer"
+    },
+    "material": {
+      "Acetate": "Acetato",
+      "Metal": "Metal",
+      "Titanium": "Titanio"
+    },
+    "color": {
+      "Black": "Negro",
+      "Brown": "Café",
+      "Tortoise": "Carey",
+      "Blue": "Azul",
+      "Red": "Vino",
+      "Gold": "Dorado",
+      "Silver": "Plateado",
+      "Transparent": "Transparente"
+    }
   }
 }

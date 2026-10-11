@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import type { PgDatabase } from "drizzle-orm/pg-core";
 import {
   locations,
@@ -12,6 +12,7 @@ import {
   locationsSeed,
   servicesSeed,
   framesSeed,
+  legacyFrameFixes,
   blogPostsSeed,
   testimonialsSeed,
   generateSlots,
@@ -132,6 +133,51 @@ export async function migrate(db: Db, log: Log = console.log) {
 }
 
 /**
+ * Keeps the try-on catalog in line with framesSeed without touching manual
+ * edits: frames are identified by their 3D model.
+ *  - a seed frame whose model isn't in the table yet is inserted;
+ *  - the 3 original 3D frames get their real name/photo only while they still
+ *    have the old stock photo;
+ *  - frames without a 3D model are hidden (is_available = false, never
+ *    deleted): they can't be tried on, so they don't belong in the catalog.
+ */
+export async function syncFrames(db: Db, log: Log = console.log) {
+  const existing = new Set(
+    (await db.select({ modelUrl: frames.modelUrl }).from(frames)).map((r) => r.modelUrl),
+  );
+  const missing = framesSeed.filter((f) => f.modelUrl && !existing.has(f.modelUrl));
+  if (missing.length > 0) await db.insert(frames).values(missing);
+  log(`- frames: inserted ${missing.length} new 3D frame(s)`);
+
+  let fixed = 0;
+  for (const fix of legacyFrameFixes) {
+    const target = framesSeed.find((f) => f.modelUrl === fix.modelUrl);
+    if (!target) continue;
+    const rows = await db
+      .update(frames)
+      .set({
+        nameEn: target.nameEn,
+        nameEs: target.nameEs,
+        style: target.style,
+        material: target.material,
+        color: target.color,
+        imageUrl: target.imageUrl,
+      })
+      .where(and(eq(frames.modelUrl, fix.modelUrl), eq(frames.imageUrl, fix.legacyImageUrl)))
+      .returning({ id: frames.id });
+    fixed += rows.length;
+  }
+  log(`- frames: corrected ${fixed} legacy 3D frame(s)`);
+
+  const hidden = await db
+    .update(frames)
+    .set({ isAvailable: false })
+    .where(and(isNull(frames.modelUrl), eq(frames.isAvailable, true)))
+    .returning({ id: frames.id });
+  log(`- frames: hid ${hidden.length} frame(s) without a 3D model`);
+}
+
+/**
  * Loads the catalog only into empty tables, so edits made later in the
  * database (prices, new frames) are never overwritten by a redeploy.
  */
@@ -148,7 +194,7 @@ export async function seed(db: Db, log: Log = console.log) {
 
   await seedIfEmpty("locations", locations, locationsSeed);
   await seedIfEmpty("services", services, servicesSeed);
-  await seedIfEmpty("frames", frames, framesSeed);
+  await syncFrames(db, log);
   await seedIfEmpty("blog_posts", blogPosts, blogPostsSeed());
   await seedIfEmpty("testimonials", testimonials, testimonialsSeed);
 
