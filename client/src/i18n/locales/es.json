@@ -351,6 +351,24 @@
         "title": "No se pudo iniciar el probador",
         "message": "El sistema de detección facial no cargó. Revise su conexión y vuelva a intentar en unos segundos."
       }
+    },
+    "adjustments": {
+      "title": "Ajuste fino",
+      "reset": "Restablecer",
+      "position": "Posición",
+      "rotation": "Rotación",
+      "scale": "Tamaño"
+    },
+    "share": {
+      "title": "Tu foto",
+      "captureScreenshot": "Tomar foto",
+      "download": "Descargar",
+      "sharePhoto": "Compartir foto",
+      "emailBody": "Mira cómo me quedan estos lentes de Ópticas Cardani"
+    },
+    "tracking": {
+      "searching": "Buscando su rostro… mire de frente a la cámara",
+      "noFaceInPhoto": "No detectamos un rostro en la foto. Use una foto de frente y bien iluminada."
     }
   },
   "blogPage": {

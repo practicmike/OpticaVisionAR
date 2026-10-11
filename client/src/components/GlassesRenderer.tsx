@@ -3,12 +3,15 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { CatalogFrame } from '@shared/schema';
 import { useTryOnStore } from '@/store/tryOnStore';
+import { faceTracker } from '@/ar/tracking';
 
 interface GlassesRendererProps {
   frame: CatalogFrame;
   canvasRef: React.RefObject<HTMLCanvasElement>;
   width: number;
   height: number;
+  /** The view is shown mirrored (selfie): flip the user's left/right adjustments. */
+  mirrored?: boolean;
 }
 
 const frameColorHex: Record<string, string> = {
@@ -114,63 +117,112 @@ const disposeFrameGroup = (group: THREE.Object3D) => {
   });
 };
 
-const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererProps) => {
+
+// The GLB origin goes slightly behind the very front of the model (rims and
+// nose pads), roughly where the frame rests on the nose.
+const FRONT_PLANE_DEPTH = 0.08;
+
+/**
+ * True when most of the geometry (rims, lenses) sits on the +z side, i.e.
+ * the front of the frame looks at the camera. Temple arms are thin, so the
+ * back slice has far fewer vertices than the front slice.
+ */
+const frontFacesCamera = (model: THREE.Object3D) => {
+  const bounds = new THREE.Box3().setFromObject(model);
+  const depth = bounds.max.z - bounds.min.z;
+  if (!(depth > 0)) return true;
+  const v = new THREE.Vector3();
+  let front = 0;
+  let back = 0;
+  model.traverse((object: any) => {
+    const position = object.isMesh ? object.geometry?.attributes?.position : null;
+    if (!position) return;
+    const step = Math.max(1, Math.floor(position.count / 4000));
+    for (let i = 0; i < position.count; i += step) {
+      v.fromBufferAttribute(position, i).applyMatrix4(object.matrixWorld);
+      const t = (v.z - bounds.min.z) / depth;
+      if (t > 0.8) front++;
+      else if (t < 0.2) back++;
+    }
+  });
+  return front >= back;
+};
+
+// Head occluder: invisible ellipsoid that only writes depth, so the parts of
+// the temple arms behind the head are hidden when the user turns. Radii are
+// fractions of the temple-to-temple face width.
+const OCCLUDER_RADII = { x: 0.48, y: 0.62, z: 0.62 };
+
+const GlassesRenderer = ({ frame, canvasRef, width, height, mirrored = false }: GlassesRendererProps) => {
+  const mirroredRef = useRef(mirrored);
+  mirroredRef.current = mirrored;
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.OrthographicCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  // anchor = head pose (position + rotation); holder = glasses size and the
+  // user's fine adjustments; occluder = the head itself (depth only).
+  const anchorRef = useRef<THREE.Group | null>(null);
+  const glassesHolderRef = useRef<THREE.Group | null>(null);
+  const occluderRef = useRef<THREE.Mesh | null>(null);
   const glassesModelRef = useRef<THREE.Group | null>(null);
   const modelLoadSequenceRef = useRef(0);
-  
-  // Get state from Zustand store
-  const {
-    isFaceDetected,
-    glassesPosition,
-    glassesRotation,
-    glassesScale,
-    adjustments
-  } = useTryOnStore();
 
   // Initialize Three.js scene
   useEffect(() => {
     if (!canvasRef.current) return;
-    
-    // Scene setup
+
     const scene = new THREE.Scene();
     sceneRef.current = scene;
-    
-    // Use video-relative coordinates so the overlay maps directly to the
-    // normalized face landmarks instead of shrinking into a perspective view.
+
+    // Video-relative orthographic camera: image width = 4 world units, so the
+    // overlay maps directly onto the normalized face landmarks.
     const aspect = width / height;
     const camera = new THREE.OrthographicCamera(-2, 2, 2 / aspect, -2 / aspect, 0.1, 1000);
     camera.position.z = 100;
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
-    
-    // Renderer setup
+
     const renderer = new THREE.WebGLRenderer({
       canvas: canvasRef.current,
-      alpha: true,  // Transparent background
+      alpha: true,
+      antialias: true,
+      // Lets the "take photo" button read the glasses layer.
+      preserveDrawingBuffer: true,
     });
     renderer.setSize(width, height, false);
     rendererRef.current = renderer;
-    
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
-    
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(0, 1, 1);
     scene.add(directionalLight);
-    
-    // Clean up on unmount
+
+    const anchor = new THREE.Group();
+    anchor.visible = false;
+    scene.add(anchor);
+    anchorRef.current = anchor;
+
+    const holder = new THREE.Group();
+    anchor.add(holder);
+    glassesHolderRef.current = holder;
+
+    const occluder = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 32, 24),
+      new THREE.MeshBasicMaterial({ colorWrite: false }),
+    );
+    occluder.renderOrder = -1;
+    anchor.add(occluder);
+    occluderRef.current = occluder;
+
     return () => {
       modelLoadSequenceRef.current += 1;
+      disposeFrameGroup(anchor);
+      scene.remove(anchor);
+      glassesModelRef.current = null;
+      anchorRef.current = null;
+      glassesHolderRef.current = null;
+      occluderRef.current = null;
       renderer.dispose();
-      if (glassesModelRef.current) {
-        scene.remove(glassesModelRef.current);
-        disposeFrameGroup(glassesModelRef.current);
-        glassesModelRef.current = null;
-      }
     };
   }, [canvasRef]);
 
@@ -187,25 +239,24 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);
   }, [width, height]);
-  
+
   // Build a distinct lightweight 3D frame shape for each catalog style.
   useEffect(() => {
-    const scene = sceneRef.current;
-    if (!scene) return;
+    const holder = glassesHolderRef.current;
+    if (!holder) return;
     const loadSequence = ++modelLoadSequenceRef.current;
     
     // Remove existing model if present
     if (glassesModelRef.current) {
-      scene.remove(glassesModelRef.current);
+      holder.remove(glassesModelRef.current);
       disposeFrameGroup(glassesModelRef.current);
       glassesModelRef.current = null;
     }
     
     const framesGroup = new THREE.Group();
-    framesGroup.visible = false;
 
     if (frame.modelUrl) {
-      scene.add(framesGroup);
+      holder.add(framesGroup);
       glassesModelRef.current = framesGroup;
 
       new GLTFLoader().load(
@@ -221,6 +272,12 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
 
           model.rotation.y = frame.modelRotationY ?? 0;
           model.updateMatrixWorld(true);
+          // Front of the frame must face the camera (+z): with real yaw the
+          // back would otherwise show. Detected from geometry, so any GLB works.
+          if (!frontFacesCamera(model)) {
+            model.rotation.y += Math.PI;
+            model.updateMatrixWorld(true);
+          }
           const bounds = new THREE.Box3().setFromObject(model);
           const size = bounds.getSize(new THREE.Vector3());
           if (!Number.isFinite(size.x) || size.x < 0.0001) {
@@ -229,13 +286,18 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
             return;
           }
 
+          // Same width convention as before (1.85 units = eye span x 1.85),
+          // but the origin is now the front plane, not the box center: the
+          // glasses rotate around the nose bridge instead of a point inside
+          // the head.
           const center = bounds.getCenter(new THREE.Vector3());
           const normalizationScale = 1.85 / size.x;
           model.scale.setScalar(normalizationScale);
-          model.position.copy(center).multiplyScalar(-normalizationScale);
+          model.position
+            .set(center.x, center.y, bounds.max.z - FRONT_PLANE_DEPTH * size.z)
+            .multiplyScalar(-normalizationScale);
           model.updateMatrixWorld(true);
           framesGroup.add(model);
-          framesGroup.visible = useTryOnStore.getState().isFaceDetected;
         },
         undefined,
         (error) => {
@@ -330,75 +392,58 @@ const GlassesRenderer = ({ frame, canvasRef, width, height }: GlassesRendererPro
       ));
     });
     
-    // Add the glasses model to the scene
-    scene.add(framesGroup);
+    // Add the glasses model to the head-anchored holder
+    holder.add(framesGroup);
     glassesModelRef.current = framesGroup;
   }, [frame]);
-  
-  // Update glasses position based on face detection
+
+  // Per-frame loop: read the smoothed head pose and the user's adjustments
+  // directly (no React state), place the glasses and render.
   useEffect(() => {
-    if (!glassesModelRef.current || !sceneRef.current || !rendererRef.current || !cameraRef.current) return;
-    
-    glassesModelRef.current.visible = isFaceDetected;
-    if (isFaceDetected) {
-      // Map normalized coordinates to 3D space
-      const posX = (glassesPosition.x - 0.5) * 4;
-      const aspect = width / height;
-      const posY = (0.5 - glassesPosition.y) * (4 / aspect);
-      const posZ = -glassesPosition.z * 4;
-      
-      // Apply position based on face detection and user adjustments
-      glassesModelRef.current.position.set(
-        posX + adjustments.position.x,
-        posY + adjustments.position.y,
-        posZ + adjustments.position.z
-      );
-      
-      // Apply rotation based on face detection and user adjustments
-      glassesModelRef.current.rotation.set(
-        glassesRotation.x + adjustments.rotation.x,
-        glassesRotation.y + adjustments.rotation.y,
-        glassesRotation.z + adjustments.rotation.z
-      );
-      
-      // Apply scale based on face width and user adjustments
-      const baseScale = glassesScale.x * 4;
-      const finalScale = baseScale * adjustments.scale;
-      glassesModelRef.current.scale.set(finalScale, finalScale, finalScale);
-    }
-    
-    // Render the scene
-    rendererRef.current.render(sceneRef.current, cameraRef.current);
-  }, [
-    isFaceDetected,
-    glassesPosition,
-    glassesRotation,
-    glassesScale,
-    adjustments,
-    frame.id,
-    width,
-    height
-  ]);
-  
-  // Ensure render loop runs consistently
-  useEffect(() => {
-    let animationFrameId: number;
-    
+    let animationFrameId = 0;
+    const faceQuaternion = new THREE.Quaternion();
+    const adjustEuler = new THREE.Euler();
+
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      
-      if (sceneRef.current && cameraRef.current && rendererRef.current) {
-        rendererRef.current.render(sceneRef.current, cameraRef.current);
+      const scene = sceneRef.current;
+      const camera = cameraRef.current;
+      const renderer = rendererRef.current;
+      const anchor = anchorRef.current;
+      const holder = glassesHolderRef.current;
+      const occluder = occluderRef.current;
+      if (!scene || !camera || !renderer || !anchor || !holder || !occluder) return;
+
+      const pose = faceTracker.getPose();
+      anchor.visible = !!pose;
+      if (pose) {
+        const { adjustments } = useTryOnStore.getState();
+
+        anchor.position.set(pose.position.x, pose.position.y, pose.position.z);
+        anchor.quaternion.copy(faceQuaternion.fromArray(pose.quaternion));
+
+        // Fine adjustments are relative to the head, so "up" follows a tilt.
+        // In the mirrored selfie view, left/right (x, yaw, roll) are flipped
+        // so the sliders move the glasses the way the user sees them move.
+        const m = mirroredRef.current ? -1 : 1;
+        holder.position.set(m * adjustments.position.x, adjustments.position.y, adjustments.position.z);
+        holder.rotation.copy(
+          adjustEuler.set(adjustments.rotation.x, m * adjustments.rotation.y, m * adjustments.rotation.z),
+        );
+        holder.scale.setScalar(pose.eyeSpan * adjustments.scale);
+
+        const w = pose.faceWidth;
+        occluder.scale.set(OCCLUDER_RADII.x * w, OCCLUDER_RADII.y * w, OCCLUDER_RADII.z * w);
+        occluder.position.set(0, pose.templeOffset.y, pose.templeOffset.z - 0.3 * w);
       }
+
+      renderer.render(scene, camera);
     };
-    
+
     animate();
-    
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
+    return () => cancelAnimationFrame(animationFrameId);
   }, []);
-  
+
   return null; // Rendering happens via the canvasRef
 };
 

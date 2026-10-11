@@ -8,6 +8,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTryOn } from '@/hooks/use-try-on';
 import { formatCurrency } from '@/lib/helpers';
 import GlassesRenderer from '@/components/GlassesRenderer';
+import GlassesAdjustmentControls from '@/components/GlassesAdjustmentControls';
+import SocialShareButtons from '@/components/SocialShareButtons';
+import { useTryOnStore } from '@/store/tryOnStore';
 
 const VirtualTryOn = () => {
   const { t } = useTranslation();
@@ -30,8 +33,14 @@ const VirtualTryOn = () => {
     selectFrame,
     updateFilter,
     clearFilters,
+    handleCaptureScreenshot,
     cleanup
   } = useTryOn();
+  const isFaceDetected = useTryOnStore((s) => s.isFaceDetected);
+  const isTryOnActive = (isWebcamActive || !!uploadedImage) && !!selectedFrame;
+  // Selfie view: the camera is shown mirrored, like a real mirror. Video and
+  // glasses layer are flipped together, so tracking stays aligned.
+  const mirrorStyle = method === 'webcam' ? { transform: 'scaleX(-1)' } : undefined;
 
   // Cleanup on component unmount
   useEffect(() => {
@@ -92,7 +101,7 @@ const VirtualTryOn = () => {
                     playsInline
                     muted
                     className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                    style={{ display: method === 'webcam' && isWebcamActive ? 'block' : 'none' }}
+                    style={{ display: method === 'webcam' && isWebcamActive ? 'block' : 'none', ...mirrorStyle }}
                   />
                   
                   {method === 'upload' && uploadedImage && (
@@ -108,16 +117,29 @@ const VirtualTryOn = () => {
                       <canvas
                         ref={renderCanvasRef}
                         className="absolute inset-0 w-full h-full object-cover rounded-lg pointer-events-none"
+                        style={mirrorStyle}
                       />
                       <GlassesRenderer
                         frame={selectedFrame}
                         canvasRef={renderCanvasRef}
                         width={canvasSize.width}
                         height={canvasSize.height}
+                        mirrored={method === 'webcam'}
                       />
                     </>
                   )}
                   
+                  {isTryOnActive && !isFaceDetected && (
+                    <div
+                      role="status"
+                      className="absolute bottom-3 left-3 right-3 rounded-md bg-black/70 px-3 py-2 text-center text-sm text-white"
+                    >
+                      {method === 'upload'
+                        ? t('virtualTryOnPage.tracking.noFaceInPhoto')
+                        : t('virtualTryOnPage.tracking.searching')}
+                    </div>
+                  )}
+
                   {!isWebcamActive && !uploadedImage && (
                     <div className="text-center p-6">
                       <Camera className="mx-auto text-gray-400 h-12 w-12 mb-3" />
@@ -126,6 +148,13 @@ const VirtualTryOn = () => {
                   )}
                 </div>
                 
+                {isTryOnActive && (
+                  <div className="mt-6 space-y-4">
+                    <SocialShareButtons onCaptureScreenshot={handleCaptureScreenshot} />
+                    <GlassesAdjustmentControls />
+                  </div>
+                )}
+
                 <div className="mt-6">
                   <h4 className="font-medium mb-3">{t('virtualTryOnPage.tryOnSection.tips')}</h4>
                   <ul className="text-sm text-gray-600 space-y-2">
