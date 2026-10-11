@@ -2,11 +2,13 @@
   "common": {
     "currentLanguage": "es",
     "loading": "Cargando...",
-    "error": "Ha ocurrido un error. Por favor, inténtelo de nuevo."
+    "error": "Ha ocurrido un error. Por favor, inténtelo de nuevo.",
+    "back": "Atrás",
+    "continue": "Continuar"
   },
   "seo": {
     "defaultTitle": "Ópticas Cardani - Expertos en Salud Visual",
-    "defaultDescription": "Expertos en salud visual en Bajío con tecnología de vanguardia y servicio personalizado para toda la familia."
+    "defaultDescription": "Cuidado profesional de la vista en Abasolo, Guanajuato: exámenes visuales para adultos y niños, lentes de contacto, armazones y prueba virtual 3D."
   },
   "aria": {
     "closeMenu": "Cerrar menú",
@@ -22,11 +24,15 @@
     "bookAppointment": "Agendar Cita"
   },
   "hero": {
-    "title": "Su visión es nuestra prioridad",
-    "subtitle": "Expertos en salud visual en Bajío con tecnología de vanguardia",
+    "title": "Tu visión es nuestra prioridad",
+    "subtitle": "Cuidamos de tu salud visual con la más alta tecnología y el mejor servicio personalizado en Abasolo, Guanajuato.",
     "bookAppointment": "Agendar Cita",
     "virtualTryOn": "Prueba Virtual de Armazones",
-    "imageAlt": "Interior de Ópticas Cardani"
+    "imageAlt": "Interior de Ópticas Cardani",
+    "titleStart": "Tu Visión,",
+    "titleAccent": "Nuestra Pasión",
+    "ctaAppointment": "Agendar Cita",
+    "ctaTryOn": "Prueba Virtual 3D"
   },
   "services": {
     "title": "Nuestros Servicios",
@@ -35,44 +41,47 @@
   },
   "products": {
     "featuredTitle": "Productos Destacados",
-    "featuredSubtitle": "Descubra nuestra amplia gama de armazones, lentes y accesorios de las mejores marcas.",
+    "featuredSubtitle": "Descubre nuestros armazones y pruébatelos en 3D antes de venir.",
     "viewDetails": "Ver Detalles",
     "viewFullCatalog": "Ver Catálogo Completo",
-    "materialColor": "{{material}} en {{color}}"
+    "materialColor": "{{material}} en {{color}}",
+    "viewAll": "Ver catálogo completo"
   },
   "virtualTryOn": {
     "title": "Prueba Virtual de Armazones",
-    "subtitle": "Encuentre el armazón perfecto desde la comodidad de su hogar. Pruebe diferentes estilos y vea cómo le quedan.",
-    "tryBeforeBuy": "Pruebe Antes de Comprar",
-    "description": "Nuestro avanzado sistema de prueba virtual le permite ver cómo se ven nuestros armazones en su rostro antes de visitarnos.",
+    "subtitle": "Encuentra el armazón perfecto desde la comodidad de tu casa: prueba diferentes estilos y ve cómo te quedan.",
+    "tryBeforeBuy": "Pruébatelos antes de comprar",
+    "description": "Nuestra prueba virtual 3D te permite ver cómo te quedan nuestros armazones antes de visitarnos.",
     "benefits": {
-      "1": "Fácil de usar - sólo suba una foto o use su webcam",
-      "2": "Pruebe docenas de armazones en minutos",
-      "3": "Guarde sus favoritos y compártalos con amigos y familia"
+      "1": "Fácil de usar: solo usa tu cámara o sube una foto",
+      "2": "Cambia de armazón al instante y compara estilos",
+      "3": "Toma una foto y compártela con tu familia y amigos"
     },
     "tryNow": "Probar Armazones Ahora",
     "imageAlt": "Demostración de prueba virtual"
   },
   "testimonials": {
     "title": "Lo Que Dicen Nuestros Clientes",
-    "subtitle": "Miles de clientes satisfechos confían en nosotros para el cuidado de su visión."
+    "subtitle": "Opiniones de quienes ya confían en nosotros para el cuidado de su visión."
   },
   "blog": {
     "title": "Blog de Salud Visual",
-    "subtitle": "Artículos informativos sobre el cuidado de sus ojos y últimas tendencias en óptica.",
+    "subtitle": "Artículos sobre el cuidado de tus ojos y las últimas tendencias en óptica.",
     "readMore": "Leer Más",
     "viewAllArticles": "Ver Todos los Artículos"
   },
   "newsletter": {
-    "title": "Suscríbase a Nuestro Boletín",
-    "subtitle": "Reciba consejos de cuidado visual, noticias sobre nuevos productos y ofertas especiales.",
-    "emailPlaceholder": "Su correo electrónico",
+    "title": "Mantente en contacto",
+    "subtitle": "Recibe promociones, consejos de salud visual y novedades directamente en tu correo.",
+    "emailPlaceholder": "Tu correo electrónico",
     "emailAriaLabel": "Dirección de correo electrónico para el boletín",
     "subscribe": "Suscribirse",
-    "privacy": "Respetamos su privacidad. Puede darse de baja en cualquier momento."
+    "privacy": "No compartimos tu información. Puedes darte de baja en cualquier momento.",
+    "success": "¡Listo! Te avisaremos de promociones y consejos de salud visual.",
+    "invalid": "Escribe un correo válido."
   },
   "footer": {
-    "tagline": "Expertos en salud visual al servicio de su familia desde 1995.",
+    "tagline": "Cuidamos de tu salud visual con profesionalismo, tecnología de vanguardia y atención personalizada.",
     "quickLinks": "Enlaces Rápidos",
     "links": {
       "home": "Inicio",
@@ -83,20 +92,18 @@
       "blog": "Blog"
     },
     "contact": "Contacto",
-    "locations": "Irapuato y Abasolo, Guanajuato, México",
     "hours": "Horario",
-    "weekdayHours": "Lunes - Viernes: 9:00 - 19:00",
-    "saturdayHours": "Sábado: 9:00 - 14:00",
-    "sundayHours": "Domingo: Cerrado",
     "bookAppointment": "Agendar Cita",
     "rightsReserved": "Todos los derechos reservados.",
     "privacyPolicy": "Política de Privacidad",
-    "terms": "Términos y Condiciones"
+    "terms": "Términos y Condiciones",
+    "legal": "Términos y Privacidad",
+    "whatsappAvailable": "Escríbenos por WhatsApp"
   },
   "servicesPage": {
     "hero": {
       "title": "Nuestros Servicios",
-      "subtitle": "Soluciones integrales de cuidado ocular para usted y su familia",
+      "subtitle": "Soluciones integrales de cuidado visual para ti y tu familia",
       "bookAppointment": "Agendar Cita"
     },
     "main": {
@@ -106,11 +113,11 @@
     "free": "Gratis",
     "duration": "{{minutes}} minutos",
     "recommended": "Recomendado",
-    "availableAt": "Disponible en todas las sucursales",
+    "availableAt": "Disponible en nuestra óptica de Abasolo",
     "bookNow": "Agendar Ahora",
     "whyChoose": {
       "title": "Por Qué Elegir Ópticas Cardani",
-      "subtitle": "Estamos comprometidos a brindar la más alta calidad de atención para su salud visual.",
+      "subtitle": "Estamos comprometidos a brindar la más alta calidad de atención para tu salud visual.",
       "reasons": {
         "1": {
           "title": "Tecnología Avanzada",
@@ -132,19 +139,19 @@
     },
     "faq": {
       "title": "Preguntas Frecuentes",
-      "subtitle": "Encuentre respuestas a preguntas comunes sobre nuestros servicios y el cuidado de los ojos.",
+      "subtitle": "Respuestas a las preguntas más comunes sobre nuestros servicios y el cuidado de los ojos.",
       "questions": {
         "1": {
           "question": "¿Con qué frecuencia debo hacerme un examen de la vista?",
-          "answer": "La mayoría de los profesionales del cuidado de los ojos recomiendan un examen integral cada 1-2 años, dependiendo de su edad, factores de riesgo y si actualmente usa anteojos o lentes de contacto."
+          "answer": "La mayoría de los profesionales recomiendan un examen integral cada 6 meses, según tu edad, factores de riesgo y si usas anteojos o lentes de contacto, y actualizar tu graduación al menos una vez al año."
         },
         "2": {
           "question": "¿Cuál es la diferencia entre un optometrista y un oftalmólogo?",
           "answer": "Los optometristas brindan servicios de atención ocular primaria, incluidas pruebas de visión y prescripción de lentes correctivos. Los oftalmólogos son médicos que se especializan en el cuidado de los ojos y la visión, capaces de realizar cirugías oculares."
         },
         "3": {
-          "question": "¿Aceptan seguros?",
-          "answer": "Sí, trabajamos con varios proveedores de seguros. Por favor contáctenos para verificar si su seguro es aceptado."
+          "question": "¿Qué formas de pago aceptan?",
+          "answer": "Escríbenos por WhatsApp o llámanos y te informamos sobre formas de pago y promociones vigentes."
         },
         "4": {
           "question": "¿Cuánto tiempo dura un examen de la vista?",
@@ -156,13 +163,13 @@
         }
       }
     },
-    "moreQuestions": "¿Tiene más preguntas?",
-    "contactUs": "Contáctenos",
+    "moreQuestions": "¿Tienes más preguntas?",
+    "contactUs": "Contáctanos",
     "cta": {
-      "title": "¿Listo para cuidar de su visión?",
-      "subtitle": "Reserve una cita hoy y dé el primer paso hacia una mejor salud ocular.",
+      "title": "¿Listo para cuidar tu visión?",
+      "subtitle": "Agenda tu cita hoy y da el primer paso hacia una mejor salud visual.",
       "bookAppointment": "Agendar Cita",
-      "contactUs": "Contáctenos"
+      "contactUs": "Contáctanos"
     }
   },
   "productsPage": {
@@ -194,75 +201,75 @@
     },
     "tryOnButton": "Probar",
     "tryOn": {
-      "title": "Pruebe Antes de Comprar",
-      "description": "Use nuestra función de prueba virtual para ver cómo se ven nuestros armazones en usted antes de realizar una compra.",
+      "title": "Pruébatelos antes de comprar",
+      "description": "Usa nuestra prueba virtual 3D para ver cómo te quedan nuestros armazones antes de visitarnos.",
       "benefits": {
-        "1": "Suba una foto o use su webcam",
-        "2": "Pruebe múltiples estilos al instante",
-        "3": "Comparta sus favoritos con amigos"
+        "1": "Usa tu cámara o sube una foto",
+        "2": "Prueba varios estilos al instante",
+        "3": "Comparte tu foto con amigos"
       },
       "button": "Ir a Prueba Virtual",
       "imageAlt": "Demostración de prueba virtual"
     },
     "noResults": {
       "title": "No se encontraron productos",
-      "message": "Intente ajustar sus filtros o término de búsqueda para encontrar lo que está buscando."
+      "message": "Intenta ajustar los filtros o la búsqueda para encontrar lo que buscas."
     }
   },
   "appointmentsPage": {
     "hero": {
-      "title": "Reserve su Cita",
-      "subtitle": "Programe una visita en cualquiera de nuestras ubicaciones en solo unos pasos"
+      "title": "Agenda tu cita",
+      "subtitle": "Reserva tu visita en Ópticas Cardani Abasolo en unos cuantos pasos"
     },
     "steps": {
       "title": "Proceso de Reserva",
-      "subtitle": "Complete estos sencillos pasos para asegurar su cita",
+      "subtitle": "Completa estos sencillos pasos para asegurar tu cita",
       "step1": "Seleccionar Ubicación",
       "step2": "Elegir Servicio",
       "step3": "Elegir Fecha y Hora",
-      "step4": "Ingresar sus Datos"
+      "step4": "Tus datos"
     },
     "locationSection": {
-      "title": "Seleccione Sucursal",
-      "subtitle": "Elija la sucursal más conveniente para usted"
+      "title": "Sucursal",
+      "subtitle": "Atendemos en nuestra óptica de Abasolo"
     },
     "serviceSection": {
-      "title": "Seleccione Servicio",
-      "subtitle": "Elija el tipo de servicio que necesita"
+      "title": "Elige el servicio",
+      "subtitle": "¿Qué servicio necesitas?"
     },
     "calendarSection": {
-      "title": "Seleccione Fecha y Hora",
-      "subtitle": "Elija una fecha y hora conveniente para su cita",
+      "title": "Elige fecha y hora",
+      "subtitle": "Elige el día y la hora que mejor te acomoden",
       "availableTimes": "Horarios Disponibles",
       "noTimesAvailable": "No hay horarios disponibles para esta fecha. Por favor seleccione otra fecha.",
       "previousMonth": "Mes anterior",
       "nextMonth": "Mes siguiente"
     },
     "detailsSection": {
-      "title": "Sus Datos",
+      "title": "Tus datos",
       "nameLabel": "Nombre completo",
-      "namePlaceholder": "Ingrese su nombre completo",
+      "namePlaceholder": "Tu nombre completo",
       "phoneLabel": "Teléfono",
-      "phonePlaceholder": "Ingrese su número de teléfono",
+      "phonePlaceholder": "Tu número de teléfono",
       "emailLabel": "Correo electrónico",
-      "emailPlaceholder": "Ingrese su dirección de correo electrónico",
+      "emailPlaceholder": "Tu correo electrónico",
       "visitTypeLabel": "Tipo de visita",
       "firstVisit": "Primera visita",
       "returningPatient": "Paciente recurrente",
       "commentsLabel": "Comentarios o necesidades especiales",
-      "commentsPlaceholder": "Agregue cualquier requisito especial o pregunta",
+      "commentsPlaceholder": "Cuéntanos si tienes alguna necesidad especial o pregunta",
       "remindersLabel": "Deseo recibir recordatorios de cita por correo electrónico y SMS",
       "privacyLabel": "He leído y acepto la política de privacidad y los términos de servicio",
       "requiredField": "Este campo es obligatorio",
-      "invalidEmail": "Por favor, ingrese una dirección de correo electrónico válida",
-      "invalidPhone": "Por favor, ingrese un número de teléfono válido"
+      "invalidEmail": "Escribe un correo electrónico válido",
+      "invalidPhone": "Escribe un número de teléfono válido"
     },
     "confirmation": {
       "confirmAppointment": "Confirmar Cita",
-      "processing": "Procesando su cita...",
+      "processing": "Registrando tu cita...",
       "success": {
-        "title": "¡Cita Confirmada!",
-        "message": "Su cita ha sido programada con éxito. Hemos enviado una confirmación a su correo electrónico.",
+        "title": "¡Cita registrada!",
+        "message": "Tu cita quedó registrada. Envíanos un WhatsApp para confirmarla y recibir recordatorios.",
         "details": "Detalles de la Cita",
         "location": "Sucursal",
         "service": "Servicio",
@@ -274,56 +281,58 @@
       },
       "error": {
         "title": "Algo salió mal",
-        "message": "No pudimos reservar su cita. Por favor, inténtelo de nuevo o contáctenos directamente.",
+        "message": "No pudimos registrar tu cita. Inténtalo de nuevo o contáctanos directamente.",
         "retry": "Intentar de Nuevo",
-        "contact": "Contáctenos"
+        "contact": "Contáctanos"
       }
     }
   },
   "virtualTryOnPage": {
     "hero": {
       "title": "Prueba Virtual de Armazones",
-      "subtitle": "Pruebe nuestros armazones desde la comodidad de su hogar antes de visitar nuestra tienda"
+      "subtitle": "Pruébate nuestros armazones desde la comodidad de tu casa antes de visitarnos"
     },
     "tryOnSection": {
-      "title": "Seleccione Cómo Probar",
+      "title": "Elige cómo probarte los lentes",
       "useWebcam": "Usar Webcam",
       "uploadPhoto": "Subir Foto",
-      "placeholder": "Active su cámara o suba una foto para comenzar",
+      "placeholder": "Activa tu cámara o sube una foto para comenzar",
       "tips": "Consejos para una mejor experiencia:",
-      "tip1": "Asegúrese de tener buena iluminación frontal",
-      "tip2": "Mire directamente a la cámara",
-      "tip3": "Retire los lentes si ya usa"
+      "tip1": "Asegúrate de tener buena luz de frente",
+      "tip2": "Mira directamente a la cámara",
+      "tip3": "Quítate los lentes si usas"
     },
     "framesSection": {
-      "title": "Seleccione Armazones",
+      "title": "Elige tus armazones",
       "filter": "Filtrar por:",
       "allStyles": "Todos los estilos",
       "allMaterials": "Todos los materiales",
       "allColors": "Todos los colores",
-      "viewInStore": "Ver en Tienda"
+      "viewInStore": "Ver en Tienda",
+      "askOnWhatsapp": "Preguntar por WhatsApp",
+      "askMessage": "¡Hola! Me interesa el armazón \"{{frame}}\" que vi en la prueba virtual. ¿Lo tienen disponible?"
     },
     "noCamera": {
       "title": "Cámara no disponible",
-      "message": "No pudimos acceder a su cámara. Verifique los permisos de su navegador o intente subir una foto."
+      "message": "No pudimos acceder a tu cámara. Revisa los permisos de tu navegador o sube una foto."
     },
     "instructions": {
       "title": "Cómo Funciona",
       "step1": {
-        "title": "Elija su Método",
-        "description": "Seleccione entre usar su webcam en tiempo real o subir una foto."
+        "title": "Elige tu método",
+        "description": "Usa tu cámara en tiempo real o sube una foto."
       },
       "step2": {
-        "title": "Pruebe Diferentes Armazones",
-        "description": "Navegue por nuestra colección y vea cómo se ve cada armazón en usted."
+        "title": "Prueba diferentes armazones",
+        "description": "Recorre nuestra colección y ve cómo te queda cada armazón."
       },
       "step3": {
-        "title": "Guarde sus Favoritos",
-        "description": "Guarde los armazones que le gusten y compárelos lado a lado."
+        "title": "Toma una foto",
+        "description": "Guarda o comparte tu foto con los armazones que más te gusten."
       },
       "step4": {
-        "title": "Visítenos o Compre en Línea",
-        "description": "Venga a nuestra tienda para probar los armazones físicos o compre directamente en línea."
+        "title": "Visítanos",
+        "description": "Ven a nuestra óptica en Abasolo para probarte los armazones en persona y hacerte tu examen visual."
       }
     },
     "errors": {
@@ -333,15 +342,15 @@
       },
       "unsupported": {
         "title": "Navegador no compatible",
-        "message": "Su navegador no permite usar la cámara. Pruebe con Chrome, Safari o Edge actualizados, o suba una foto."
+        "message": "Tu navegador no permite usar la cámara. Prueba con Chrome, Safari o Edge actualizados, o sube una foto."
       },
       "denied": {
         "title": "Permiso de cámara bloqueado",
-        "message": "Permita el acceso a la cámara desde el ícono de candado junto a la dirección del sitio y vuelva a intentar, o suba una foto."
+        "message": "Permite el acceso a la cámara desde el ícono de candado junto a la dirección del sitio y vuelve a intentarlo, o sube una foto."
       },
       "notFound": {
         "title": "No se encontró una cámara",
-        "message": "No detectamos una cámara en este dispositivo. Puede subir una foto para probarse los armazones."
+        "message": "No detectamos una cámara en este dispositivo. Puedes subir una foto para probarte los armazones."
       },
       "inUse": {
         "title": "La cámara está en uso",
@@ -349,7 +358,7 @@
       },
       "model": {
         "title": "No se pudo iniciar el probador",
-        "message": "El sistema de detección facial no cargó. Revise su conexión y vuelva a intentar en unos segundos."
+        "message": "El sistema de detección facial no cargó. Revisa tu conexión y vuelve a intentarlo en unos segundos."
       }
     },
     "adjustments": {
@@ -367,8 +376,8 @@
       "emailBody": "Mira cómo me quedan estos lentes de Ópticas Cardani"
     },
     "tracking": {
-      "searching": "Buscando su rostro… mire de frente a la cámara",
-      "noFaceInPhoto": "No detectamos un rostro en la foto. Use una foto de frente y bien iluminada."
+      "searching": "Buscando tu rostro… mira de frente a la cámara",
+      "noFaceInPhoto": "No detectamos un rostro en la foto. Usa una foto de frente y con buena luz."
     }
   },
   "blogPage": {
@@ -390,7 +399,7 @@
     "relatedArticles": "Artículos Relacionados",
     "noArticles": {
       "title": "No se encontraron artículos",
-      "message": "No pudimos encontrar artículos que coincidan con sus criterios. Por favor, intente con otra categoría."
+      "message": "No encontramos artículos con esos criterios. Intenta con otra categoría."
     },
     "search": {
       "placeholder": "Buscar artículos...",
@@ -400,46 +409,46 @@
   },
   "contactPage": {
     "hero": {
-      "title": "Contáctenos",
-      "subtitle": "Estamos aquí para responder sus preguntas y ayudar con sus necesidades visuales"
+      "title": "Contáctanos",
+      "subtitle": "Estamos aquí para responder tus preguntas y ayudarte con tu salud visual"
     },
     "locations": {
       "title": "Nuestras Sucursales",
-      "subtitle": "Visítenos en cualquiera de nuestras sucursales en Irapuato y Abasolo",
+      "subtitle": "Visítanos en Lerdo Oriente 157 2C, Abasolo, Guanajuato",
       "directions": "Ver Indicaciones"
     },
     "contactForm": {
-      "title": "Contáctenos",
+      "title": "Escríbenos",
       "nameLabel": "Nombre",
-      "namePlaceholder": "Ingrese su nombre completo",
+      "namePlaceholder": "Tu nombre completo",
       "emailLabel": "Correo electrónico",
-      "emailPlaceholder": "Ingrese su dirección de correo electrónico",
+      "emailPlaceholder": "Tu correo electrónico",
       "phoneLabel": "Teléfono",
-      "phonePlaceholder": "Ingrese su número de teléfono",
+      "phonePlaceholder": "Tu número de teléfono",
       "locationLabel": "Sucursal Preferida",
-      "selectLocation": "Seleccione una sucursal",
+      "selectLocation": "Sucursal",
       "messageLabel": "Mensaje",
       "messagePlaceholder": "¿Cómo podemos ayudarle?",
       "newsletterLabel": "Deseo suscribirme al boletín de noticias y promociones",
       "sendMessage": "Enviar Mensaje",
       "sending": "Enviando...",
-      "success": "Su mensaje ha sido enviado con éxito. Nos pondremos en contacto con usted pronto.",
-      "error": "Hubo un error al enviar su mensaje. Por favor, inténtelo de nuevo."
+      "success": "Tu mensaje fue enviado. Nos pondremos en contacto contigo pronto.",
+      "error": "Hubo un error al enviar tu mensaje. Inténtalo de nuevo."
     },
     "faq": {
       "title": "Preguntas Frecuentes",
       "questions": {
         "1": {
           "question": "¿Cuál es su horario de atención?",
-          "answer": "Nuestra sucursal de Irapuato está abierta de lunes a viernes de 9:00 a 19:00, y los sábados de 9:00 a 14:00. La sucursal de Abasolo está abierta de lunes a viernes de 9:00 a 18:00, y los sábados de 9:00 a 14:00. Ambas sucursales están cerradas los domingos."
+          "answer": "Lunes, martes, miércoles y viernes de 10:00 am a 8:00 pm; jueves, sábado y domingo de 10:00 am a 5:00 pm."
         },
         "2": {
-          "question": "¿Necesito una cita para un examen de la vista?",
+          "question": "¿Necesito cita para un examen de la vista?",
           "answer": "Aunque aceptamos visitas sin cita previa cuando es posible, recomendamos programar una cita para garantizar un servicio rápido y minimizar el tiempo de espera."
         },
         "3": {
-          "question": "¿Cuánto tiempo tarda en estar listos los lentes nuevos?",
-          "answer": "Los lentes de prescripción estándar generalmente tardan de 3 a 5 días hábiles. Los lentes de alto índice o progresivos pueden tardar de 7 a 10 días hábiles."
+          "question": "¿Cuánto tardan en estar listos mis lentes?",
+          "answer": "Depende del tipo de lente y graduación. Al hacer tu pedido te confirmamos la fecha de entrega."
         }
       }
     }
@@ -469,5 +478,106 @@
       "Silver": "Plateado",
       "Transparent": "Transparente"
     }
+  },
+  "brand": {
+    "tagline": "nuestros ojos en ti..."
+  },
+  "whyChoose": {
+    "title": "¿Por Qué Elegir Ópticas Cardani?",
+    "subtitle": "Más que una óptica, tu aliado en salud visual.",
+    "items": {
+      "local": {
+        "title": "Empresa 100% Guanajuatense",
+        "description": "Estamos comprometidos a brindar la más alta calidad de atención para tu salud visual."
+      },
+      "technology": {
+        "title": "Tecnología Avanzada",
+        "description": "Equipos de última generación para un diagnóstico preciso."
+      },
+      "professionals": {
+        "title": "Profesionales Experimentados",
+        "description": "Nuestro equipo de optometristas y técnicos tiene años de experiencia especializada."
+      },
+      "personalized": {
+        "title": "Atención Personalizada",
+        "description": "Soluciones a la medida de las necesidades visuales de cada paciente."
+      },
+      "quality": {
+        "title": "Productos de Calidad",
+        "description": "Amplia selección de armazones y lentes para cada estilo y necesidad."
+      },
+      "tryon": {
+        "title": "Pruébatelos Antes de Venir",
+        "description": "Con nuestra prueba virtual 3D ves cómo te quedan los armazones desde tu celular."
+      }
+    },
+    "cta": {
+      "title": "Experimenta la Diferencia Cardani",
+      "description": "Agenda tu cita hoy y descubre por qué somos la opción preferida en Abasolo.",
+      "button": "Agendar Cita Ahora"
+    }
+  },
+  "walkIn": {
+    "badge": "Sin necesidad de cita",
+    "note": "Visítanos en nuestro horario de atención."
+  },
+  "location": {
+    "title": "Visítanos",
+    "subtitle": "Te esperamos en el centro de Abasolo.",
+    "hoursTitle": "Horarios de Atención",
+    "today": "Hoy",
+    "directions": "Cómo llegar",
+    "call": "Llamar",
+    "whatsapp": "WhatsApp",
+    "mapTitle": "Mapa de ubicación de Ópticas Cardani",
+    "openNow": "Abierto ahora · cierra a las {{time}}",
+    "opensToday": "Cerrado · abre hoy a las {{time}}",
+    "opensTomorrow": "Cerrado · abre mañana a las {{time}}",
+    "opensLater": "Cerrado · abre el {{day}} a las {{time}}"
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "subtitle": "Respuestas a las preguntas más comunes sobre nuestros servicios y el cuidado visual.",
+    "items": [
+      {
+        "q": "¿Con qué frecuencia debo hacerme un examen de la vista?",
+        "a": "La mayoría de los profesionales recomiendan un examen integral cada 6 meses, según tu edad, factores de riesgo y si usas anteojos o lentes de contacto, y actualizar tu graduación al menos una vez al año."
+      },
+      {
+        "q": "¿Cuál es la diferencia entre un optometrista y un oftalmólogo?",
+        "a": "Los optometristas brindan atención visual primaria, como exámenes de la vista y prescripción de lentes. Los oftalmólogos son médicos especialistas en los ojos y pueden realizar cirugías."
+      },
+      {
+        "q": "¿Cuánto tiempo dura un examen de la vista?",
+        "a": "Un examen visual completo suele durar entre 30 y 45 minutos, según las pruebas necesarias."
+      },
+      {
+        "q": "¿Cómo sé si necesito lentes?",
+        "a": "Las señales más comunes son visión borrosa, dolores de cabeza frecuentes, fatiga visual o dificultad para ver de noche. Un examen visual completo lo confirma."
+      },
+      {
+        "q": "¿Necesito cita para ajustar mis armazones?",
+        "a": "No. El ajuste de armazones es gratuito y no requiere cita: visítanos en nuestro horario de atención."
+      }
+    ]
+  },
+  "whatsapp": {
+    "floating": "Escríbenos por WhatsApp",
+    "defaultMessage": "¡Hola! Me gustaría información sobre Ópticas Cardani."
+  },
+  "legal": {
+    "title": "Términos Legales",
+    "subtitle": "Términos de Uso y Política de Privacidad",
+    "terms": "Términos de Uso",
+    "privacy": "Política de Privacidad"
+  },
+  "reviews": {
+    "leaveReview": "Déjanos tu reseña en Google"
+  },
+  "whatsappBooking": {
+    "greeting": "¡Hola! Acabo de agendar una cita en Ópticas Cardani:",
+    "name": "Nombre",
+    "footer": "¿Me la pueden confirmar? ¡Gracias!",
+    "confirm": "Confirmar por WhatsApp"
   }
 }

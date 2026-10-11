@@ -14,6 +14,7 @@ import Appointments from "@/pages/Appointments";
 import VirtualTryOn from "@/pages/VirtualTryOn";
 import Blog from "@/pages/Blog";
 import Contact from "@/pages/Contact";
+import Legal from "@/pages/Legal";
 
 function Router() {
   return (
@@ -26,6 +27,9 @@ function Router() {
         <Route path="/virtual-try-on" component={VirtualTryOn} />
         <Route path="/blog" component={Blog} />
         <Route path="/contact" component={Contact} />
+        <Route path="/legal" component={Legal} />
+        <Route path="/privacy-policy" component={Legal} />
+        <Route path="/terms" component={Legal} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

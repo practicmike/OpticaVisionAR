@@ -1,4 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import LocationSection from '@/components/sections/LocationSection';
+import NewsletterSection from '@/components/sections/NewsletterSection';
+import PageHeader from '@/components/brand/PageHeader';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -77,87 +80,9 @@ const Contact = () => {
 
   return (
     <>
-      {/* Contact Hero */}
-      <section className="bg-primary text-white py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="font-bold text-3xl md:text-4xl mb-4">{t('contactPage.hero.title')}</h1>
-            <p className="text-lg opacity-90 mb-6">{t('contactPage.hero.subtitle')}</p>
-          </div>
-        </div>
-      </section>
+      <PageHeader title={t('contactPage.hero.title')} subtitle={t('contactPage.hero.subtitle')} />
 
-      {/* Locations */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-bold text-2xl md:text-3xl text-[#333333] mb-3">{t('contactPage.locations.title')}</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">{t('contactPage.locations.subtitle')}</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {isLoadingLocations ? (
-              // Loading skeleton
-              Array(2).fill(0).map((_, index) => (
-                <Card key={index} className="bg-gray-50 shadow-sm">
-                  <div className="h-56 bg-gray-200"></div>
-                  <CardContent className="p-6">
-                    <div className="h-6 bg-gray-200 rounded w-1/2 mb-4"></div>
-                    <div className="space-y-3">
-                      <div className="flex">
-                        <div className="w-6 h-6 bg-gray-300 rounded-full mr-3"></div>
-                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                      </div>
-                      <div className="flex">
-                        <div className="w-6 h-6 bg-gray-300 rounded-full mr-3"></div>
-                        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                      </div>
-                      <div className="flex">
-                        <div className="w-6 h-6 bg-gray-300 rounded-full mr-3"></div>
-                        <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-                      </div>
-                    </div>
-                    <div className="h-10 bg-gray-200 rounded w-1/3 mt-6"></div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              locations?.map((location: any) => (
-                <Card key={location.id} className="bg-gray-50 overflow-hidden shadow-sm">
-                  <div className="h-56 bg-gray-200">
-                    {/* Google Maps embed would go here */}
-                    <div className="w-full h-full flex items-center justify-center bg-gray-300">
-                      <span className="text-gray-600">Map of {location.name}</span>
-                    </div>
-                  </div>
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold text-xl mb-3">{location.name}</h3>
-                    <ul className="space-y-3 text-gray-700">
-                      <li className="flex">
-                        <MapPin className="text-primary mt-1 mr-3 h-5 w-5" />
-                        <span>{location.address}, {location.city}</span>
-                      </li>
-                      <li className="flex">
-                        <Phone className="text-primary mt-1 mr-3 h-5 w-5" />
-                        <span>{location.phone}</span>
-                      </li>
-                      <li className="flex">
-                        <Clock className="text-primary mt-1 mr-3 h-5 w-5" />
-                        <span>{location.openingHours}</span>
-                      </li>
-                    </ul>
-                    <div className="mt-6">
-                      <Button className="text-primary hover:text-primary/80" variant="link">
-                        {t('contactPage.locations.directions')} <ChevronDown className="ml-1 h-4 w-4 rotate-270" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
+      <LocationSection />
 
       {/* Contact Form */}
       <section className="py-12 md:py-16 bg-gray-50">
@@ -320,7 +245,7 @@ const Contact = () => {
       <section className="py-12 md:py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-bold text-2xl md:text-3xl text-[#333333] mb-3">{t('contactPage.faq.title')}</h2>
+            <h2 className="font-bold text-2xl md:text-3xl text-primary mb-3">{t('contactPage.faq.title')}</h2>
           </div>
           
           <div className="max-w-3xl mx-auto">
@@ -340,27 +265,7 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="py-12 md:py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto bg-primary rounded-lg p-8 text-center text-white">
-            <h2 className="font-bold text-2xl md:text-3xl mb-4">{t('newsletter.title')}</h2>
-            <p className="mb-6 opacity-90">{t('newsletter.subtitle')}</p>
-            <form className="flex flex-col md:flex-row gap-3 max-w-xl mx-auto">
-              <Input 
-                type="email" 
-                placeholder={t('newsletter.emailPlaceholder')} 
-                className="flex-1 p-3 bg-white/20 border-white/20 placeholder-white/70 text-white"
-                aria-label={t('newsletter.emailAriaLabel')}
-              />
-              <Button type="submit" className="bg-secondary hover:bg-secondary/90 text-white">
-                {t('newsletter.subscribe')}
-              </Button>
-            </form>
-            <p className="mt-4 text-sm opacity-75">{t('newsletter.privacy')}</p>
-          </div>
-        </div>
-      </section>
+      <NewsletterSection />
     </>
   );
 };

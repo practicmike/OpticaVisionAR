@@ -1,4 +1,4 @@
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, isNull, like, sql } from "drizzle-orm";
 import type { PgDatabase } from "drizzle-orm/pg-core";
 import {
   locations,
@@ -16,6 +16,9 @@ import {
   blogPostsSeed,
   testimonialsSeed,
   generateSlots,
+  legacyBusinessFixes,
+  slotMatchesSchedule,
+  businessDate,
 } from "./seed-data";
 
 /**
@@ -81,6 +84,8 @@ export const SCHEMA_STATEMENTS = [
     "price" integer,
     "is_available" boolean DEFAULT true NOT NULL
   )`,
+  `ALTER TABLE "locations" ADD COLUMN IF NOT EXISTS "is_active" boolean DEFAULT true NOT NULL`,
+  `ALTER TABLE "services" ADD COLUMN IF NOT EXISTS "requires_appointment" boolean DEFAULT true NOT NULL`,
   `ALTER TABLE "frames" ADD COLUMN IF NOT EXISTS "model_url" text`,
   `ALTER TABLE "frames" ADD COLUMN IF NOT EXISTS "model_rotation_y" real`,
   `CREATE TABLE IF NOT EXISTS "blog_posts" (
@@ -178,6 +183,76 @@ export async function syncFrames(db: Db, log: Log = console.log) {
 }
 
 /**
+ * Replaces the placeholder business data of the first version (fake
+ * Irapuato branch, invented services, wrong opening hours, invented
+ * testimonials) with the real data, without deleting anything a past
+ * appointment could reference and without touching later manual edits.
+ */
+export async function syncBusiness(db: Db, log: Log = console.log) {
+  const fx = legacyBusinessFixes;
+  const real = locationsSeed[0];
+
+  const hiddenLocations = await db
+    .update(locations)
+    .set({ isActive: false })
+    .where(and(inArray(locations.address, fx.hideLocationsWithAddress), eq(locations.isActive, true)))
+    .returning({ id: locations.id });
+  const fixedLocations = await db
+    .update(locations)
+    .set({ name: real.name, address: real.address, city: real.city, phone: real.phone, email: real.email, openingHours: real.openingHours })
+    .where(eq(locations.address, fx.realLocationWhereAddress))
+    .returning({ id: locations.id });
+  log(`- locations: hid ${hiddenLocations.length}, corrected ${fixedLocations.length}`);
+
+  let fixedServices = 0;
+  for (const m of fx.services) {
+    const target = servicesSeed.find((sv) => sv.nameEs === m.newNameEs);
+    if (!target) continue;
+    const rows = await db
+      .update(services)
+      .set({ ...target })
+      .where(and(eq(services.nameEs, m.oldNameEs), eq(services.descriptionEs, m.oldDescriptionEs)))
+      .returning({ id: services.id });
+    fixedServices += rows.length;
+  }
+  const hiddenServices = await db
+    .update(services)
+    .set({ isActive: false })
+    .where(and(inArray(services.nameEs, fx.hideServicesNamedEs), eq(services.isActive, true)))
+    .returning({ id: services.id });
+  const existingNames = new Set((await db.select({ n: services.nameEs }).from(services)).map((r) => r.n));
+  const missing = servicesSeed.filter((sv) => !existingNames.has(sv.nameEs));
+  if (missing.length) await db.insert(services).values(missing);
+  log(`- services: corrected ${fixedServices}, hid ${hiddenServices.length}, inserted ${missing.length}`);
+
+  let unpublished = 0;
+  for (const tm of fx.unpublishTestimonials) {
+    const rows = await db
+      .update(testimonials)
+      .set({ isApproved: false })
+      .where(and(eq(testimonials.name, tm.name), like(testimonials.commentEs, `${tm.startsWith}%`), eq(testimonials.isApproved, true)))
+      .returning({ id: testimonials.id });
+    unpublished += rows.length;
+  }
+  log(`- testimonials: unpublished ${unpublished} placeholder review(s)`);
+
+  // Future free slots that no longer exist (hidden branch, or times outside
+  // the real schedule). Booked slots are kept: they belong to appointments.
+  const activeIds = new Set(
+    (await db.select({ id: locations.id }).from(locations).where(eq(locations.isActive, true))).map((r) => r.id),
+  );
+  const future = await db
+    .select({ id: appointmentSlots.id, locationId: appointmentSlots.locationId, date: appointmentSlots.date, startTime: appointmentSlots.startTime })
+    .from(appointmentSlots)
+    .where(and(gte(appointmentSlots.date, businessDate(0)), eq(appointmentSlots.isAvailable, true)));
+  const stale = future.filter((sl) => !activeIds.has(sl.locationId) || !slotMatchesSchedule(sl)).map((sl) => sl.id);
+  for (let i = 0; i < stale.length; i += 500) {
+    await db.delete(appointmentSlots).where(inArray(appointmentSlots.id, stale.slice(i, i + 500)));
+  }
+  log(`- appointment_slots: removed ${stale.length} free slot(s) outside the real schedule`);
+}
+
+/**
  * Loads the catalog only into empty tables, so edits made later in the
  * database (prices, new frames) are never overwritten by a redeploy.
  */
@@ -188,6 +263,7 @@ export async function seed(db: Db, log: Log = console.log) {
       log(`- ${name}: ${count} rows already, skipped`);
       return;
     }
+    if (rows.length === 0) return; // nothing to seed (e.g. no invented reviews)
     await db.insert(table).values(rows);
     log(`- ${name}: inserted ${rows.length}`);
   };
@@ -197,8 +273,11 @@ export async function seed(db: Db, log: Log = console.log) {
   await syncFrames(db, log);
   await seedIfEmpty("blog_posts", blogPosts, blogPostsSeed());
   await seedIfEmpty("testimonials", testimonials, testimonialsSeed);
+  await syncBusiness(db, log);
 
-  const locationIds = (await db.select({ id: locations.id }).from(locations)).map((l) => l.id);
+  const locationIds = (
+    await db.select({ id: locations.id }).from(locations).where(eq(locations.isActive, true))
+  ).map((l) => l.id);
   const slots = generateSlots(locationIds);
   if (slots.length > 0) {
     await db.insert(appointmentSlots).values(slots).onConflictDoNothing();

@@ -91,14 +91,17 @@ export function registerApiRoutes(app: Express): void {
       
       // Check if the location exists
       const location = await storage.getLocation(appointmentData.locationId);
-      if (!location) {
+      if (!location || !location.isActive) {
         return res.status(404).json({ message: 'Location not found' });
       }
       
       // Check if the service exists
       const service = await storage.getService(appointmentData.serviceId);
-      if (!service) {
+      if (!service || !service.isActive) {
         return res.status(404).json({ message: 'Service not found' });
+      }
+      if (!service.requiresAppointment) {
+        return res.status(400).json({ message: 'This service does not need an appointment (walk-in)' });
       }
       
       // Date/time always come from the slot, never from the client payload.

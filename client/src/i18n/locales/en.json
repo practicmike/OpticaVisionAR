@@ -2,11 +2,13 @@
   "common": {
     "currentLanguage": "en",
     "loading": "Loading...",
-    "error": "An error occurred. Please try again."
+    "error": "An error occurred. Please try again.",
+    "back": "Back",
+    "continue": "Continue"
   },
   "seo": {
     "defaultTitle": "Ópticas Cardani - Eye Care Experts",
-    "defaultDescription": "Visual health experts in Irapuato and Abasolo with cutting-edge technology and personalized service for the whole family."
+    "defaultDescription": "Professional eye care in Abasolo, Guanajuato: eye exams for adults and children, contact lenses, frames and a 3D virtual try-on."
   },
   "aria": {
     "closeMenu": "Close menu",
@@ -23,10 +25,14 @@
   },
   "hero": {
     "title": "Your vision is our priority",
-    "subtitle": "Visual health experts in Irapuato and Abasolo with cutting-edge technology",
+    "subtitle": "We care for your visual health with the latest technology and the best personalized service in Abasolo, Guanajuato.",
     "bookAppointment": "Book Appointment",
     "virtualTryOn": "Virtual Frame Try-On",
-    "imageAlt": "Ópticas Cardani Interior"
+    "imageAlt": "Ópticas Cardani Interior",
+    "titleStart": "Your Vision,",
+    "titleAccent": "Our Passion",
+    "ctaAppointment": "Book Appointment",
+    "ctaTryOn": "3D Virtual Try-On"
   },
   "services": {
     "title": "Our Services",
@@ -35,10 +41,11 @@
   },
   "products": {
     "featuredTitle": "Featured Products",
-    "featuredSubtitle": "Discover our wide range of frames, lenses, and accessories from the best brands.",
+    "featuredSubtitle": "Discover our frames and try them on in 3D before you visit.",
     "viewDetails": "View Details",
     "viewFullCatalog": "View Full Catalog",
-    "materialColor": "{{material}} in {{color}}"
+    "materialColor": "{{material}} in {{color}}",
+    "viewAll": "View full catalog"
   },
   "virtualTryOn": {
     "title": "Virtual Frame Try-On",
@@ -46,16 +53,16 @@
     "tryBeforeBuy": "Try Before You Buy",
     "description": "Our advanced virtual try-on system allows you to see how our frames look on your face before visiting us.",
     "benefits": {
-      "1": "Easy to use - just upload a photo or use your webcam",
-      "2": "Try dozens of frames in minutes",
-      "3": "Save your favorites and share with friends and family"
+      "1": "Easy to use: just use your camera or upload a photo",
+      "2": "Switch frames instantly and compare styles",
+      "3": "Take a photo and share it with family and friends"
     },
     "tryNow": "Try Frames Now",
     "imageAlt": "Virtual try-on demonstration"
   },
   "testimonials": {
     "title": "What Our Customers Say",
-    "subtitle": "Thousands of satisfied customers trust us for their vision care."
+    "subtitle": "Reviews from people who trust us with their eye care."
   },
   "blog": {
     "title": "Visual Health Blog",
@@ -69,10 +76,12 @@
     "emailPlaceholder": "Your email",
     "emailAriaLabel": "Email address for newsletter",
     "subscribe": "Subscribe",
-    "privacy": "We respect your privacy. You can unsubscribe at any time."
+    "privacy": "We respect your privacy. You can unsubscribe at any time.",
+    "success": "You're in! We'll send you offers and eye-care tips.",
+    "invalid": "Please enter a valid email."
   },
   "footer": {
-    "tagline": "Vision care experts serving your family since 1995.",
+    "tagline": "We care for your visual health with professionalism, cutting-edge technology and personalized attention.",
     "quickLinks": "Quick Links",
     "links": {
       "home": "Home",
@@ -83,15 +92,13 @@
       "blog": "Blog"
     },
     "contact": "Contact",
-    "locations": "Irapuato and Abasolo, Guanajuato, Mexico",
     "hours": "Hours",
-    "weekdayHours": "Monday - Friday: 9:00 - 19:00",
-    "saturdayHours": "Saturday: 9:00 - 14:00",
-    "sundayHours": "Sunday: Closed",
     "bookAppointment": "Book Appointment",
     "rightsReserved": "All rights reserved.",
     "privacyPolicy": "Privacy Policy",
-    "terms": "Terms and Conditions"
+    "terms": "Terms and Conditions",
+    "legal": "Terms & Privacy",
+    "whatsappAvailable": "Message us on WhatsApp"
   },
   "servicesPage": {
     "hero": {
@@ -106,7 +113,7 @@
     "free": "Free",
     "duration": "{{minutes}} minutes",
     "recommended": "Recommended",
-    "availableAt": "Available at all locations",
+    "availableAt": "Available at our Abasolo store",
     "bookNow": "Book Now",
     "whyChoose": {
       "title": "Why Choose Ópticas Cardani",
@@ -136,15 +143,15 @@
       "questions": {
         "1": {
           "question": "How often should I have an eye exam?",
-          "answer": "Most eye care professionals recommend a comprehensive eye exam every 1-2 years, depending on your age, risk factors, and whether you currently wear eyeglasses or contact lenses."
+          "answer": "Most eye care professionals recommend a comprehensive exam every 6 months, depending on your age, risk factors and whether you wear glasses or contacts, and updating your prescription at least once a year."
         },
         "2": {
           "question": "What's the difference between an optometrist and an ophthalmologist?",
           "answer": "Optometrists provide primary eye care services including vision tests and prescribing corrective lenses. Ophthalmologists are medical doctors who specialize in eye and vision care, capable of performing eye surgery."
         },
         "3": {
-          "question": "Do you accept insurance?",
-          "answer": "Yes, we work with various insurance providers. Please contact us to verify if your insurance is accepted."
+          "question": "Which payment methods do you accept?",
+          "answer": "Message us on WhatsApp or call us and we'll tell you about payment methods and current promotions."
         },
         "4": {
           "question": "How long does an eye exam take?",
@@ -199,7 +206,7 @@
       "benefits": {
         "1": "Upload a photo or use your webcam",
         "2": "Try multiple styles instantly",
-        "3": "Share your favorites with friends"
+        "3": "Share your photo with friends"
       },
       "button": "Go to Virtual Try-On",
       "imageAlt": "Virtual try-on demo"
@@ -212,7 +219,7 @@
   "appointmentsPage": {
     "hero": {
       "title": "Book Your Appointment",
-      "subtitle": "Schedule a visit at any of our locations in just a few steps"
+      "subtitle": "Book your visit to Ópticas Cardani Abasolo in a few steps"
     },
     "steps": {
       "title": "Booking Process",
@@ -223,8 +230,8 @@
       "step4": "Enter Your Details"
     },
     "locationSection": {
-      "title": "Select Location",
-      "subtitle": "Choose the branch most convenient for you"
+      "title": "Branch",
+      "subtitle": "We see patients at our Abasolo store"
     },
     "serviceSection": {
       "title": "Select Service",
@@ -261,8 +268,8 @@
       "confirmAppointment": "Confirm Appointment",
       "processing": "Processing your appointment...",
       "success": {
-        "title": "Appointment Confirmed!",
-        "message": "Your appointment has been successfully scheduled. We've sent a confirmation to your email.",
+        "title": "Appointment registered!",
+        "message": "Your appointment is registered. Send us a WhatsApp message to confirm it and get reminders.",
         "details": "Appointment Details",
         "location": "Location",
         "service": "Service",
@@ -301,7 +308,9 @@
       "allStyles": "All styles",
       "allMaterials": "All materials",
       "allColors": "All colors",
-      "viewInStore": "View in Store"
+      "viewInStore": "View in Store",
+      "askOnWhatsapp": "Ask on WhatsApp",
+      "askMessage": "Hi! I'm interested in the \"{{frame}}\" frame I saw in the virtual try-on. Is it available?"
     },
     "noCamera": {
       "title": "Camera not available",
@@ -318,12 +327,12 @@
         "description": "Browse through our collection and see how each frame looks on you."
       },
       "step3": {
-        "title": "Save Your Favorites",
-        "description": "Save frames you like and compare them side by side."
+        "title": "Take a Photo",
+        "description": "Save or share a photo wearing the frames you like most."
       },
       "step4": {
-        "title": "Visit Us or Buy Online",
-        "description": "Come to our store to try the physical frames or purchase directly online."
+        "title": "Visit Us",
+        "description": "Come to our store in Abasolo to try the frames in person and get your eye exam."
       }
     },
     "errors": {
@@ -405,7 +414,7 @@
     },
     "locations": {
       "title": "Our Locations",
-      "subtitle": "Visit us at any of our branches in Irapuato and Abasolo",
+      "subtitle": "Visit us at Lerdo Oriente 157 2C, Abasolo, Guanajuato",
       "directions": "Get Directions"
     },
     "contactForm": {
@@ -417,7 +426,7 @@
       "phoneLabel": "Phone",
       "phonePlaceholder": "Enter your phone number",
       "locationLabel": "Preferred Location",
-      "selectLocation": "Select a location",
+      "selectLocation": "Branch",
       "messageLabel": "Message",
       "messagePlaceholder": "How can we help you?",
       "newsletterLabel": "I would like to subscribe to the newsletter and promotions",
@@ -431,15 +440,15 @@
       "questions": {
         "1": {
           "question": "What are your opening hours?",
-          "answer": "Our Irapuato location is open Monday to Friday from 9:00 to 19:00, and Saturdays from 9:00 to 14:00. The Abasolo branch is open Monday to Friday from 9:00 to 18:00, and Saturdays from 9:00 to 14:00. Both locations are closed on Sundays."
+          "answer": "Monday, Tuesday, Wednesday and Friday from 10:00 am to 8:00 pm; Thursday, Saturday and Sunday from 10:00 am to 5:00 pm."
         },
         "2": {
           "question": "Do I need an appointment for an eye exam?",
           "answer": "While we do accept walk-ins when possible, we recommend scheduling an appointment to ensure prompt service and minimize waiting time."
         },
         "3": {
-          "question": "How long does it take to get new glasses?",
-          "answer": "Standard prescription glasses typically take 3-5 business days. High-index or progressive lenses may take 7-10 business days."
+          "question": "How long until my glasses are ready?",
+          "answer": "It depends on the lens type and prescription. We confirm the delivery date when you place your order."
         }
       }
     }
@@ -469,5 +478,106 @@
       "Silver": "Silver",
       "Transparent": "Transparent"
     }
+  },
+  "brand": {
+    "tagline": "our eyes on you..."
+  },
+  "whyChoose": {
+    "title": "Why Choose Ópticas Cardani?",
+    "subtitle": "More than an optical shop, your visual health ally.",
+    "items": {
+      "local": {
+        "title": "100% Guanajuato Company",
+        "description": "We are committed to providing the highest quality care for your visual health."
+      },
+      "technology": {
+        "title": "Advanced Technology",
+        "description": "State-of-the-art equipment for a precise diagnosis."
+      },
+      "professionals": {
+        "title": "Experienced Professionals",
+        "description": "Our optometrists and technicians have years of specialized experience."
+      },
+      "personalized": {
+        "title": "Personalized Care",
+        "description": "Solutions tailored to each patient's visual needs."
+      },
+      "quality": {
+        "title": "Quality Products",
+        "description": "A wide selection of frames and lenses for every style and need."
+      },
+      "tryon": {
+        "title": "Try Them On Before You Visit",
+        "description": "Our 3D virtual try-on shows how frames look on you, right from your phone."
+      }
+    },
+    "cta": {
+      "title": "Experience the Cardani Difference",
+      "description": "Book your appointment today and see why we are the preferred choice in Abasolo.",
+      "button": "Book Appointment Now"
+    }
+  },
+  "walkIn": {
+    "badge": "No appointment needed",
+    "note": "Visit us during business hours."
+  },
+  "location": {
+    "title": "Visit Us",
+    "subtitle": "We're in downtown Abasolo.",
+    "hoursTitle": "Business Hours",
+    "today": "Today",
+    "directions": "Get directions",
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "mapTitle": "Ópticas Cardani location map",
+    "openNow": "Open now · closes at {{time}}",
+    "opensToday": "Closed · opens today at {{time}}",
+    "opensTomorrow": "Closed · opens tomorrow at {{time}}",
+    "opensLater": "Closed · opens {{day}} at {{time}}"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Answers to the most common questions about our services and eye care.",
+    "items": [
+      {
+        "q": "How often should I have an eye exam?",
+        "a": "Most eye care professionals recommend a comprehensive exam every 6 months, depending on your age, risk factors and whether you wear glasses or contacts, and updating your prescription at least once a year."
+      },
+      {
+        "q": "What's the difference between an optometrist and an ophthalmologist?",
+        "a": "Optometrists provide primary eye care, such as eye exams and lens prescriptions. Ophthalmologists are medical doctors who specialize in eyes and can perform surgery."
+      },
+      {
+        "q": "How long does an eye exam take?",
+        "a": "A comprehensive eye exam usually takes 30 to 45 minutes, depending on the tests needed."
+      },
+      {
+        "q": "How do I know if I need glasses?",
+        "a": "Common signs are blurred vision, frequent headaches, eye strain or trouble seeing at night. A comprehensive eye exam will confirm it."
+      },
+      {
+        "q": "Do I need an appointment for a frame adjustment?",
+        "a": "No. Frame adjustments are free and walk-in: just visit us during business hours."
+      }
+    ]
+  },
+  "whatsapp": {
+    "floating": "Message us on WhatsApp",
+    "defaultMessage": "Hi! I'd like some information about Ópticas Cardani."
+  },
+  "legal": {
+    "title": "Legal Terms",
+    "subtitle": "Terms of Use and Privacy Policy (Spanish)",
+    "terms": "Terms of Use",
+    "privacy": "Privacy Policy"
+  },
+  "reviews": {
+    "leaveReview": "Leave us a Google review"
+  },
+  "whatsappBooking": {
+    "greeting": "Hi! I just booked an appointment at Ópticas Cardani:",
+    "name": "Name",
+    "footer": "Could you confirm it, please? Thank you!",
+    "confirm": "Confirm on WhatsApp"
   }
 }

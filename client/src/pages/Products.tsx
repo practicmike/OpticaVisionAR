@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PageHeader from '@/components/brand/PageHeader';
 import { isSunglasses, useFrameFacets, useCatalogLabel } from '@/lib/catalog';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
@@ -75,15 +76,7 @@ const Products = () => {
 
   return (
     <>
-      {/* Products Hero */}
-      <section className="bg-primary text-white py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="font-bold text-3xl md:text-4xl mb-4">{t('productsPage.hero.title')}</h1>
-            <p className="text-lg opacity-90 mb-6">{t('productsPage.hero.subtitle')}</p>
-          </div>
-        </div>
-      </section>
+      <PageHeader title={t('productsPage.hero.title')} subtitle={t('productsPage.hero.subtitle')} />
 
       {/* Products Main Section */}
       <section className="py-12 md:py-16 bg-white">
@@ -226,7 +219,7 @@ const Products = () => {
                             {t('products.materialColor', { material: label('material', frame.material), color: label('color', frame.color).toLowerCase() })}
                           </p>
                           <div className="mt-4 flex justify-between items-center">
-                            <span className="font-bold text-[#333333]">{formatCurrency(frame.price)}</span>
+                            <span className="font-bold text-foreground">{formatCurrency(frame.price)}</span>
                             <Button className="text-primary bg-primary/10 hover:bg-primary/20">
                               {t('productsPage.tryOnButton')}
                             </Button>
@@ -253,7 +246,7 @@ const Products = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h2 className="font-bold text-2xl md:text-3xl text-[#333333] mb-4">{t('productsPage.tryOn.title')}</h2>
+              <h2 className="font-bold text-2xl md:text-3xl text-primary mb-4">{t('productsPage.tryOn.title')}</h2>
               <p className="text-gray-600 mb-6">{t('productsPage.tryOn.description')}</p>
               <ul className="space-y-3 mb-6">
                 {[1, 2, 3].map((item) => (
