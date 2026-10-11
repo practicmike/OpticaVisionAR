@@ -115,7 +115,7 @@ export class MemStorage implements IStorage {
 
   // Locations
   async getLocations(): Promise<Location[]> {
-    return Array.from(this.locations.values());
+    return Array.from(this.locations.values()).filter((l) => l.isActive);
   }
 
   async getLocation(id: number): Promise<Location | undefined> {
@@ -124,7 +124,9 @@ export class MemStorage implements IStorage {
 
   // Services
   async getServices(): Promise<Service[]> {
-    return Array.from(this.services.values());
+    return Array.from(this.services.values())
+      .filter((sv) => sv.isActive)
+      .sort((a, b) => Number(b.requiresAppointment) - Number(a.requiresAppointment) || a.id - b.id);
   }
 
   async getService(id: number): Promise<Service | undefined> {

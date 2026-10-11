@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import FloatingWhatsApp from './brand/FloatingWhatsApp';
+import { useLocation } from 'wouter';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,6 +17,12 @@ const Layout = ({ children, title, description }: LayoutProps) => {
   const defaultTitle = t('seo.defaultTitle');
   const defaultDescription = t('seo.defaultDescription');
   
+  // New page -> start at the top (wouter keeps the previous scroll position).
+  const [location] = useLocation();
+  useEffect(() => {
+    if (!window.location.hash) window.scrollTo({ top: 0 });
+  }, [location]);
+
   // Set HTML lang attribute based on current language
   useEffect(() => {
     document.documentElement.lang = i18n.language;
@@ -45,6 +53,7 @@ const Layout = ({ children, title, description }: LayoutProps) => {
       </main>
       
       <Footer />
+      <FloatingWhatsApp />
     </div>
   );
 };

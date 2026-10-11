@@ -1,4 +1,7 @@
 import { useEffect, useRef } from 'react';
+import { FaWhatsapp } from 'react-icons/fa';
+import { whatsappUrl } from '@shared/business';
+import PageHeader from '@/components/brand/PageHeader';
 import { useTranslation } from 'react-i18next';
 import { Camera, Upload, CheckCircle, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -54,15 +57,7 @@ const VirtualTryOn = () => {
 
   return (
     <>
-      {/* Virtual Try-On Hero */}
-      <section className="bg-primary text-white py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="font-bold text-3xl md:text-4xl mb-4">{t('virtualTryOnPage.hero.title')}</h1>
-            <p className="text-lg opacity-90 mb-6">{t('virtualTryOnPage.hero.subtitle')}</p>
-          </div>
-        </div>
-      </section>
+      <PageHeader title={t('virtualTryOnPage.hero.title')} subtitle={t('virtualTryOnPage.hero.subtitle')} />
 
       {/* Main Try-On Section */}
       <section className="py-12 md:py-16 bg-white">
@@ -277,11 +272,17 @@ const VirtualTryOn = () => {
                       <span className="font-bold">{formatCurrency(selectedFrame.price)}</span>
                     </div>
                     <p className="text-sm text-gray-600 mb-4">
-                      {selectedFrame.material} • {selectedFrame.color} • {selectedFrame.style}
+                      {label('material', selectedFrame.material)} • {label('color', selectedFrame.color)} • {label('style', selectedFrame.style)}
                     </p>
-                    <Button className="w-full bg-secondary hover:bg-secondary/90 text-white">
-                      {t('virtualTryOnPage.framesSection.viewInStore')}
-                    </Button>
+                    <a
+                      href={whatsappUrl(t('virtualTryOnPage.framesSection.askMessage', { frame: t('common.currentLanguage') === 'es' ? selectedFrame.nameEs : selectedFrame.nameEn }))}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex w-full items-center justify-center gap-2 rounded-md bg-whatsapp px-4 py-2 font-semibold text-white transition-colors hover:bg-whatsapp/90"
+                    >
+                      <FaWhatsapp className="h-5 w-5" aria-hidden="true" />
+                      {t('virtualTryOnPage.framesSection.askOnWhatsapp')}
+                    </a>
                   </div>
                 )}
               </div>
@@ -294,7 +295,7 @@ const VirtualTryOn = () => {
       <section className="py-12 md:py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-bold text-2xl md:text-3xl text-[#333333] mb-3">{t('virtualTryOnPage.instructions.title')}</h2>
+            <h2 className="font-bold text-2xl md:text-3xl text-primary mb-3">{t('virtualTryOnPage.instructions.title')}</h2>
           </div>
           
           <div className="max-w-5xl mx-auto">
@@ -319,7 +320,7 @@ const VirtualTryOn = () => {
       <section className="py-12 md:py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-bold text-2xl md:text-3xl text-[#333333] mb-3">{t('products.featuredTitle')}</h2>
+            <h2 className="font-bold text-2xl md:text-3xl text-primary mb-3">{t('products.featuredTitle')}</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">{t('products.featuredSubtitle')}</p>
           </div>
           
@@ -366,7 +367,7 @@ const VirtualTryOn = () => {
                         {t('products.materialColor', { material: label('material', frame.material), color: label('color', frame.color).toLowerCase() })}
                       </p>
                       <div className="mt-4 flex justify-between items-center">
-                        <span className="font-bold text-[#333333]">{formatCurrency(frame.price)}</span>
+                        <span className="font-bold text-foreground">{formatCurrency(frame.price)}</span>
                         <Button variant="outline" onClick={() => selectFrame(frame.id)}>
                           {t('productsPage.tryOnButton')}
                         </Button>

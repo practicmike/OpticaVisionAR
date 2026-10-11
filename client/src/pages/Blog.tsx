@@ -56,10 +56,10 @@ const Blog = () => {
   return (
     <>
       {/* Blog Hero */}
-      <section className="bg-primary text-white py-12 md:py-16">
+      <section className="bg-gradient-to-br from-[#1A365D] via-primary to-[#2B6CB0] text-white py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="font-bold text-3xl md:text-4xl mb-4">{t('blogPage.hero.title')}</h1>
+            <h1 className="font-bold text-3xl md:text-5xl mb-3 !text-white">{t('blogPage.hero.title')}</h1>
             <p className="text-lg opacity-90 mb-6">{t('blogPage.hero.subtitle')}</p>
             
             <div className="relative max-w-md mx-auto">

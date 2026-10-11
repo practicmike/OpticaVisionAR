@@ -1,6 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
-import { and, asc, eq, gte, lte } from "drizzle-orm";
+import { and, asc, desc, eq, gte, lte } from "drizzle-orm";
 import {
   locations,
   services,
@@ -55,7 +55,9 @@ export class DbStorage implements IStorage {
   // (location, date, start) makes this idempotent and safe under concurrency.
   private async ensureSlotWindow() {
     if (Date.now() - this.slotsEnsuredAt < ensureCheckIntervalMs) return;
-    const locationIds = (await this.db.select({ id: locations.id }).from(locations)).map((l) => l.id);
+    const locationIds = (
+      await this.db.select({ id: locations.id }).from(locations).where(eq(locations.isActive, true))
+    ).map((l) => l.id);
     const slots = generateSlots(locationIds);
     if (slots.length > 0) {
       await this.db.insert(appointmentSlots).values(slots).onConflictDoNothing();
@@ -65,7 +67,7 @@ export class DbStorage implements IStorage {
 
   // Locations
   async getLocations(): Promise<Location[]> {
-    return this.db.select().from(locations).orderBy(asc(locations.id));
+    return this.db.select().from(locations).where(eq(locations.isActive, true)).orderBy(asc(locations.id));
   }
 
   async getLocation(id: number): Promise<Location | undefined> {
@@ -75,7 +77,12 @@ export class DbStorage implements IStorage {
 
   // Services
   async getServices(): Promise<Service[]> {
-    return this.db.select().from(services).orderBy(asc(services.id));
+    // Bookable services first, walk-in ones (frame adjustment) last.
+    return this.db
+      .select()
+      .from(services)
+      .where(eq(services.isActive, true))
+      .orderBy(desc(services.requiresAppointment), asc(services.id));
   }
 
   async getService(id: number): Promise<Service | undefined> {

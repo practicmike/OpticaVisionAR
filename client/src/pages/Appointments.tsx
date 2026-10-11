@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import PageHeader from '@/components/brand/PageHeader';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { CalendarIcon, CheckCircle, Clock, MapPin, User } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
+import { BUSINESS, whatsappUrl } from '@shared/business';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -117,10 +120,21 @@ const Appointments = () => {
     setStep(current => current + 1);
   };
 
+  // With a single branch there is nothing to choose in step 1: start at 2.
+  const singleLocation = locations?.length === 1;
+  const firstStep = singleLocation ? 2 : 1;
+  useEffect(() => {
+    if (singleLocation && step === 1) setStep(2);
+  }, [singleLocation, step]);
+
   // Go back to previous step
   const goToPreviousStep = () => {
-    setStep(current => Math.max(1, current - 1));
+    setStep(current => Math.max(firstStep, current - 1));
   };
+
+  // Bookable range: today .. today + 14 days (slots are generated for it).
+  const lastBookableDay = new Date();
+  lastBookableDay.setDate(lastBookableDay.getDate() + 14);
 
   // Get the selected location and service objects
   const currentLocation = locations?.find((loc: any) => loc.id === selectedLocation);
@@ -130,7 +144,7 @@ const Appointments = () => {
   // Create calendar event details
   const appointmentDetails = {
     title: `${t('common.currentLanguage') === 'es' ? currentService?.nameEs : currentService?.nameEn} - Ópticas Cardani`,
-    location: currentLocation?.address,
+    location: `${BUSINESS.name}, ${BUSINESS.address}, ${BUSINESS.city}`,
     startDate: selectedDate || '',
     startTime: currentSlot?.startTime || '',
     endTime: currentSlot?.endTime || '',
@@ -144,15 +158,7 @@ const Appointments = () => {
 
   return (
     <>
-      {/* Appointments Hero */}
-      <section className="bg-primary text-white py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="font-bold text-3xl md:text-4xl mb-4">{t('appointmentsPage.hero.title')}</h1>
-            <p className="text-lg opacity-90 mb-6">{t('appointmentsPage.hero.subtitle')}</p>
-          </div>
-        </div>
-      </section>
+      <PageHeader title={t('appointmentsPage.hero.title')} subtitle={t('appointmentsPage.hero.subtitle')} />
 
       {/* Booking Steps */}
       <section className="py-8 bg-gray-50">
@@ -283,15 +289,16 @@ const Appointments = () => {
                                   {t('common.currentLanguage') === 'es' ? service.nameEs : service.nameEn}
                                 </h3>
                                 <div className="text-right">
-                                  {service.price > 0 ? (
+                                  {/* Prices aren't published (null): show nothing, not "Free". */}
+                                  {service.price != null && service.price > 0 ? (
                                     <span className="font-bold">
                                       ${(service.price / 100).toLocaleString('es-MX')}
                                     </span>
-                                  ) : (
+                                  ) : service.price === 0 ? (
                                     <span className="text-secondary font-bold">
                                       {t('servicesPage.free')}
                                     </span>
-                                  )}
+                                  ) : null}
                                 </div>
                               </div>
                               <p className="text-gray-600 mb-2">
@@ -329,7 +336,7 @@ const Appointments = () => {
                           selected={date}
                           onSelect={handleCalendarSelect}
                           className="rounded-md border"
-                          disabled={{ before: new Date() }}
+                          disabled={{ before: new Date(), after: lastBookableDay }}
                         />
                       </CardContent>
                     </Card>
@@ -347,7 +354,7 @@ const Appointments = () => {
                           </div>
                         ) : selectedDate ? (
                           <>
-                            {slots?.filter((slot: any) => slot.isAvailable).length > 0 ? (
+                            {(slots?.filter((slot: any) => slot.isAvailable).length ?? 0) > 0 ? (
                               <div className="grid grid-cols-3 gap-2">
                                 {slots
                                   ?.filter((slot: any) => slot.isAvailable)
@@ -383,7 +390,7 @@ const Appointments = () => {
                             {t('common.currentLanguage') === 'es' ? currentService?.nameEs : currentService?.nameEn}
                           </AlertTitle>
                           <AlertDescription className="text-gray-700">
-                            {formatDate(selectedDate, t('common.currentLanguage'))} at {formatTime(currentSlot?.startTime, t('common.currentLanguage'))}
+                            {formatDate(selectedDate, t('common.currentLanguage'))} · {formatTime(currentSlot?.startTime ?? '', t('common.currentLanguage'))}
                             <br />
                             {currentLocation?.name}
                           </AlertDescription>
@@ -583,7 +590,23 @@ const Appointments = () => {
                   </CardContent>
                 </Card>
                 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
+                  <a
+                    href={whatsappUrl(
+                      `${t('whatsappBooking.greeting')}\n` +
+                      `${t('whatsappBooking.name')}: ${form.getValues('name')}\n` +
+                      `${t('appointmentsPage.confirmation.success.service')}: ${t('common.currentLanguage') === 'es' ? currentService?.nameEs : currentService?.nameEn}\n` +
+                      `${t('appointmentsPage.confirmation.success.date')}: ${formatDate(selectedDate || '', t('common.currentLanguage'))}\n` +
+                      `${t('appointmentsPage.confirmation.success.time')}: ${formatTime(currentSlot?.startTime || '', t('common.currentLanguage'))}\n` +
+                      t('whatsappBooking.footer'),
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-md bg-whatsapp px-6 py-2 font-semibold text-white shadow transition-colors hover:bg-whatsapp/90"
+                  >
+                    <FaWhatsapp className="h-5 w-5" aria-hidden="true" />
+                    {t('whatsappBooking.confirm')}
+                  </a>
                   {calendarUrl && (
                     <a 
                       href={calendarUrl} 
@@ -609,7 +632,7 @@ const Appointments = () => {
                 <Button 
                   variant="outline" 
                   onClick={goToPreviousStep}
-                  disabled={step === 1 || isSubmitting}
+                  disabled={step <= firstStep || isSubmitting}
                 >
                   {t('common.back')}
                 </Button>

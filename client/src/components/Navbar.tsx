@@ -1,92 +1,115 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, CalendarCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import LangSwitcher from './LangSwitcher';
-import { useIsMobile } from '@/hooks/use-mobile';
-import logoImg from '../assets/cardani1.jpg';
+import LangToggle from '@/components/brand/LangToggle';
 
 const Navbar = () => {
   const { t } = useTranslation();
   const [location] = useLocation();
-  const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-  
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-  };
-  
+  const [scrolled, setScrolled] = useState(false);
+
+  // Close the mobile menu on navigation; add a shadow once the page scrolls.
+  useEffect(() => setMobileMenuOpen(false), [location]);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const navItems = [
     { path: '/', label: t('nav.home') },
     { path: '/services', label: t('nav.services') },
     { path: '/products', label: t('nav.products') },
-    { path: '/appointments', label: t('nav.appointments') },
+    { path: '/virtual-try-on', label: t('footer.links.virtualTryOn') },
     { path: '/blog', label: t('nav.blog') },
     { path: '/contact', label: t('nav.contact') },
   ];
-  
+
+  const isActive = (path: string) => (path === '/' ? location === '/' : location.startsWith(path));
+
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center justify-between w-full md:w-auto mb-4 md:mb-0">
-            <Link href="/" className="flex items-center">
-              <img 
-                src={logoImg} 
-                alt="Ópticas Cardani Logo" 
-                className="h-10 mr-2 rounded"
-              />
-              <span className="text-primary font-bold text-xl">Ópticas Cardani</span>
+    <header
+      className={`sticky top-0 z-50 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85 transition-shadow ${
+        scrolled ? 'shadow-md' : 'shadow-sm'
+      }`}
+    >
+      <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4 md:h-20">
+        <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Ópticas Cardani">
+          <img src="/brand/logo-mark.png" alt="" className="h-9 w-auto md:h-10" width={62} height={40} />
+          <span className="leading-tight">
+            <span className="block font-heading text-lg font-bold text-primary md:text-xl">Ópticas Cardani</span>
+            <span className="block text-xs text-muted-foreground">{t('brand.tagline')}</span>
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Principal">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              href={item.path}
+              className={`relative rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                isActive(item.path) ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+              }`}
+            >
+              {item.label}
+              {isActive(item.path) && (
+                <span className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-secondary" aria-hidden="true" />
+              )}
             </Link>
-            
-            {isMobile && (
-              <button 
-                onClick={toggleMobileMenu}
-                className="md:hidden focus:outline-none"
-                aria-label={mobileMenuOpen ? t('aria.closeMenu') : t('aria.openMenu')}
-              >
-                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            )}
-          </div>
-          
-          <nav className={`${
-            isMobile ? (mobileMenuOpen ? 'flex' : 'hidden') : 'flex'
-          } md:flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-6 w-full md:w-auto text-sm font-medium`}>
+          ))}
+        </nav>
+
+        <div className="hidden items-center gap-3 lg:flex">
+          <LangToggle />
+          <Link href="/appointments">
+            <Button className="gap-2 shadow-md">
+              <CalendarCheck className="h-4 w-4" aria-hidden="true" />
+              {t('nav.bookAppointment')}
+            </Button>
+          </Link>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setMobileMenuOpen((open) => !open)}
+          className="rounded-md p-2 text-primary lg:hidden"
+          aria-expanded={mobileMenuOpen}
+          aria-label={mobileMenuOpen ? t('aria.closeMenu') : t('aria.openMenu')}
+        >
+          {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+        </button>
+      </div>
+
+      {mobileMenuOpen && (
+        <div className="border-t bg-white lg:hidden">
+          <nav className="container mx-auto flex flex-col px-4 py-3" aria-label="Principal">
             {navItems.map((item) => (
-              <Link 
-                key={item.path} 
+              <Link
+                key={item.path}
                 href={item.path}
-                onClick={closeMobileMenu}
-                className={`py-2 uppercase transition-colors ${
-                  location === item.path
-                    ? 'text-primary font-semibold'
-                    : 'text-[#333333] hover:text-primary'
+                className={`rounded-md px-3 py-3 text-base font-medium ${
+                  isActive(item.path) ? 'bg-primary/5 text-primary' : 'text-foreground'
                 }`}
               >
                 {item.label}
               </Link>
             ))}
+            <div className="mt-3 flex items-center justify-between gap-3 border-t pt-4">
+              <LangToggle />
+              <Link href="/appointments">
+                <Button className="gap-2">
+                  <CalendarCheck className="h-4 w-4" aria-hidden="true" />
+                  {t('nav.bookAppointment')}
+                </Button>
+              </Link>
+            </div>
           </nav>
-          
-          <div className={`${
-            isMobile ? (mobileMenuOpen ? 'flex' : 'hidden') : 'flex'
-          } md:flex items-center space-x-4 mt-4 md:mt-0`}>
-            <LangSwitcher />
-            
-            <Link href="/appointments">
-              <Button className="bg-secondary hover:bg-secondary/90 text-white">
-                {t('nav.bookAppointment')}
-              </Button>
-            </Link>
-          </div>
         </div>
-      </div>
+      )}
     </header>
   );
 };

@@ -16,8 +16,18 @@ export const formatCurrency = (amount: number): string => {
  * @param locale - Locale to use ('es' or 'en')
  * @returns Formatted date string
  */
+/**
+ * "YYYY-MM-DD" -> local Date for that calendar day. new Date("2026-10-11")
+ * is UTC midnight = Oct 10, 6 pm in Mexico (UTC-6), which showed customers
+ * their appointment (and the .ics calendar event) one day early.
+ */
+export const parseLocalDate = (dateString: string): Date => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(dateString);
+  return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : new Date(dateString);
+};
+
 export const formatDate = (dateString: string, locale: string = 'es'): string => {
-  const date = new Date(dateString);
+  const date = parseLocalDate(dateString);
   
   if (locale === 'en') {
     return date.toLocaleDateString('en-US', {
@@ -159,10 +169,10 @@ export const createCalendarEvent = (appointmentDetails: {
   const [endHour, endMinute] = endTime.split(':').map(Number);
   
   // Create date objects
-  const startDateTime = new Date(startDate);
+  const startDateTime = parseLocalDate(startDate);
   startDateTime.setHours(startHour, startMinute, 0);
   
-  const endDateTime = new Date(startDate);
+  const endDateTime = parseLocalDate(startDate);
   endDateTime.setHours(endHour, endMinute, 0);
   
   // Format dates for ics

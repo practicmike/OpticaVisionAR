@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { InsertAppointment } from '@shared/schema';
+import type { InsertAppointment, Location, Service, AppointmentSlot } from '@shared/schema';
 
 export const useAppointment = () => {
   const { t } = useTranslation();
@@ -19,24 +19,38 @@ export const useAppointment = () => {
   const { 
     data: locations,
     isLoading: isLoadingLocations
-  } = useQuery({
+  } = useQuery<Location[]>({
     queryKey: ['/api/locations'],
   });
 
+  // Single branch (Abasolo): select it automatically.
+  useEffect(() => {
+    if (locations?.length === 1 && selectedLocation === null) setSelectedLocation(locations[0].id);
+  }, [locations, selectedLocation]);
+
   // Fetch services
   const {
-    data: services,
+    data: allServices,
     isLoading: isLoadingServices
-  } = useQuery({
+  } = useQuery<Service[]>({
     queryKey: ['/api/services'],
   });
+  // Walk-in services (frame adjustment) are not bookable.
+  const services = allServices?.filter((service) => service.requiresAppointment);
+
+  // /appointments?service=ID (from the service cards) preselects the service.
+  useEffect(() => {
+    if (!services || selectedService !== null) return;
+    const fromUrl = Number(new URLSearchParams(window.location.search).get('service'));
+    if (fromUrl && services.some((service) => service.id === fromUrl)) setSelectedService(fromUrl);
+  }, [services, selectedService]);
 
   // Fetch appointment slots based on location and date
   const {
     data: slots,
     isLoading: isLoadingSlots,
     refetch: refetchSlots
-  } = useQuery({
+  } = useQuery<AppointmentSlot[]>({
     queryKey: ['/api/appointment-slots', { locationId: selectedLocation, date: selectedDate }],
     enabled: !!(selectedLocation && selectedDate),
   });

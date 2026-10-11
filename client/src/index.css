@@ -3,51 +3,54 @@
 @tailwind utilities;
 
 :root {
+  /* Ópticas Cardani palette (logo navy + bright blue) */
   --background: 0 0% 100%;
-  --foreground: 20 14.3% 4.1%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
+  --foreground: 215 25% 23%;          /* #2D3748 body text */
+  --muted: 210 20% 97%;               /* #F5F7FA section backgrounds */
+  --muted-foreground: 215 14% 45%;    /* #627085 secondary text */
   --popover: 0 0% 100%;
-  --popover-foreground: 20 14.3% 4.1%;
+  --popover-foreground: 215 25% 23%;
   --card: 0 0% 100%;
-  --card-foreground: 20 14.3% 4.1%;
-  --border: 20 5.9% 90%;
-  --input: 20 5.9% 90%;
-  --primary: 207 90% 29%;  /* #005B94 Medical blue */
-  --primary-foreground: 211 100% 99%;
-  --secondary: 142 59% 41%;  /* #28A745 Healing green */
-  --secondary-foreground: 24 9.8% 10%;
-  --accent: 0 78% 70%;  /* #FF6B6B Warm coral */
-  --accent-foreground: 24 9.8% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 60 9.1% 97.8%;
-  --ring: 20 14.3% 4.1%;
-  --radius: 0.5rem;
-  --font-sans: "Montserrat", "Open Sans", sans-serif;
-  --dark-text: 0 0% 20%;  /* #333333 Dark grey */
+  --card-foreground: 215 25% 23%;
+  --border: 214 20% 90%;
+  --input: 214 20% 88%;
+  --primary: 215 49% 34%;             /* #2C5282 brand navy */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 207 73% 57%;           /* #4299E1 brand blue (CTAs) */
+  --secondary-foreground: 0 0% 100%;
+  --accent: 210 40% 96%;              /* subtle hover for menus/selects */
+  --accent-foreground: 215 49% 34%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 207 73% 57%;
+  --radius: 0.75rem;
+  --star: 43 96% 56%;                 /* #FBBF24 rating stars */
+  --whatsapp: 142 70% 45%;            /* #25D366-like */
 }
 
 .dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --primary: 207 90% 29%;
-  --primary-foreground: 211 100% 99%;
-  --secondary: 142 59% 41%;
-  --secondary-foreground: 0 0% 98%;
-  --accent: 0 78% 70%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 240 4.9% 83.9%;
-  --radius: 0.5rem;
+  --background: 222 47% 8%;
+  --foreground: 210 30% 92%;
+  --muted: 222 40% 13%;
+  --muted-foreground: 215 16% 65%;
+  --popover: 222 47% 8%;
+  --popover-foreground: 210 30% 92%;
+  --card: 222 47% 10%;
+  --card-foreground: 210 30% 92%;
+  --border: 217 30% 20%;
+  --input: 217 30% 20%;
+  --primary: 207 73% 57%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 207 73% 57%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 217 30% 18%;
+  --accent-foreground: 210 30% 92%;
+  --destructive: 0 63% 40%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 207 73% 57%;
+  --radius: 0.75rem;
+  --star: 43 96% 56%;
+  --whatsapp: 142 70% 45%;
 }
 
 @layer base {
@@ -56,15 +59,16 @@
   }
 
   body {
-    @apply font-sans bg-background text-foreground;
+    @apply font-sans bg-background text-foreground antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-semibold;
+    @apply font-heading font-semibold text-primary;
   }
-  
-  p {
-    @apply font-sans;
+
+  /* Headings on dark/brand areas keep the area's white text. */
+  .text-white :where(h1, h2, h3, h4, h5, h6) {
+    color: inherit;
   }
 }
 
@@ -77,11 +81,20 @@
 }
 
 .section-title {
-  @apply font-bold text-2xl md:text-3xl text-[#333333] mb-3;
+  @apply font-heading font-bold text-3xl md:text-4xl text-primary mb-4;
 }
 
 .section-description {
-  @apply text-gray-600 max-w-2xl mx-auto;
+  @apply text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto;
+}
+
+/* Short brand-blue bar under section headings */
+.section-divider {
+  @apply w-24 h-1 bg-secondary mx-auto rounded-full mt-6;
+}
+
+.card-elevated {
+  @apply bg-card rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300;
 }
 
 /* Appointment calendar styles */

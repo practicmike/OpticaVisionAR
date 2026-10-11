@@ -11,6 +11,8 @@ export const locations = pgTable("locations", {
   phone: text("phone").notNull(),
   email: text("email").notNull(),
   openingHours: text("opening_hours").notNull(),
+  // Hidden branches stay in the table (past appointments reference them).
+  isActive: boolean("is_active").notNull().default(true),
 });
 
 export const insertLocationSchema = createInsertSchema(locations).omit({
@@ -28,6 +30,8 @@ export const services = pgTable("services", {
   price: integer("price"),
   durationMinutes: integer("duration_minutes").notNull(),
   isActive: boolean("is_active").notNull().default(true),
+  // Walk-in services (e.g. frame adjustment) are shown but can't be booked.
+  requiresAppointment: boolean("requires_appointment").notNull().default(true),
 });
 
 export const insertServiceSchema = createInsertSchema(services).omit({

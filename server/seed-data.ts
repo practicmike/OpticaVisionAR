@@ -6,6 +6,13 @@ import type {
   InsertTestimonial,
   InsertAppointmentSlot,
 } from "@shared/schema";
+import { BUSINESS, OPENING_HOURS, WEEK_ORDER, formatHour12, slotTemplateFor } from "@shared/business";
+
+const DAY_ABBR_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+const OPENING_HOURS_TEXT = WEEK_ORDER.map((d) => {
+  const h = OPENING_HOURS[d];
+  return `${DAY_ABBR_ES[d]}: ${h ? `${formatHour12(h.open)} – ${formatHour12(h.close)}` : "Cerrado"}`;
+}).join(", ");
 
 /**
  * Seed/catalog data shared by the in-memory store (local dev) and the
@@ -32,67 +39,91 @@ export const businessDate = (offsetDays = 0): string => {
 
 const daysAgo = (days: number): string => businessDate(-days);
 
+// Real data lives in shared/business.ts; the single branch is Abasolo.
 export const locationsSeed: InsertLocation[] = [
   {
-    name: "Irapuato Centro",
-    address: "Av. Revolución 123, Centro",
-    city: "Irapuato",
-    phone: "(462) 123-4567",
-    email: "irapuato@opticascardani.com",
-    openingHours: "Lun - Vie: 9:00 - 19:00, Sáb: 9:00 - 14:00",
-  },
-  {
     name: "Abasolo",
-    address: "Calle Hidalgo 456, Centro",
-    city: "Abasolo",
-    phone: "(429) 987-6543",
-    email: "abasolo@opticascardani.com",
-    openingHours: "Lun - Vie: 9:00 - 18:00, Sáb: 9:00 - 14:00",
+    address: BUSINESS.address,
+    city: BUSINESS.city,
+    phone: BUSINESS.phoneDisplay,
+    email: BUSINESS.email,
+    openingHours: OPENING_HOURS_TEXT,
+    isActive: true,
   },
 ];
 
+// The four services the clinic offers. Prices aren't published (null).
 export const servicesSeed: InsertService[] = [
   {
-    nameEn: "Comprehensive Eye Exam",
-    nameEs: "Examen Visual Completo",
-    descriptionEn: "Complete evaluation of your visual health with latest generation equipment.",
-    descriptionEs: "Evaluación completa de su salud visual con equipos de última generación.",
+    nameEn: "Full Eye Exam (Adults)",
+    nameEs: "Examen Visual Completo (Adultos)",
+    descriptionEn: "A full visual health assessment for adults, including detection of refractive errors (myopia, hyperopia, astigmatism) and personalized recommendations.",
+    descriptionEs: "Evaluación integral de la salud visual, detección de problemas refractivos (miopía, hipermetropía, astigmatismo) y recomendaciones personalizadas.",
     icon: "eye",
-    price: 45000,
+    price: null,
     durationMinutes: 45,
     isActive: true,
+    requiresAppointment: true,
   },
   {
-    nameEn: "Frame Adjustment",
-    nameEs: "Ajuste de Armazones",
-    descriptionEn: "Adjustment service for your glasses for optimal comfort.",
-    descriptionEs: "Servicio de ajuste para sus lentes para una comodidad óptima.",
-    icon: "glasses",
-    price: 0,
-    durationMinutes: 15,
+    nameEn: "Full Eye Exam (Children under 10)",
+    nameEs: "Examen Visual Completo (niños menores de 10 años)",
+    descriptionEn: "A specialized exam for children under 10 to assess visual development, eye coordination, and detect early warning signs.",
+    descriptionEs: "Examen especializado para niños pequeños que evalúa su desarrollo visual, coordinación ocular y posibles señales de alerta temprana.",
+    icon: "child",
+    price: null,
+    durationMinutes: 45,
     isActive: true,
+    requiresAppointment: true,
   },
   {
     nameEn: "Contact Lens Fitting",
     nameEs: "Adaptación de Lentes de Contacto",
-    descriptionEn: "Professional fitting of contact lenses with follow-up care.",
-    descriptionEs: "Adaptación profesional de lentes de contacto con seguimiento.",
-    icon: "eye",
-    price: 35000,
-    durationMinutes: 30,
+    descriptionEn: "Includes corneal evaluation, lens testing, and follow-up to ensure comfort and proper vision using contact lenses.",
+    descriptionEs: "Incluye evaluación de la córnea, prueba de lentes y seguimiento para asegurar la comodidad y buena visión con lentes de contacto.",
+    icon: "contact",
+    price: null,
+    durationMinutes: 45,
     isActive: true,
+    requiresAppointment: true,
   },
   {
-    nameEn: "Eye Pressure Test",
-    nameEs: "Prueba de Presión Ocular",
-    descriptionEn: "Test to measure intraocular pressure to detect glaucoma.",
-    descriptionEs: "Prueba para medir la presión intraocular para detectar glaucoma.",
-    icon: "user-md",
-    price: 25000,
-    durationMinutes: 20,
+    nameEn: "Frame Adjustments",
+    nameEs: "Ajuste de Armazones",
+    descriptionEn: "Free walk-in service. Visit us during business hours for expert frame adjustments.",
+    descriptionEs: "Servicio gratuito sin necesidad de cita. Visítanos en horario abierto para ajustes profesionales de tus armazones.",
+    icon: "glasses",
+    price: 0,
+    durationMinutes: 15,
     isActive: true,
+    requiresAppointment: false,
   },
 ];
+
+/**
+ * Placeholder data from the first version of the site, still present in the
+ * production database. Rows are corrected only while they keep the old
+ * placeholder values, so later manual edits are never overwritten.
+ */
+export const legacyBusinessFixes = {
+  // Fake Irapuato branch -> hidden; fake Abasolo address -> real data.
+  hideLocationsWithAddress: ["Av. Revolución 123, Centro"],
+  realLocationWhereAddress: "Calle Hidalgo 456, Centro",
+  // Old service (matched by Spanish name + old description) -> real service.
+  services: [
+    { oldNameEs: "Examen Visual Completo", oldDescriptionEs: "Evaluación completa de su salud visual con equipos de última generación.", newNameEs: "Examen Visual Completo (Adultos)" },
+    { oldNameEs: "Ajuste de Armazones", oldDescriptionEs: "Servicio de ajuste para sus lentes para una comodidad óptima.", newNameEs: "Ajuste de Armazones" },
+    { oldNameEs: "Adaptación de Lentes de Contacto", oldDescriptionEs: "Adaptación profesional de lentes de contacto con seguimiento.", newNameEs: "Adaptación de Lentes de Contacto" },
+  ],
+  // Not offered by the clinic -> hidden (kept for past appointments).
+  hideServicesNamedEs: ["Prueba de Presión Ocular"],
+  // Invented testimonials from the template -> unpublished.
+  unpublishTestimonials: [
+    { name: "Laura Méndez", startsWith: "El servicio fue excelente" },
+    { name: "Carlos Rodríguez", startsWith: "La prueba virtual me ayudó" },
+    { name: "Elena Gutiérrez", startsWith: "Llevo años siendo cliente" },
+  ],
+};
 
 /**
  * Try-on catalog: only frames with a real 3D model. Photos are renders of
@@ -234,47 +265,16 @@ export const blogPostsSeed = (): InsertBlogPost[] => [
   },
 ];
 
-export const testimonialsSeed: (InsertTestimonial & { isApproved: boolean })[] = [
-  {
-    name: "Laura Méndez",
-    commentEn: "The service was excellent, they attended me very quickly and the doctor was very professional. The frames are of very good quality.",
-    commentEs: "El servicio fue excelente, me atendieron muy rápido y el doctor fue muy profesional. Los armazones son de muy buena calidad.",
-    rating: 5,
-    imageUrl: null,
-    isApproved: true,
-  },
-  {
-    name: "Carlos Rodríguez",
-    commentEn: "The virtual try-on helped me choose the perfect frame before going to the store. The process was very easy and fun.",
-    commentEs: "La prueba virtual me ayudó a elegir el armazón perfecto antes de ir a la tienda. El proceso fue muy fácil y divertido.",
-    rating: 4,
-    imageUrl: null,
-    isApproved: true,
-  },
-  {
-    name: "Elena Gutiérrez",
-    commentEn: "I've been a customer of Ópticas Cardani for years and I always find what I'm looking for. Their attention and professionalism make me come back.",
-    commentEs: "Llevo años siendo cliente de Ópticas Cardani y siempre encuentro lo que busco. Su atención y profesionalismo me hacen regresar.",
-    rating: 5,
-    imageUrl: null,
-    isApproved: true,
-  },
-];
-
-const SLOT_TEMPLATE = [
-  { start: "09:00", end: "09:45" },
-  { start: "10:00", end: "10:45" },
-  { start: "11:00", end: "11:45" },
-  { start: "12:00", end: "12:45" },
-  { start: "13:00", end: "13:45" },
-  { start: "16:00", end: "16:45" },
-  { start: "17:00", end: "17:45" },
-];
+/**
+ * No testimonials are seeded: reviews shown on the site must come from real
+ * customers (approved in the database). The section hides itself when empty.
+ */
+export const testimonialsSeed: (InsertTestimonial & { isApproved: boolean })[] = [];
 
 /**
- * Slots for the rolling booking window: Mon-Fri full day, Saturday mornings,
- * Sundays closed. Deterministic, so it can be re-run safely (the DB has a
- * unique index on location/date/start time).
+ * Slots for the rolling booking window, following the real opening hours
+ * (shared/business.ts). Deterministic, so it can be re-run safely (the DB
+ * has a unique index on location/date/start time).
  */
 export const generateSlots = (locationIds: number[]): InsertAppointmentSlot[] => {
   const slots: InsertAppointmentSlot[] = [];
@@ -282,15 +282,19 @@ export const generateSlots = (locationIds: number[]): InsertAppointmentSlot[] =>
     const date = businessDate(offset);
     // Noon UTC avoids any DST edge when reading the weekday back.
     const weekday = new Date(`${date}T12:00:00Z`).getUTCDay();
-    if (weekday === 0) continue;
     for (const locationId of locationIds) {
-      for (const slot of SLOT_TEMPLATE) {
-        if (weekday === 6 && parseInt(slot.start, 10) >= 14) continue;
+      for (const slot of slotTemplateFor(weekday)) {
         slots.push({ locationId, date, startTime: slot.start, endTime: slot.end, isAvailable: true });
       }
     }
   }
   return slots;
+};
+
+/** True when a slot's start time is part of the real schedule for its day. */
+export const slotMatchesSchedule = (slot: { date: string; startTime: string }) => {
+  const weekday = new Date(`${slot.date}T12:00:00Z`).getUTCDay();
+  return slotTemplateFor(weekday).some((s) => s.start === slot.startTime.slice(0, 5));
 };
 
 const timeFormatter = new Intl.DateTimeFormat("en-GB", {
