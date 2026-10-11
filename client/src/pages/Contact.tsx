@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import type { Location } from '@shared/schema';
 import { MapPin, Phone, Clock, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -36,7 +37,7 @@ const Contact = () => {
   const { toast } = useToast();
   
   // Fetch locations
-  const { data: locations, isLoading: isLoadingLocations } = useQuery({
+  const { data: locations, isLoading: isLoadingLocations } = useQuery<Location[]>({
     queryKey: ['/api/locations'],
   });
 

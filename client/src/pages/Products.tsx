@@ -4,6 +4,7 @@ import PageHeader from '@/components/brand/PageHeader';
 import { isSunglasses, useFrameFacets, useCatalogLabel } from '@/lib/catalog';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
+import type { Frame } from '@shared/schema';
 import { Search, Filter, ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -24,7 +25,7 @@ const Products = () => {
   const [sortBy, setSortBy] = useState('name');
   
   // Fetch frames
-  const { data: frames, isLoading: isLoadingFrames } = useQuery({
+  const { data: frames, isLoading: isLoadingFrames } = useQuery<Frame[]>({
     queryKey: ['/api/frames', filters],
   });
   
