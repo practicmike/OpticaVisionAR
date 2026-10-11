@@ -8,10 +8,9 @@ import {
   initFaceMesh,
   startCamera,
   classifyTryOnError,
-  extractFacialMeasurements,
-  getGlassesPosition,
   type CameraHandle,
 } from '@/utils/faceDetection';
+import { faceTracker } from '@/ar/tracking';
 
 export const useTryOn = () => {
   const { t } = useTranslation();
@@ -37,18 +36,23 @@ export const useTryOn = () => {
     color: 'all'
   });
 
-  // Access the global store
-  const {
-    setFaceDetected,
-    setFaceMeshPoints,
-    setFacialMeasurements,
-    setGlassesPosition,
-    setGlassesRotation,
-    setGlassesScale,
-    captureScreenshot,
-    setScreenshot,
-    isCapturingScreenshot
-  } = useTryOnStore();
+  // Width/height of the frame being analysed (camera or photo); the pose
+  // math needs it to keep x and y in the same units.
+  const sourceAspectRef = useRef(4 / 3);
+
+  // Store access through selectors: only these values re-render the page.
+  const setFaceDetected = useTryOnStore((s) => s.setFaceDetected);
+  const captureScreenshot = useTryOnStore((s) => s.captureScreenshot);
+  const setScreenshot = useTryOnStore((s) => s.setScreenshot);
+  const isCapturingScreenshot = useTryOnStore((s) => s.isCapturingScreenshot);
+
+  // Mirror tracker visibility into the store (changes rarely, unlike the pose).
+  useEffect(() => {
+    const unsubscribe = faceTracker.subscribe(setFaceDetected);
+    return () => {
+      unsubscribe();
+    };
+  }, [setFaceDetected]);
 
   // Fetch frames
   const { data: frames, isLoading: isLoadingFrames } = useQuery({
@@ -62,37 +66,11 @@ export const useTryOn = () => {
     }
   }, [frames, selectedFrameId]);
 
-  // Handle FaceMesh results
+  // Detector output goes straight to the tracker (no React state per frame).
   const onFaceMeshResults = useCallback((results: Results) => {
-    // Handle face detection results
-    if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-      const landmarks = results.multiFaceLandmarks[0];
-      
-      // Update face detection state
-      setFaceDetected(true);
-      
-      // Convert landmarks to simple array format for state
-      const landmarkPoints = landmarks.map(l => [l.x, l.y, l.z]);
-      setFaceMeshPoints(landmarkPoints);
-      
-      // Extract facial measurements
-      const measurements = extractFacialMeasurements(landmarks);
-      if (measurements) {
-        setFacialMeasurements(measurements);
-      }
-      
-      // Get glasses position, rotation, and scale
-      const glassesPlacement = getGlassesPosition(landmarks);
-      if (glassesPlacement) {
-        setGlassesPosition(glassesPlacement.position);
-        setGlassesRotation(glassesPlacement.rotation);
-        setGlassesScale({ x: glassesPlacement.scale, y: glassesPlacement.scale, z: glassesPlacement.scale });
-      }
-    } else {
-      // No face detected
-      setFaceDetected(false);
-    }
-  }, [setFaceDetected, setFaceMeshPoints, setFacialMeasurements, setGlassesPosition, setGlassesRotation, setGlassesScale]);
+    const landmarks = results.multiFaceLandmarks?.[0] ?? null;
+    faceTracker.update(landmarks, sourceAspectRef.current);
+  }, []);
 
   const ensureFaceMesh = useCallback(async () => {
     if (faceMeshRef.current) return faceMeshRef.current;
@@ -128,7 +106,8 @@ export const useTryOn = () => {
   const startWebcam = useCallback(async () => {
     setMethod('webcam');
     setUploadedImage(null);
-    setFaceDetected(false);
+    setScreenshot(null);
+    faceTracker.reset();
     
     try {
       const video = webcamRef.current;
@@ -142,6 +121,7 @@ export const useTryOn = () => {
 
       const updateDimensions = () => {
         if (video.videoWidth && video.videoHeight) {
+          sourceAspectRef.current = video.videoWidth / video.videoHeight;
           setCanvasSize({ width: video.videoWidth, height: video.videoHeight });
         }
       };
@@ -158,7 +138,7 @@ export const useTryOn = () => {
       showTryOnError(error);
       setIsWebcamActive(false);
     }
-  }, [ensureFaceMesh, setFaceDetected, showTryOnError]);
+  }, [ensureFaceMesh, setScreenshot, showTryOnError]);
 
   // Stop webcam
   const stopWebcam = useCallback(() => {
@@ -177,8 +157,8 @@ export const useTryOn = () => {
     
     // Clear face detection state
     setIsWebcamActive(false);
-    setFaceDetected(false);
-  }, [setFaceDetected]);
+    faceTracker.reset();
+  }, []);
 
   // Handle file upload
   const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -193,12 +173,14 @@ export const useTryOn = () => {
       const imageSource = e.target?.result;
       if (typeof imageSource !== 'string') return;
 
-      setFaceDetected(false);
+      faceTracker.reset();
+      setScreenshot(null);
       setUploadedImage(imageSource);
       setMethod('upload');
 
       const image = new Image();
       image.onload = async () => {
+        sourceAspectRef.current = image.naturalWidth / image.naturalHeight;
         setCanvasSize({ width: image.naturalWidth, height: image.naturalHeight });
         try {
           const faceMesh = await ensureFaceMesh();
@@ -211,7 +193,9 @@ export const useTryOn = () => {
       image.src = imageSource;
     };
     reader.readAsDataURL(file);
-  }, [ensureFaceMesh, setFaceDetected, stopWebcam, showTryOnError]);
+    // Allow choosing the same file again.
+    event.target.value = '';
+  }, [ensureFaceMesh, setScreenshot, stopWebcam, showTryOnError]);
 
   // Trigger file input click
   const triggerFileUpload = useCallback(() => {
@@ -240,16 +224,51 @@ export const useTryOn = () => {
     });
   }, []);
 
-  // Handle screenshot capture
-  const handleCaptureScreenshot = useCallback(() => {
-    if (!renderCanvasRef.current) return;
-    
+  // Photo of the try-on: camera frame (or uploaded photo) + glasses layer,
+  // composed at full resolution. The selfie view is mirrored on screen, so
+  // the photo is mirrored too: it matches what the customer saw.
+  const handleCaptureScreenshot = useCallback(async () => {
+    const overlay = renderCanvasRef.current;
+    if (!overlay) return;
     captureScreenshot();
-    
-    // Create a composite canvas with both video/image and 3D glasses
-    const screenshot = renderCanvasRef.current.toDataURL('image/png');
-    setScreenshot(screenshot);
-  }, [captureScreenshot, setScreenshot]);
+    try {
+      let source: CanvasImageSource;
+      let width: number;
+      let height: number;
+      const mirrored = method === 'webcam';
+      if (method === 'webcam' && webcamRef.current?.videoWidth) {
+        source = webcamRef.current;
+        width = webcamRef.current.videoWidth;
+        height = webcamRef.current.videoHeight;
+      } else if (uploadedImage) {
+        const img = new Image();
+        img.src = uploadedImage;
+        await img.decode();
+        source = img;
+        width = img.naturalWidth;
+        height = img.naturalHeight;
+      } else {
+        setScreenshot(null);
+        return;
+      }
+
+      const out = document.createElement('canvas');
+      out.width = width;
+      out.height = height;
+      const ctx = out.getContext('2d');
+      if (!ctx) throw new Error('2D canvas not available');
+      if (mirrored) {
+        ctx.translate(width, 0);
+        ctx.scale(-1, 1);
+      }
+      ctx.drawImage(source, 0, 0, width, height);
+      ctx.drawImage(overlay, 0, 0, width, height);
+      setScreenshot(out.toDataURL('image/jpeg', 0.92));
+    } catch (error) {
+      console.error('Could not capture the try-on photo:', error);
+      setScreenshot(null);
+    }
+  }, [captureScreenshot, setScreenshot, method, uploadedImage]);
 
   // Get the selected frame data
   const framesArray = Array.isArray(frames) ? frames : [];
@@ -267,8 +286,9 @@ export const useTryOn = () => {
     
     setUploadedImage(null);
     setSelectedFrameId(null);
-    setFaceDetected(false);
-  }, [stopWebcam, setFaceDetected]);
+    setScreenshot(null);
+    faceTracker.reset();
+  }, [stopWebcam, setScreenshot]);
 
   return {
     webcamRef,

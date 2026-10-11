@@ -13,7 +13,9 @@ import { useTryOnStore } from '@/store/tryOnStore';
 
 const GlassesAdjustmentControls = () => {
   const { t } = useTranslation();
-  const { adjustments, updateAdjustment, resetAdjustments } = useTryOnStore();
+  const adjustments = useTryOnStore((s) => s.adjustments);
+  const updateAdjustment = useTryOnStore((s) => s.updateAdjustment);
+  const resetAdjustments = useTryOnStore((s) => s.resetAdjustments);
   
   return (
     <div className="bg-white p-4 rounded-lg border border-gray-200">

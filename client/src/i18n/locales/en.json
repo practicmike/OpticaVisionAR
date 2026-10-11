@@ -351,6 +351,24 @@
         "title": "Couldn't start the virtual try-on",
         "message": "Face tracking failed to load. Check your connection and try again in a few seconds."
       }
+    },
+    "adjustments": {
+      "title": "Fine-tune fit",
+      "reset": "Reset",
+      "position": "Position",
+      "rotation": "Rotation",
+      "scale": "Size"
+    },
+    "share": {
+      "title": "Your photo",
+      "captureScreenshot": "Take photo",
+      "download": "Download",
+      "sharePhoto": "Share photo",
+      "emailBody": "Check out how these Ópticas Cardani frames look on me"
+    },
+    "tracking": {
+      "searching": "Looking for your face… face the camera",
+      "noFaceInPhoto": "We couldn't find a face in this photo. Use a well-lit, front-facing photo."
     }
   },
   "blogPage": {
