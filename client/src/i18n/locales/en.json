@@ -443,5 +443,31 @@
         }
       }
     }
+  },
+  "catalogValues": {
+    "style": {
+      "Rectangle": "Rectangle",
+      "Round": "Round",
+      "Oval": "Oval",
+      "Cat-eye": "Cat-eye",
+      "Aviator": "Aviator",
+      "Sunglasses": "Sunglasses",
+      "Wayfarer": "Wayfarer"
+    },
+    "material": {
+      "Acetate": "Acetate",
+      "Metal": "Metal",
+      "Titanium": "Titanium"
+    },
+    "color": {
+      "Black": "Black",
+      "Brown": "Brown",
+      "Tortoise": "Tortoise",
+      "Blue": "Blue",
+      "Red": "Wine",
+      "Gold": "Gold",
+      "Silver": "Silver",
+      "Transparent": "Transparent"
+    }
   }
 }

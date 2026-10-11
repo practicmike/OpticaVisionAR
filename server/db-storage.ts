@@ -153,14 +153,14 @@ export class DbStorage implements IStorage {
 
   // Frames
   async getFrames(filters?: { style?: string; material?: string; color?: string }): Promise<CatalogFrame[]> {
-    const conditions = [];
+    const conditions = [eq(frames.isAvailable, true)];
     if (filters?.style && filters.style !== "all") conditions.push(eq(frames.style, filters.style));
     if (filters?.material && filters.material !== "all") conditions.push(eq(frames.material, filters.material));
     if (filters?.color && filters.color !== "all") conditions.push(eq(frames.color, filters.color));
     return this.db
       .select()
       .from(frames)
-      .where(conditions.length ? and(...conditions) : undefined)
+      .where(and(...conditions))
       .orderBy(asc(frames.id));
   }
 

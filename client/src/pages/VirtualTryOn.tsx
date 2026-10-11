@@ -11,6 +11,7 @@ import GlassesRenderer from '@/components/GlassesRenderer';
 import GlassesAdjustmentControls from '@/components/GlassesAdjustmentControls';
 import SocialShareButtons from '@/components/SocialShareButtons';
 import { useTryOnStore } from '@/store/tryOnStore';
+import { useFrameFacets, useCatalogLabel } from '@/lib/catalog';
 
 const VirtualTryOn = () => {
   const { t } = useTranslation();
@@ -37,6 +38,8 @@ const VirtualTryOn = () => {
     cleanup
   } = useTryOn();
   const isFaceDetected = useTryOnStore((s) => s.isFaceDetected);
+  const facets = useFrameFacets();
+  const label = useCatalogLabel();
   const isTryOnActive = (isWebcamActive || !!uploadedImage) && !!selectedFrame;
   // Selfie view: the camera is shown mirrored, like a real mirror. Video and
   // glasses layer are flipped together, so tracking stays aligned.
@@ -202,13 +205,8 @@ const VirtualTryOn = () => {
                           <img
                             src={frame.imageUrl}
                             alt={t('common.currentLanguage') === 'es' ? frame.nameEs : frame.nameEn}
-                            className="w-full h-32 object-cover"
+                            className="w-full h-32 object-contain bg-[#f4f4f2]"
                           />
-                          {frame.modelUrl && (
-                            <span className="absolute right-2 top-2 rounded bg-black/75 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-white shadow">
-                              GLB 3D
-                            </span>
-                          )}
                         </div>
                         <CardContent className="p-2 bg-white">
                           <span className="text-sm font-medium">
@@ -232,12 +230,9 @@ const VirtualTryOn = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">{t('virtualTryOnPage.framesSection.allStyles')}</SelectItem>
-                        <SelectItem value="Rectangle">Rectangle</SelectItem>
-                        <SelectItem value="Round">Round</SelectItem>
-                        <SelectItem value="Oval">Oval</SelectItem>
-                        <SelectItem value="Cat-eye">Cat-eye</SelectItem>
-                        <SelectItem value="Aviator">Aviator</SelectItem>
-                        <SelectItem value="Sunglasses">Sunglasses</SelectItem>
+                        {facets.styles.map((value) => (
+                          <SelectItem key={value} value={value}>{label('style', value)}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     
@@ -250,9 +245,9 @@ const VirtualTryOn = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">{t('virtualTryOnPage.framesSection.allMaterials')}</SelectItem>
-                        <SelectItem value="Acetate">Acetate</SelectItem>
-                        <SelectItem value="Metal">Metal</SelectItem>
-                        <SelectItem value="Titanium">Titanium</SelectItem>
+                        {facets.materials.map((value) => (
+                          <SelectItem key={value} value={value}>{label('material', value)}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     
@@ -265,13 +260,9 @@ const VirtualTryOn = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">{t('virtualTryOnPage.framesSection.allColors')}</SelectItem>
-                        <SelectItem value="Black">Black</SelectItem>
-                        <SelectItem value="Brown">Brown</SelectItem>
-                        <SelectItem value="Blue">Blue</SelectItem>
-                        <SelectItem value="Red">Red</SelectItem>
-                        <SelectItem value="Gold">Gold</SelectItem>
-                        <SelectItem value="Silver">Silver</SelectItem>
-                        <SelectItem value="Transparent">Transparent</SelectItem>
+                        {facets.colors.map((value) => (
+                          <SelectItem key={value} value={value}>{label('color', value)}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -364,15 +355,15 @@ const VirtualTryOn = () => {
                     <img 
                       src={frame.imageUrl} 
                       alt={t('common.currentLanguage') === 'es' ? frame.nameEs : frame.nameEn} 
-                      className="w-full h-48 object-cover" 
+                      className="w-full h-48 object-contain bg-[#f4f4f2]" 
                     />
                     <CardContent className="p-4">
-                      <span className="text-sm text-primary font-medium">{frame.style}</span>
+                      <span className="text-sm text-primary font-medium">{label('style', frame.style)}</span>
                       <h3 className="font-semibold text-lg mt-1">
                         {t('common.currentLanguage') === 'es' ? frame.nameEs : frame.nameEn}
                       </h3>
                       <p className="text-gray-600 text-sm mt-2">
-                        {t('products.materialColor', { material: frame.material, color: frame.color })}
+                        {t('products.materialColor', { material: label('material', frame.material), color: label('color', frame.color).toLowerCase() })}
                       </p>
                       <div className="mt-4 flex justify-between items-center">
                         <span className="font-bold text-[#333333]">{formatCurrency(frame.price)}</span>
