@@ -1,6 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { storage } from "./storage";
 import { isSlotInPast } from "./seed-data";
+import { sendAppointmentEmails } from "./notify";
 import { 
   insertAppointmentSchema, 
   insertTestimonialSchema, 
@@ -113,7 +114,10 @@ export function registerApiRoutes(app: Express): void {
       if (!appointment) {
         return res.status(409).json({ message: 'This appointment slot is no longer available' });
       }
-      res.status(201).json(appointment);
+      // Awaited (not fire-and-forget): a serverless function can be frozen
+      // as soon as it responds. Never fails the booking; 8 s timeout inside.
+      const email = await sendAppointmentEmails(appointment, service);
+      res.status(201).json({ ...appointment, confirmationEmailSent: email.customer });
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({ message: 'Invalid appointment data', errors: error.errors });

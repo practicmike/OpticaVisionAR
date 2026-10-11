@@ -277,7 +277,8 @@
         "time": "Hora",
         "reference": "Número de Referencia",
         "addToCalendar": "Añadir al Calendario",
-        "backToHome": "Volver al Inicio"
+        "backToHome": "Volver al Inicio",
+        "emailSent": "Te enviamos la confirmación a {{email}} (revisa también tu carpeta de spam). Si quieres, avísanos por WhatsApp."
       },
       "error": {
         "title": "Algo salió mal",
@@ -378,7 +379,8 @@
     "tracking": {
       "searching": "Buscando tu rostro… mira de frente a la cámara",
       "noFaceInPhoto": "No detectamos un rostro en la foto. Usa una foto de frente y con buena luz."
-    }
+    },
+    "credits": "Modelos 3D:"
   },
   "blogPage": {
     "hero": {
@@ -405,7 +407,8 @@
       "placeholder": "Buscar artículos...",
       "button": "Buscar",
       "noResults": "No se encontraron resultados para '{{term}}'"
-    }
+    },
+    "showLess": "Leer menos"
   },
   "contactPage": {
     "hero": {

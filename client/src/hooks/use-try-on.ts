@@ -28,7 +28,11 @@ export const useTryOn = () => {
   const [method, setMethod] = useState<'webcam' | 'upload' | null>(null);
   const [isWebcamActive, setIsWebcamActive] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-  const [selectedFrameId, setSelectedFrameId] = useState<number | null>(null);
+  // "/virtual-try-on?frame=7" (from the catalog) opens with that frame on.
+  const [selectedFrameId, setSelectedFrameId] = useState<number | null>(() => {
+    const id = Number(new URLSearchParams(window.location.search).get('frame'));
+    return Number.isInteger(id) && id > 0 ? id : null;
+  });
   const [canvasSize, setCanvasSize] = useState({ width: 640, height: 480 });
   const [filters, setFilters] = useState({
     style: 'all',

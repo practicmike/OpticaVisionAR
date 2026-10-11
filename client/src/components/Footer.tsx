@@ -79,7 +79,7 @@ const Footer = () => {
               <li className="flex gap-3">
                 <FaWhatsapp className="mt-0.5 h-4 w-4 shrink-0 text-secondary" aria-hidden="true" />
                 <a href={whatsappUrl(t('whatsapp.defaultMessage'))} target="_blank" rel="noopener noreferrer" className="text-white/85 hover:text-white">
-                  {t('footer.whatsappAvailable')}
+                  {BUSINESS.whatsappDisplay}
                 </a>
               </li>
               <li className="flex gap-3">

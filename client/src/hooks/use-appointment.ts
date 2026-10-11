@@ -57,7 +57,7 @@ export const useAppointment = () => {
 
   // Create appointment mutation
   const createAppointmentMutation = useMutation({
-    mutationFn: async (appointmentData: InsertAppointment) => {
+    mutationFn: async (appointmentData: InsertAppointment): Promise<{ id: number; confirmationEmailSent?: boolean }> => {
       const response = await apiRequest('POST', '/api/appointments', appointmentData);
       return response.json();
     },
@@ -159,5 +159,6 @@ export const useAppointment = () => {
     createAppointment,
     createAppointmentSuccess: createAppointmentMutation.isSuccess,
     createAppointmentError: createAppointmentMutation.isError,
+    confirmationEmailSent: !!createAppointmentMutation.data?.confirmationEmailSent,
   };
 };
