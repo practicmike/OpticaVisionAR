@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Link } from 'wouter';
 import { FaWhatsapp } from 'react-icons/fa';
 import { whatsappUrl } from '@shared/business';
 import PageHeader from '@/components/brand/PageHeader';
@@ -389,11 +390,21 @@ const VirtualTryOn = () => {
           
           <div className="text-center mt-10">
             <Button asChild variant="link" className="text-primary inline-flex items-center">
-              <a href="/products">
+              <Link href="/products">
                 {t('products.viewFullCatalog')} <ChevronRight className="ml-2 h-4 w-4" />
-              </a>
+              </Link>
             </Button>
           </div>
+
+          {/* Required by the CC BY 4.0 licence of these two Sketchfab models. */}
+          <p className="mx-auto mt-8 max-w-3xl text-center text-xs text-gray-500">
+            {t('virtualTryOnPage.credits')}{' '}
+            <a className="underline" href="https://sketchfab.com/3d-models/sun-glasses-d5a6f061531f4ead97daedbfc027ab03" target="_blank" rel="noopener noreferrer">"Sun Glasses"</a>{' '}
+            (righthere21y),{' '}
+            <a className="underline" href="https://sketchfab.com/3d-models/glasses-4b8a1e54f3084c63828fe8c324198aec" target="_blank" rel="noopener noreferrer">"Glasses"</a>{' '}
+            (AlbertVictory) ·{' '}
+            <a className="underline" href="https://creativecommons.org/licenses/by/4.0/deed.es" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>
+          </p>
         </div>
       </section>
     </>

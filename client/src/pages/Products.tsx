@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'wouter';
 import PageHeader from '@/components/brand/PageHeader';
 import { isSunglasses, useFrameFacets, useCatalogLabel } from '@/lib/catalog';
 import { useTranslation } from 'react-i18next';
@@ -220,8 +221,8 @@ const Products = () => {
                           </p>
                           <div className="mt-4 flex justify-between items-center">
                             <span className="font-bold text-foreground">{formatCurrency(frame.price)}</span>
-                            <Button className="text-primary bg-primary/10 hover:bg-primary/20">
-                              {t('productsPage.tryOnButton')}
+                            <Button asChild className="text-primary bg-primary/10 hover:bg-primary/20">
+                              <Link href={`/virtual-try-on?frame=${frame.id}`}>{t('productsPage.tryOnButton')}</Link>
                             </Button>
                           </div>
                         </CardContent>
@@ -260,8 +261,8 @@ const Products = () => {
                   </li>
                 ))}
               </ul>
-              <Button className="bg-primary hover:bg-primary/90 text-white">
-                {t('productsPage.tryOn.button')}
+              <Button asChild className="bg-primary hover:bg-primary/90 text-white">
+                <Link href="/virtual-try-on">{t('productsPage.tryOn.button')}</Link>
               </Button>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-md">

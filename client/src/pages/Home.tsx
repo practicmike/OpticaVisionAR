@@ -84,7 +84,7 @@ const Home = () => {
                 width={1000}
                 height={346}
                 className="mx-auto w-full"
-                fetchPriority="high"
+                {...{ fetchpriority: "high" }}
               />
               <div className="mt-6 flex items-center justify-between gap-4 border-t pt-4">
                 <div>

@@ -57,7 +57,8 @@ const Appointments = () => {
     handleDateSelect,
     handleSlotSelect,
     createAppointment,
-    createAppointmentSuccess
+    createAppointmentSuccess,
+    confirmationEmailSent
   } = useAppointment();
 
   // Form definition
@@ -564,7 +565,11 @@ const Appointments = () => {
                   <CheckCircle className="h-8 w-8 text-secondary" />
                 </div>
                 <h2 className="text-2xl font-bold mb-2">{t('appointmentsPage.confirmation.success.title')}</h2>
-                <p className="text-gray-600 mb-8">{t('appointmentsPage.confirmation.success.message')}</p>
+                <p className="text-gray-600 mb-8">
+                  {confirmationEmailSent
+                    ? t('appointmentsPage.confirmation.success.emailSent', { email: form.getValues('email') })
+                    : t('appointmentsPage.confirmation.success.message')}
+                </p>
                 
                 <Card className="max-w-lg mx-auto mb-8">
                   <CardContent className="p-6">

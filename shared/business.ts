@@ -13,7 +13,10 @@ export const BUSINESS = {
   city: "Abasolo, Guanajuato",
   phoneDisplay: "429 488 2131",
   phoneE164: "+524294882131",
-  whatsappNumber: "524294882131", // wa.me format: country code + number, digits only
+  // WhatsApp is a different line from the landline above (mobile, Irapuato area code).
+  whatsappDisplay: "462 601 0113",
+  // wa.me format, digits only. WhatsApp still keys Mexican mobiles as 521 + 10 digits.
+  whatsappNumber: "5214626010113",
   email: "info@opticascardani.com",
   mapsQuery: "Lerdo Oriente 157, Abasolo, Gto., Mexico",
 } as const;

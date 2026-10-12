@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
-import { Calendar, Clock, Search, ChevronRight, Facebook, Twitter, Linkedin } from 'lucide-react';
+import { Calendar, Clock, Search } from 'lucide-react';
+import { FacebookShareButton, TwitterShareButton, WhatsappShareButton, FacebookIcon, XIcon, WhatsappIcon } from 'react-share';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,17 +16,36 @@ const Blog = () => {
   const { t } = useTranslation();
   const [category, setCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  // Posts opened with "Leer más" (or via /blog#post-ID from the home page).
+  const [expanded, setExpanded] = useState<Set<number>>(new Set());
+  const toggle = (id: number) =>
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
   
   // Fetch blog posts
   const { data: blogPosts, isLoading: isLoadingBlogPosts } = useQuery({
     queryKey: ['/api/blog-posts', { published: true }],
   });
 
+  // wouter does not scroll to #hash: open and scroll to the linked post once loaded.
+  useEffect(() => {
+    const id = Number(/^#post-(\d+)$/.exec(window.location.hash)?.[1]);
+    if (!id || !Array.isArray(blogPosts)) return;
+    setExpanded((prev) => new Set(prev).add(id));
+    requestAnimationFrame(() =>
+      document.getElementById(`post-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+    );
+  }, [blogPosts]);
+
   // Filter posts based on category and search term
   const filteredPosts = blogPosts?.filter((post: any) => {
     const title = t('common.currentLanguage') === 'es' ? post.titleEs.toLowerCase() : post.titleEn.toLowerCase();
     const content = t('common.currentLanguage') === 'es' ? post.contentEs.toLowerCase() : post.contentEn.toLowerCase();
-    const postCategory = t('common.currentLanguage') === 'es' ? post.categoryEs.toLowerCase() : post.categoryEn.toLowerCase();
+    // Tab ids are English ("health", "tips"…): match on the English category in both languages.
+    const postCategory = String(post.categoryEn).toLowerCase();
     
     const matchesSearch = searchTerm === '' || 
       title.includes(searchTerm.toLowerCase()) ||
@@ -81,7 +101,9 @@ const Blog = () => {
           <Tabs defaultValue="all" onValueChange={setCategory} className="max-w-4xl mx-auto">
             <div className="flex justify-center overflow-x-auto pb-2">
               <TabsList>
-                {BLOG_CATEGORIES.map((cat) => (
+                {BLOG_CATEGORIES.filter((cat) =>
+                  cat.id === 'all' || (Array.isArray(blogPosts) && blogPosts.some((p: any) => String(p.categoryEn).toLowerCase().includes(cat.id))),
+                ).map((cat) => (
                   <TabsTrigger key={cat.id} value={cat.id}>
                     {t('common.currentLanguage') === 'es' ? cat.labelEs : cat.labelEn}
                   </TabsTrigger>
@@ -126,7 +148,7 @@ const Blog = () => {
                       <h3 className="font-semibold text-lg mb-2 line-clamp-2">
                         {t('common.currentLanguage') === 'es' ? post.titleEs : post.titleEn}
                       </h3>
-                      <p className="text-gray-600 text-sm line-clamp-3">
+                      <p className={`text-gray-600 text-sm whitespace-pre-line ${expanded.has(post.id) ? '' : 'line-clamp-3'}`}>
                         {t('common.currentLanguage') === 'es' ? post.contentEs : post.contentEn}
                       </p>
                       <div className="mt-4 flex justify-between items-center">
@@ -140,8 +162,8 @@ const Blog = () => {
                             })}
                           </span>
                         </div>
-                        <Button variant="link" className="text-primary p-0 h-auto">
-                          {t('blogPage.readMore')}
+                        <Button variant="link" className="text-primary p-0 h-auto" onClick={() => toggle(post.id)} aria-expanded={expanded.has(post.id)}>
+                          {expanded.has(post.id) ? t('blogPage.showLess') : t('blogPage.readMore')}
                         </Button>
                       </div>
                     </CardContent>
@@ -196,15 +218,18 @@ const Blog = () => {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-gray-500">{t('blogPage.shareArticle')}:</span>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                          <Facebook className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                          <Twitter className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                          <Linkedin className="h-4 w-4" />
-                        </Button>
+                        {(() => {
+                          const post = filteredPosts[0];
+                          const url = `${window.location.origin}/blog#post-${post.id}`;
+                          const title = t('common.currentLanguage') === 'es' ? post.titleEs : post.titleEn;
+                          return (
+                            <>
+                              <WhatsappShareButton url={url} title={title} aria-label="WhatsApp"><WhatsappIcon size={32} round /></WhatsappShareButton>
+                              <FacebookShareButton url={url} aria-label="Facebook"><FacebookIcon size={32} round /></FacebookShareButton>
+                              <TwitterShareButton url={url} title={title} aria-label="X"><XIcon size={32} round /></TwitterShareButton>
+                            </>
+                          );
+                        })()}
                       </div>
                     </div>
                   </div>
@@ -218,7 +243,7 @@ const Blog = () => {
       {/* CTA */}
       <section className="py-12 md:py-16 bg-primary text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="font-bold text-2xl md:text-3xl mb-4">{t('appointmentsPage.confirmation.success.title')}</h2>
+          <h2 className="font-bold text-2xl md:text-3xl mb-4">{t('servicesPage.cta.title')}</h2>
           <p className="text-lg opacity-90 max-w-2xl mx-auto mb-8">{t('servicesPage.cta.subtitle')}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/appointments">

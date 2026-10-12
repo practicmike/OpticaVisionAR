@@ -277,7 +277,8 @@
         "time": "Time",
         "reference": "Reference Number",
         "addToCalendar": "Add to Calendar",
-        "backToHome": "Back to Home"
+        "backToHome": "Back to Home",
+        "emailSent": "We sent the confirmation to {{email}} (check your spam folder too). You can also message us on WhatsApp."
       },
       "error": {
         "title": "Something went wrong",
@@ -378,7 +379,8 @@
     "tracking": {
       "searching": "Looking for your face… face the camera",
       "noFaceInPhoto": "We couldn't find a face in this photo. Use a well-lit, front-facing photo."
-    }
+    },
+    "credits": "3D models:"
   },
   "blogPage": {
     "hero": {
@@ -405,7 +407,8 @@
       "placeholder": "Search articles...",
       "button": "Search",
       "noResults": "No results found for '{{term}}'"
-    }
+    },
+    "showLess": "Show less"
   },
   "contactPage": {
     "hero": {
