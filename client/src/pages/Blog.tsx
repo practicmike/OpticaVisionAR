@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
+import type { BlogPost } from '@shared/schema';
 import { Link } from 'wouter';
 import { Calendar, Clock, Search } from 'lucide-react';
 import { FacebookShareButton, TwitterShareButton, WhatsappShareButton, FacebookIcon, XIcon, WhatsappIcon } from 'react-share';
@@ -26,7 +27,7 @@ const Blog = () => {
     });
   
   // Fetch blog posts
-  const { data: blogPosts, isLoading: isLoadingBlogPosts } = useQuery({
+  const { data: blogPosts, isLoading: isLoadingBlogPosts } = useQuery<BlogPost[]>({
     queryKey: ['/api/blog-posts', { published: true }],
   });
 
@@ -41,7 +42,7 @@ const Blog = () => {
   }, [blogPosts]);
 
   // Filter posts based on category and search term
-  const filteredPosts = blogPosts?.filter((post: any) => {
+  const filteredPosts = (blogPosts ?? []).filter((post: any) => {
     const title = t('common.currentLanguage') === 'es' ? post.titleEs.toLowerCase() : post.titleEn.toLowerCase();
     const content = t('common.currentLanguage') === 'es' ? post.contentEs.toLowerCase() : post.contentEn.toLowerCase();
     // Tab ids are English ("health", "tips"…): match on the English category in both languages.

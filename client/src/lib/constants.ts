@@ -56,7 +56,7 @@ export const ROUTES = {
 };
 
 // Currency formatting options
-export const CURRENCY_FORMAT_OPTIONS = { 
+export const CURRENCY_FORMAT_OPTIONS: Intl.NumberFormatOptions = { 
   style: 'currency', 
   currency: 'MXN',
   minimumFractionDigits: 0,
