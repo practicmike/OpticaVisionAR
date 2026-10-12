@@ -25,4 +25,6 @@ The following product photographs were downloaded from Unsplash. The Unsplash li
 
 - `models/wayfarer_*.glb`: generados por código propio (`tools/frame-generator/`, Python + numpy). Diseño genérico, sin marcas.
 - `thumbs/*.jpg`: renders propios de cada modelo 3D (three.js, mismo ángulo y fondo).
-- `models/0_00741558210359.glb`, `models/1_sun_glasses.glb`, `models/2_glasses.glb`: venían en el proyecto original sin registro de origen ni licencia. **Pendiente: confirmar su licencia de uso comercial.** En `1_sun_glasses.glb` se cambió el material del lente (era plástico gris opaco; ahora metálico pulido).
+- `models/1_sun_glasses.glb`: "Sun Glasses" de righthere21y — https://sketchfab.com/3d-models/sun-glasses-d5a6f061531f4ead97daedbfc027ab03 — CC BY 4.0 (uso comercial permitido con crédito; el crédito aparece en /virtual-try-on). Se cambió el material del lente (era plástico gris opaco; ahora metálico pulido).
+- `models/2_glasses.glb`: "Glasses" de AlbertVictory — https://sketchfab.com/3d-models/glasses-4b8a1e54f3084c63828fe8c324198aec — CC BY 4.0 (crédito en /virtual-try-on).
+- `models/0_00741558210359.glb`: venía en el proyecto original sin autor ni licencia (exportado de Blender, sin metadatos). **Pendiente: confirmar origen o reemplazarlo por un modelo propio.**
